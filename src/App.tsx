@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './App.css';
 import Slider from '@mui/material/Slider';
-import { Box, Button, Stack } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 
@@ -13,7 +13,7 @@ function App() {
   const step = 50;
   const maxTicks = 100;
   
-  const handleChange = (event: Event, newValue: number | number[]) => {
+  const handleSliderChange = (event: Event, newValue: number | number[]) => {
     setPlay(false);
     setTick(newValue as number);
   };
@@ -55,7 +55,7 @@ function App() {
         </Button>
         <Slider 
           value={tick} 
-          onChange={handleChange}
+          onChange={handleSliderChange}
           marks={marks}
           max={maxTicks} 
           track={false}/>
