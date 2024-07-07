@@ -39,13 +39,12 @@ function App() {
   const marks = Array.from({ length: numberOfMarks + 1 }, (value, key) => { return { value: Math.round(maxTicks * key / numberOfMarks) }; })
 
   return (
-    // position: relative, user-select: none, width: 800px, height: 300px
     <div className="App">
       <Stack justifyContent="space-around" padding="16px">
         <Stack alignItems="center">
           <StageWithReactiveDimen>
             <Layer>
-              <Text text="Some text on canvas" fontSize={15} />
+              <Text text="Some text on canvas" fontSize={15} fill={"white"}/>
               <Rect
                 x={20}
                 y={50}

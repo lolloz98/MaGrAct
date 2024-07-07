@@ -1,14 +1,14 @@
 import { Stack } from "@mui/material"
 import React, { ReactElement, useEffect, useRef, useState } from "react"
 
-import { Stage, Layer, Rect } from "react-konva"
+import { Stage } from "react-konva"
 
 export function StageWithReactiveDimen({ children, style }: { children?: ReactElement, style?: React.CSSProperties}) {
   const originalW = 1066;
   const originalH = originalW * 9 / 16;
   const windowSize = useWindowSize();
   const divRef = useRef<HTMLInputElement>(null)
-  
+
   const [dimensions, setDimensions] = useState({
     width: 0,
     height: 0,
