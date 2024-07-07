@@ -40,3 +40,12 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.Stage {
+  user-select: none;
+  background: black;
+  position: relative;
+  width: 70%;
+  aspect-ratio: 16 / 9;
+  display: block;
+}

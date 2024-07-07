@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { Component, useEffect } from 'react';
 import './App.css';
 import Slider from '@mui/material/Slider';
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, colors } from '@mui/material';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
-import { Stage } from 'react-konva';
+import { Layer, Rect, Stage, Text } from 'react-konva';
+import { StageWithReactiveDimen } from './components/StageWithReactiveDimen';
 
 
 
@@ -42,14 +43,19 @@ function App() {
     <div className="App">
       <Stack justifyContent="space-around" padding="16px">
         <Stack alignItems="center">
-          <Stage style={{
-            userSelect: "none",
-            background: "black",
-            position: "relative",
-            width: "1066px",
-            height: "600px",
-            display: "block"
-          }} />
+          <StageWithReactiveDimen>
+            <Layer>
+              <Text text="Some text on canvas" fontSize={15} />
+              <Rect
+                x={20}
+                y={50}
+                width={100}
+                height={100}
+                fill="red"
+                shadowBlur={10}
+              />
+            </Layer>
+          </StageWithReactiveDimen>
         </Stack>
         <Stack
           direction="row"
