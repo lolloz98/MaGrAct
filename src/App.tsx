@@ -4,8 +4,9 @@ import Slider from '@mui/material/Slider';
 import { Button, Stack, colors } from '@mui/material';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
-import { Layer, Rect, Stage, Text } from 'react-konva';
+import { Layer, Line, Rect, Stage, Text } from 'react-konva';
 import { StageWithReactiveDimen } from './components/StageWithReactiveDimen';
+import Function from './components/Function';
 
 
 
@@ -52,6 +53,8 @@ function App() {
                 height={100}
                 fill="red"
                 shadowBlur={10}
+              />
+              <Function
               />
             </Layer>
           </StageWithReactiveDimen>
