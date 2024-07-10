@@ -1,7 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
-import { Line } from "react-konva";
+import { useEffect, useState } from "react";
+import { Group, Line, Text } from "react-konva";
+import { useContext } from 'react';
+import { TimeContext } from './TimeContext';
+
 
 export default function Function() {
+    const timeC = useContext(TimeContext);
     const [points, setPoints] = useState<number[]>([]);
     const offest = {
         x: 100,
@@ -16,25 +20,29 @@ export default function Function() {
     // here we use a constant step, but for sure it's not best solution
     // it would be better to use something tight to the first and second derivative
     const step = 0.1;  
-    const initFunc = () => {
-        console.log("init")
-        const tmp_points: number[] = []
-        for (let i = bounds.x_min; i <= bounds.x_max; i += step) {
-            tmp_points.push(i + offest.x);
-            tmp_points.push(f(i) + offest.y);
-        }
-        return tmp_points;
-    };
 
     useEffect(() => {
+        const initFunc = () => {
+            console.log("init")
+            const tmp_points: number[] = []
+            for (let i = bounds.x_min; i <= bounds.x_max; i += step) {
+                tmp_points.push(i + offest.x);
+                tmp_points.push(f(i) + offest.y);
+            }
+            return tmp_points;
+        };
+
         setPoints(initFunc);
     }, []);
     
 
     console.log(points);
-    return <Line
-                points={points}
-                stroke='blue'
-                strokeWidth={1}
-                />
+    return (<Group>
+                <Line
+                    points={points}
+                    stroke='blue'
+                    strokeWidth={1}
+                    />
+                <Text text={`${timeC}`} offsetX={-500} fontSize={15} fill={"white"}/>
+            </Group>);
 }

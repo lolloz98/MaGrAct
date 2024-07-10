@@ -7,6 +7,7 @@ import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import { Layer, Line, Rect, Stage, Text } from 'react-konva';
 import { StageWithReactiveDimen } from './components/StageWithReactiveDimen';
 import Function from './components/Function';
+import { TimeContext } from './components/TimeContext';
 
 
 
@@ -43,21 +44,23 @@ function App() {
     <div className="App">
       <Stack justifyContent="space-around" padding="16px">
         <Stack alignItems="center">
-          <StageWithReactiveDimen>
-            <Layer>
-              <Text text="Some text on canvas" fontSize={15} fill={"white"}/>
-              <Rect
-                x={20}
-                y={50}
-                width={100}
-                height={100}
-                fill="red"
-                shadowBlur={10}
-              />
-              <Function
-              />
-            </Layer>
-          </StageWithReactiveDimen>
+          <TimeContext.Provider value={getTime(tick)}>
+            <StageWithReactiveDimen>
+              <Layer>
+                <Text text="Some text on canvas" fontSize={15} fill={"white"}/>
+                <Rect
+                  x={20}
+                  y={50}
+                  width={100}
+                  height={100}
+                  fill="red"
+                  shadowBlur={10}
+                />
+                <Function
+                />
+              </Layer>
+            </StageWithReactiveDimen>
+          </TimeContext.Provider>
         </Stack>
         <Stack
           direction="row"
