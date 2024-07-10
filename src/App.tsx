@@ -8,6 +8,7 @@ import { Layer, Line, Rect, Stage, Text } from 'react-konva';
 import { StageWithReactiveDimen } from './components/StageWithReactiveDimen';
 import Function from './components/Function';
 import { TimeContext } from './components/TimeContext';
+import FunctionAnimated from './components/FunctionAnimated';
 
 
 
@@ -58,6 +59,7 @@ function App() {
                 />
                 <Function
                 />
+                <FunctionAnimated/>
               </Layer>
             </StageWithReactiveDimen>
           </TimeContext.Provider>
