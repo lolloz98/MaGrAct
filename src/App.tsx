@@ -50,6 +50,7 @@ function App() {
               <Layer>
                 <Text text="Some text on canvas" fontSize={15} fill={"white"}/>
                 <Rect
+                  onClick={() => console.log("rect clicked")}
                   x={20}
                   y={50}
                   width={100}

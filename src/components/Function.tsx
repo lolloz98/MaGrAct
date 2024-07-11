@@ -37,11 +37,15 @@ export default function Function() {
     
 
     console.log(points);
-    return (<Group>
+    return (<Group
+                onClick={() => console.log("group with normal function clicked")}
+        >
                 <Line
+                    onClick={() => console.log("normal function clicked")}
                     points={points}
                     stroke='blue'
-                    strokeWidth={1}
+                    strokeWidth={30}
+                    draggable={true}
                     />
                 <Text text={`${timeC}`} offsetX={-500} fontSize={15} fill={"white"}/>
             </Group>);

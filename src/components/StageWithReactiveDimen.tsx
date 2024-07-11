@@ -1,4 +1,5 @@
 import { Stack } from "@mui/material"
+import Konva from "konva";
 import React, { ReactElement, useEffect, useRef, useState } from "react"
 
 import { Stage } from "react-konva"
@@ -8,6 +9,7 @@ export function StageWithReactiveDimen({ children, style }: { children?: ReactEl
   const originalH = originalW * 9 / 16;
   const windowSize = useWindowSize();
   const divRef = useRef<HTMLInputElement>(null)
+  const stageRef = useRef<Konva.Stage>(null)
 
   const [dimensions, setDimensions] = useState({
     width: 0,
@@ -36,7 +38,11 @@ export function StageWithReactiveDimen({ children, style }: { children?: ReactEl
 
   return (
     <Stack className='Stage' ref={divRef}>
-      <Stage width={dimensions.width} height={dimensions.height} scale={dimensions.scale} style={style}>
+      <Stage width={dimensions.width} height={dimensions.height} scale={dimensions.scale} style={style}
+      ref={stageRef}
+      onClick={(e) => {
+        console.log("Shape that we did hit", stageRef.current?.getAllIntersections(stageRef.current.pointerPos));
+        }}>
         {children}
       </Stage>
     </Stack>

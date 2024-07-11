@@ -42,9 +42,11 @@ export default function FunctionAnimated() {
     console.log(points);
     return (<Group>
                 <Line
+                    onClick={(event) => {console.log("Animated function clicked"); 
+                    }}
                     points={points}
                     stroke='green'
-                    strokeWidth={20}
+                    strokeWidth={5}
                     />
             </Group>);
 }
