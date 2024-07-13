@@ -9,7 +9,44 @@ import { StageWithReactiveDimen } from './components/StageWithReactiveDimen';
 import Function from './components/Function';
 import { TimeContext } from './components/TimeContext';
 import FunctionAnimated from './components/FunctionAnimated';
+import { create } from 'mutative';
+import { MyStore } from './components/StateContext';
+import { BaseState, createDefaultState, getComponent } from './components/ComponentMapper';
+import ComponentEnum from './components/ComponentEnum';
+import { useMutative } from 'use-mutative';
+import { getModifiers } from 'typescript';
+import BaseModifier from './components/BaseModifier';
 
+function useMyMutative(): {
+  state: MyStore,
+  addComponent: (c: BaseState) => MyStore,
+  modifyComponent: (c: BaseState) => MyStore
+} {
+  let [state, setState] = useMutative<MyStore>(
+    {
+      parent: new Map(),
+      components: []
+    }
+  );
+
+  const addComponent = (c: BaseState) => {
+    setState((draft) => {
+      console.log("adding state");
+      // todo: add in parent map if needed
+      draft.components.push(c);
+    });
+    return state;
+  };
+
+  const modifyComponent = (c: BaseState) => {
+    setState((draft) => {
+      draft.components[draft.components.findIndex(a => a.id == c.id)] = c;
+    });
+    return state;
+  }
+
+  return { state, addComponent, modifyComponent }
+}
 
 
 function App() {
@@ -17,6 +54,7 @@ function App() {
   const [play, setPlay] = React.useState<boolean>(false);
   const step = 50;
   const maxTicks = 100;
+  const { state, addComponent, modifyComponent } = useMyMutative();
 
   const handleSliderChange = (event: Event, newValue: number | number[]) => {
     setPlay(false);
@@ -41,6 +79,13 @@ function App() {
   const numberOfMarks = 10;
   const marks = Array.from({ length: numberOfMarks + 1 }, (value, key) => { return { value: Math.round(maxTicks * key / numberOfMarks) }; })
 
+  const children = [];
+  const modifiers = [];
+  for (const comp of state.components) {
+    children.push(getComponent(comp));
+    modifiers.push((<BaseModifier state={comp} modifyComponent={modifyComponent} key={comp.id}></BaseModifier>))
+  }
+
   return (
     <div className="App">
       <Stack justifyContent="space-around" padding="16px">
@@ -48,19 +93,7 @@ function App() {
           <TimeContext.Provider value={getTime(tick)}>
             <StageWithReactiveDimen>
               <Layer>
-                <Text text="Some text on canvas" fontSize={15} fill={"white"}/>
-                <Rect
-                  onClick={() => console.log("rect clicked")}
-                  x={20}
-                  y={50}
-                  width={100}
-                  height={100}
-                  fill="red"
-                  shadowBlur={10}
-                />
-                <Function
-                />
-                <FunctionAnimated/>
+                {children}    
               </Layer>
             </StageWithReactiveDimen>
           </TimeContext.Provider>
@@ -89,6 +122,14 @@ function App() {
             track={false} />
           <p style={{ width: "100px" }}>{getFormattedTime(tick)}</p>
         </Stack>
+        <Button
+            variant="outlined"
+            onClick={() => addComponent(createDefaultState(ComponentEnum.FUNCTION))}
+            style={{ width: "150px" }}
+          >
+            {"Add"}
+        </Button>
+        {modifiers}
       </Stack>
     </div>
   );

@@ -2,15 +2,13 @@ import { useEffect, useState } from "react";
 import { Group, Line, Text } from "react-konva";
 import { useContext } from 'react';
 import { TimeContext } from './TimeContext';
+import { BaseState } from "./ComponentMapper";
 
 
-export default function FunctionAnimated() {
+export default function FunctionAnimated({ state }: { state: BaseState }) {
     const t = useContext(TimeContext);
     const [points, setPoints] = useState<number[]>([]);
-    const offest = {
-        x: 100,
-        y: 200
-    }
+    const offest = state.offset;
     const f = (x: number) => Math.cos(x / 100) * 100;
     const bounds = {
         x_min: -100,
@@ -24,8 +22,8 @@ export default function FunctionAnimated() {
     const step = 0.1;  
 
     useEffect(() => {
+        console.log("In FunctionAnimated, initializing points");
         const initFunc = () => {
-            console.log("init")
             const tmp_points: number[] = []
             const last = (bounds.x_max - bounds.x_min) * t / (bounds.t_max - bounds.t_min) + bounds.x_min;
             for (let i = bounds.x_min; i <= last; i += step) {
@@ -39,7 +37,6 @@ export default function FunctionAnimated() {
     }, [t]);
     
 
-    console.log(points);
     return (<Group>
                 <Line
                     onClick={(event) => {console.log("Animated function clicked"); 
