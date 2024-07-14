@@ -12,6 +12,7 @@ import { initState, MyStore, StoreAction } from './components/StoreContext';
 import { createDefaultState, getComponent, getModifier, isContained } from './components/ComponentMapper';
 import ComponentEnum from './components/ComponentEnum';
 import { useMutativeReducer } from 'use-mutative';
+import MyKatex from './components/graphic/MyKatex';
 
 function reducer(
   draft: Draft<MyStore>,
@@ -95,6 +96,7 @@ function App() {
           <TimeContext.Provider value={getTime(tick)}>
             <StageWithReactiveDimen dispatch={dispacth}>
               <Layer>
+                <MyKatex></MyKatex>
                 {children}    
               </Layer>
             </StageWithReactiveDimen>
