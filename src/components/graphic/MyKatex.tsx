@@ -1,23 +1,34 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import { Html } from 'react-konva-utils';
+import { Group, Rect, Text } from "react-konva";
+import Konva from "konva";
 
-
+// todo: create state for this component
 export default function MyKatex() {
-
+    const [w, setW] = useState(0);
+    const [h, setH] = useState(0);
+    // todo fix error with dimensions of rectangle: on first render seems a bit off
+    // we can for sure find a better solution to do this: we need rect to wrap around our latex,
+    // so that getAllIntersections upon click can find this component
     return (
-    <Html>
-        <KaTeX></KaTeX>
-    </Html>)
+        <Group x={100}>
+        <Html divProps={{ style: { pointerEvents: "none" }}} groupProps={{ preventDefault: true }}>
+            <KaTeX setW={setW} setH={setH}></KaTeX>
+        </Html>
+        <Rect width={w} height={h} x={0} y={0}/>
+    </Group>)
 }
 
-function KaTeX() {
-  const containerRef = useRef<HTMLInputElement>(null);
+function KaTeX({ setH, setW }: { setH: React.Dispatch<React.SetStateAction<number>>
+    , setW: React.Dispatch<React.SetStateAction<number>>}) {
+    const reference = useRef<HTMLInputElement>(null);
+    useEffect(() => {
+        katex.render("\\forall x \\in X, \\quad \\exists y \\leq \\epsilon", reference.current as HTMLInputElement);
+        setH(reference.current?.offsetHeight ? reference.current?.offsetHeight : 0);
+        setW(reference.current?.offsetWidth ? reference.current?.offsetWidth : 0);
+    }, []);
 
-  useEffect(() => {
-    katex.render("(x^2 + y^2 = z^2)", containerRef.current as HTMLInputElement);
-  }, []);
-
-  return <div style={{color: "white"}} ref={containerRef} />;
+    return <div style={{color: "white", pointerEvents: 'none'}} ref={reference} />;
 }
