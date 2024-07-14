@@ -11,7 +11,7 @@ import { TimeContext } from './components/TimeContext';
 import FunctionAnimated from './components/FunctionAnimated';
 import { create, Draft, rawReturn } from 'mutative';
 import { initState, MyStore, StoreAction } from './components/StateContext';
-import { BaseState, createDefaultState, getComponent, isContained } from './components/ComponentMapper';
+import { BaseState, createDefaultState, getComponent, getModifier, isContained } from './components/ComponentMapper';
 import ComponentEnum from './components/ComponentEnum';
 import { useMutative, useMutativeReducer } from 'use-mutative';
 import { getModifiers } from 'typescript';
@@ -86,9 +86,9 @@ function App() {
   const selected = [];
   for (const comp of state.components) {
     children.push(getComponent(comp));
-    modifiers.push((<BaseModifier state={comp} dispatch={dispacth} key={comp.id}></BaseModifier>));
+    modifiers.push(getModifier(comp, dispacth));
     if (isContained(state.selected, comp)) {
-      selected.push((<BaseModifier state={comp} dispatch={dispacth} key={comp.id}></BaseModifier>))
+      selected.push(getModifier(comp, dispacth))
     }
   }
 
