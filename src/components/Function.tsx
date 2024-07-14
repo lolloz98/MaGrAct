@@ -20,8 +20,8 @@ export default function Function({ state }: { state: BaseState }) {
     const step = 0.1;
 
     for (let i = bounds.x_min; i <= bounds.x_max; i += step) {
-        points.push(i + offset.x);
-        points.push(f(i) + offset.y);
+        points.push(i);
+        points.push(f(i));
     }
 
     // todo remove nest
@@ -35,6 +35,8 @@ export default function Function({ state }: { state: BaseState }) {
             strokeWidth={30}
             draggable={true}
             name={state.id}
+            offsetX={offset.x}
+            offsetY={offset.y}
         />
         <Text text={`${timeC}`} offsetX={-500} fontSize={15} fill={"white"} />
     </Group>);
