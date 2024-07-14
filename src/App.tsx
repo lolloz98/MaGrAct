@@ -9,43 +9,45 @@ import { StageWithReactiveDimen } from './components/StageWithReactiveDimen';
 import Function from './components/Function';
 import { TimeContext } from './components/TimeContext';
 import FunctionAnimated from './components/FunctionAnimated';
-import { create } from 'mutative';
-import { MyStore } from './components/StateContext';
+import { create, Draft, rawReturn } from 'mutative';
+import { initState, MyStore, StoreAction } from './components/StateContext';
 import { BaseState, createDefaultState, getComponent } from './components/ComponentMapper';
 import ComponentEnum from './components/ComponentEnum';
-import { useMutative } from 'use-mutative';
+import { useMutative, useMutativeReducer } from 'use-mutative';
 import { getModifiers } from 'typescript';
 import BaseModifier from './components/BaseModifier';
 
-function useMyMutative(): {
-  state: MyStore,
-  addComponent: (c: BaseState) => MyStore,
-  modifyComponent: (c: BaseState) => MyStore
-} {
-  let [state, setState] = useMutative<MyStore>(
-    {
-      parent: new Map(),
-      components: []
-    }
+function reducer(
+  draft: Draft<MyStore>,
+  action: StoreAction
+) {
+  switch (action.type) {
+    case 'reset':
+      return rawReturn(initState);
+    case 'delete':
+      draft.components = draft.components.filter(c => c.id != action.id);
+      draft.selected = draft.selected.filter(id => id != action.id);
+      return draft;
+    case 'add':
+      return void draft.components.push(action.state);
+    case 'modify':
+      draft.components[draft.components.findIndex(a => a.id == action.state.id)] = action.state;
+      return draft;
+    case 'changeSelection':
+      for (const id of action.ids) {
+        draft.selected.push(id);
+      }
+      return draft;
+  }
+}
+
+function useMyMutative() {
+  let [state, dispacth] = useMutativeReducer(
+    reducer,
+    initState
   );
 
-  const addComponent = (c: BaseState) => {
-    setState((draft) => {
-      console.log("adding state");
-      // todo: add in parent map if needed
-      draft.components.push(c);
-    });
-    return state;
-  };
-
-  const modifyComponent = (c: BaseState) => {
-    setState((draft) => {
-      draft.components[draft.components.findIndex(a => a.id == c.id)] = c;
-    });
-    return state;
-  }
-
-  return { state, addComponent, modifyComponent }
+  return { state, dispacth }
 }
 
 
@@ -54,7 +56,7 @@ function App() {
   const [play, setPlay] = React.useState<boolean>(false);
   const step = 50;
   const maxTicks = 100;
-  const { state, addComponent, modifyComponent } = useMyMutative();
+  const { state, dispacth } = useMyMutative();
 
   const handleSliderChange = (event: Event, newValue: number | number[]) => {
     setPlay(false);
@@ -83,7 +85,7 @@ function App() {
   const modifiers = [];
   for (const comp of state.components) {
     children.push(getComponent(comp));
-    modifiers.push((<BaseModifier state={comp} modifyComponent={modifyComponent} key={comp.id}></BaseModifier>))
+    modifiers.push((<BaseModifier state={comp} dispatch={dispacth} key={comp.id}></BaseModifier>))
   }
 
   return (
@@ -124,7 +126,10 @@ function App() {
         </Stack>
         <Button
             variant="outlined"
-            onClick={() => addComponent(createDefaultState(ComponentEnum.FUNCTION))}
+            onClick={() => dispacth( {
+              type: 'add',
+              state: createDefaultState(ComponentEnum.FUNCTION)
+            })}
             style={{ width: "150px" }}
           >
             {"Add"}

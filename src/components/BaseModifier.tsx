@@ -1,5 +1,5 @@
 import { Input, Stack, TextField } from "@mui/material";
-import { MyStore } from "./StateContext";
+import { DispactherAction, MyStore } from "./StateContext";
 import { BaseState } from "./ComponentMapper";
 import { useState } from "react";
 
@@ -8,7 +8,7 @@ function isNumeric(str: string) {
            !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
   }
 
-export default function BaseModifier({ state, modifyComponent }: { state: BaseState, modifyComponent: (c: BaseState) => MyStore }) {
+export default function BaseModifier({ state, dispatch }: { state: BaseState, dispatch: DispactherAction }) {
     const [x, setX] = useState<string|number>(state.offset.x);
     const [y, setY] = useState<string|number>(state.offset.y);
 
@@ -20,7 +20,7 @@ export default function BaseModifier({ state, modifyComponent }: { state: BaseSt
                     if (isNumeric(e.target.value)) {
                         const newState = {...state};
                         newState.offset.x = +e.target.value;
-                        modifyComponent(newState);
+                        dispatch( { type: 'modify', state: newState});
                     }
                 }
             } value={x} />
@@ -30,7 +30,7 @@ export default function BaseModifier({ state, modifyComponent }: { state: BaseSt
                     if (isNumeric(e.target.value)) {
                         const newState = {...state};
                         newState.offset.y = +e.target.value;
-                        modifyComponent(newState);
+                        dispatch( { type: 'modify', state: newState});
                     }
                 }
             } value={y} />
