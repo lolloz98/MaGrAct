@@ -3,7 +3,7 @@ import Konva from "konva";
 import React, { ReactElement, useEffect, useRef, useState } from "react"
 
 import { Stage } from "react-konva"
-import { DispactherAction } from "./StateContext";
+import { DispactherAction } from "../StoreContext";
 
 export function StageWithReactiveDimen({ children, dispatch }: { 
   children?: ReactElement, 
@@ -26,8 +26,9 @@ export function StageWithReactiveDimen({ children, dispatch }: {
 
   useEffect(() => {
     if (divRef.current?.offsetHeight && divRef.current?.offsetWidth) {
+      // todo: increase precision for these operations -> dimens / scale should always get the same numbers
       const w = divRef.current.offsetWidth;
-      const ratio = 9 / 16;
+      const ratio = 9.0 / 16;
       const h = w * ratio;
       setDimensions({
         width: w,
@@ -37,7 +38,9 @@ export function StageWithReactiveDimen({ children, dispatch }: {
           y: h / (originalW * ratio)
         }
       })
-      console.log(divRef.current.offsetWidth, divRef.current.offsetHeight)
+      console.debug("window was resized. New dimens (with scale applied) should not change", {
+        x: divRef.current.offsetWidth / dimensions.scale.x, y: divRef.current.offsetHeight / dimensions.scale.y
+      })
     }
   }, [windowSize])
 
@@ -47,7 +50,7 @@ export function StageWithReactiveDimen({ children, dispatch }: {
       width={dimensions.width} 
       height={dimensions.height} 
       scale={dimensions.scale} 
-      style={{background: "black"}}
+      style={{background: "black", width: dimensions.width, height: dimensions.height}}
       ref={stageRef}
       onClick={(e) => {
         const shapes = stageRef.current?.getAllIntersections(stageRef.current.pointerPos);

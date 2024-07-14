@@ -1,17 +1,16 @@
-import { useEffect, useState } from "react";
 import { Group, Line, Text } from "react-konva";
 import { useContext } from 'react';
-import { TimeContext } from './TimeContext';
-import { BaseState } from "./ComponentMapper";
+import { TimeContext } from '../TimeContext';
+import FunctionState from "../states/FunctionState";
 
 
-export default function Function({ state }: { state: BaseState }) {
+export default function Function({ state }: { state: FunctionState }) {
     const timeC = useContext(TimeContext);
     const points: number[] = []
     const offset = state.offset
-    const f = (x: number) => Math.cos(x / 100) * 100;
+    const f = (x: number) => Math.sin(x / 100) * 100;
     const bounds = {
-        x_min: -100,
+        x_min: 0,
         x_max: 2500
     }
 

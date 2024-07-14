@@ -1,21 +1,17 @@
-import React, { Component, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import Slider from '@mui/material/Slider';
-import { Button, Stack, colors } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
-import { Layer, Line, Rect, Stage, Text } from 'react-konva';
-import { StageWithReactiveDimen } from './components/StageWithReactiveDimen';
-import Function from './components/Function';
+import { Layer } from 'react-konva';
+import { StageWithReactiveDimen } from './components/graphic/StageWithReactiveDimen';
 import { TimeContext } from './components/TimeContext';
-import FunctionAnimated from './components/FunctionAnimated';
-import { create, Draft, rawReturn } from 'mutative';
-import { initState, MyStore, StoreAction } from './components/StateContext';
-import { BaseState, createDefaultState, getComponent, getModifier, isContained } from './components/ComponentMapper';
+import { Draft, rawReturn } from 'mutative';
+import { initState, MyStore, StoreAction } from './components/StoreContext';
+import { createDefaultState, getComponent, getModifier, isContained } from './components/ComponentMapper';
 import ComponentEnum from './components/ComponentEnum';
-import { useMutative, useMutativeReducer } from 'use-mutative';
-import { getModifiers } from 'typescript';
-import BaseModifier from './components/BaseModifier';
+import { useMutativeReducer } from 'use-mutative';
 
 function reducer(
   draft: Draft<MyStore>,
@@ -25,13 +21,13 @@ function reducer(
     case 'reset':
       return rawReturn(initState);
     case 'delete':
-      draft.components = draft.components.filter(c => c.id != action.id);
-      draft.selected = draft.selected.filter(id => id != action.id);
+      draft.components = draft.components.filter(c => c.id !== action.id);
+      draft.selected = draft.selected.filter(id => id !== action.id);
       return draft;
     case 'add':
       return void draft.components.push(action.state);
     case 'modify':
-      draft.components[draft.components.findIndex(a => a.id == action.state.id)] = action.state;
+      draft.components[draft.components.findIndex(a => a.id === action.state.id)] = action.state;
       return draft;
     case 'changeSelection':
       for (const id of action.ids) {

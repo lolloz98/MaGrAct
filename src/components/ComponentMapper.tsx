@@ -1,19 +1,12 @@
 import ComponentEnum from "./ComponentEnum";
-import FunctionAnimated from "./FunctionAnimated";
-import Function from "./Function"
+import FunctionAnimated from "./graphic/FunctionAnimated";
+import Function from "./graphic/Function"
 import uuid from "react-uuid";
-import BaseModifier from "./BaseModifier";
-import FunctionModifier, { FunctionState } from "./FunctionModifier";
-import { DispactherAction } from "./StateContext";
-
-export interface BaseState {
-    id: string,
-    type: ComponentEnum,
-    offset: {
-        x: number,
-        y: number
-    }
-}
+import BaseControl from "./controls/BaseControl";
+import FunctionControl from "./controls/FunctionControl";
+import { DispactherAction } from "./StoreContext";
+import BaseState from "./states/BaseState";
+import FunctionState from "./states/FunctionState";
 
 export function createDefaultState(type: ComponentEnum) : BaseState {
     const id = uuid();
@@ -41,7 +34,7 @@ export function createDefaultState(type: ComponentEnum) : BaseState {
 export function getComponent(state: BaseState) {
     switch (state.type) {
         case ComponentEnum.FUNCTION:
-            return (<Function state={state} key={state.id}></Function>);
+            return (<Function state={state as FunctionState} key={state.id}></Function>);
         case ComponentEnum.FUNCTION_ANIM:
             return (<FunctionAnimated state={state} key={state.id}></FunctionAnimated>);
         default:
@@ -52,9 +45,9 @@ export function getComponent(state: BaseState) {
 export function getModifier(state: BaseState, dispacth: DispactherAction) {
     switch (state.type) {
         case ComponentEnum.FUNCTION:
-            return (<FunctionModifier state={state as FunctionState} dispatch={dispacth} key={state.id}></FunctionModifier>);
+            return (<FunctionControl state={state as FunctionState} dispatch={dispacth} key={state.id}></FunctionControl>);
         case ComponentEnum.FUNCTION_ANIM:
-            return (<BaseModifier state={state} dispatch={dispacth} key={state.id}></BaseModifier>);
+            return (<BaseControl state={state} dispatch={dispacth} key={state.id}></BaseControl>);
         default:
             alert(`No getComponent specified for ${state.type}`);
     }

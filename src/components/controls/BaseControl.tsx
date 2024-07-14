@@ -1,17 +1,13 @@
 import { Input, Stack, TextField } from "@mui/material";
-import { DispactherAction, MyStore } from "./StateContext";
-import { BaseState } from "./ComponentMapper";
+import { DispactherAction, MyStore } from "../StoreContext";
 import { useState } from "react";
-import { isNumeric } from "./Utils";
+import { isNumeric } from "../Utils";
+import BaseState from "../states/BaseState";
 
-export interface FunctionState extends BaseState {
-    f: string
-}
 
-export default function FunctionModifier({ state, dispatch }: { state: FunctionState, dispatch: DispactherAction }) {
+export default function BaseControl({ state, dispatch }: { state: BaseState, dispatch: DispactherAction }) {
     const [x, setX] = useState<string|number>(state.offset.x);
     const [y, setY] = useState<string|number>(state.offset.y);
-    const [f, setF] = useState<string>(state.f);
 
     return (
         <Stack border={1}>
@@ -35,16 +31,6 @@ export default function FunctionModifier({ state, dispatch }: { state: FunctionS
                     }
                 }
             } value={y} />
-            <TextField label="Outlined" variant="outlined" onChange={
-                (e) => {
-                    setF(e.target.value);
-                    if (isNumeric(e.target.value)) {
-                        const newState = {...state};
-                        newState.f = e.target.value;
-                        dispatch( { type: 'modify', state: newState});
-                    }
-                }
-            } value={f} />
         </Stack>
     )
 }

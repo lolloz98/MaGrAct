@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { BaseState } from './ComponentMapper';
+import BaseState from './states/BaseState';
 
 export interface MyStore {
     parent: Map<string, string> // each object has a parent, by navigating this object we can navigate to it

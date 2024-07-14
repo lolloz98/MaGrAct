@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Group, Line, Text } from "react-konva";
 import { useContext } from 'react';
-import { TimeContext } from './TimeContext';
-import { BaseState } from "./ComponentMapper";
+import { TimeContext } from '../TimeContext';
+import BaseState from "../states/BaseState";
 
 
 export default function FunctionAnimated({ state }: { state: BaseState }) {
