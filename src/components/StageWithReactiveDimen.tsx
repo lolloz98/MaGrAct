@@ -3,8 +3,13 @@ import Konva from "konva";
 import React, { ReactElement, useEffect, useRef, useState } from "react"
 
 import { Stage } from "react-konva"
+import { DispactherAction } from "./StateContext";
 
-export function StageWithReactiveDimen({ children }: { children?: ReactElement, style?: React.CSSProperties}) {
+export function StageWithReactiveDimen({ children, dispatch }: { 
+  children?: ReactElement, 
+  dispatch: DispactherAction,
+  style?: React.CSSProperties
+}) {
   const originalW = 1066;
   const windowSize = useWindowSize();
   const divRef = useRef<HTMLInputElement>(null)
@@ -45,7 +50,21 @@ export function StageWithReactiveDimen({ children }: { children?: ReactElement, 
       style={{background: "black"}}
       ref={stageRef}
       onClick={(e) => {
-        console.log("Shape that we did hit", stageRef.current?.getAllIntersections(stageRef.current.pointerPos));
+        const shapes = stageRef.current?.getAllIntersections(stageRef.current.pointerPos);
+        console.log("Shape that we did hit", shapes);
+        if (shapes) {
+          const sel = shapes.map(s => s.name());
+          console.log("selected: ", sel);
+          dispatch({
+            type: "changeSelection",
+            ids: sel
+          })
+        } else {
+          dispatch({
+            type: "changeSelection",
+            ids: []
+          })
+        }
         }}>
         {children}
       </Stage>

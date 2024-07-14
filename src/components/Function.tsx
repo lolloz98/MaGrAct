@@ -24,6 +24,7 @@ export default function Function({ state }: { state: BaseState }) {
         points.push(f(i) + offset.y);
     }
 
+    // todo remove nest
     return (<Group
         onClick={() => console.log("group with normal function clicked")}
     >
@@ -33,6 +34,7 @@ export default function Function({ state }: { state: BaseState }) {
             stroke='blue'
             strokeWidth={30}
             draggable={true}
+            name={state.id}
         />
         <Text text={`${timeC}`} offsetX={-500} fontSize={15} fill={"white"} />
     </Group>);

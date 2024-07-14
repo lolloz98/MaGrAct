@@ -11,7 +11,7 @@ import { TimeContext } from './components/TimeContext';
 import FunctionAnimated from './components/FunctionAnimated';
 import { create, Draft, rawReturn } from 'mutative';
 import { initState, MyStore, StoreAction } from './components/StateContext';
-import { BaseState, createDefaultState, getComponent } from './components/ComponentMapper';
+import { BaseState, createDefaultState, getComponent, isContained } from './components/ComponentMapper';
 import ComponentEnum from './components/ComponentEnum';
 import { useMutative, useMutativeReducer } from 'use-mutative';
 import { getModifiers } from 'typescript';
@@ -83,9 +83,13 @@ function App() {
 
   const children = [];
   const modifiers = [];
+  const selected = [];
   for (const comp of state.components) {
     children.push(getComponent(comp));
-    modifiers.push((<BaseModifier state={comp} dispatch={dispacth} key={comp.id}></BaseModifier>))
+    modifiers.push((<BaseModifier state={comp} dispatch={dispacth} key={comp.id}></BaseModifier>));
+    if (isContained(state.selected, comp)) {
+      selected.push((<BaseModifier state={comp} dispatch={dispacth} key={comp.id}></BaseModifier>))
+    }
   }
 
   return (
@@ -93,7 +97,7 @@ function App() {
       <Stack justifyContent="space-around" padding="16px">
         <Stack alignItems="center">
           <TimeContext.Provider value={getTime(tick)}>
-            <StageWithReactiveDimen>
+            <StageWithReactiveDimen dispatch={dispacth}>
               <Layer>
                 {children}    
               </Layer>

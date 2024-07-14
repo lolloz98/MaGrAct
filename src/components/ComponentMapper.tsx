@@ -45,3 +45,8 @@ export function getComponent(state: BaseState) {
             alert(`No getComponent specified for ${state.type}`);
     }
 }
+
+// todo: handle nested objects
+export function isContained(ids: string[], state: BaseState) {
+    return ids.includes(state.id);
+}

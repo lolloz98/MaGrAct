@@ -19,7 +19,7 @@ export default function FunctionAnimated({ state }: { state: BaseState }) {
 
     // here we use a constant step, but for sure it's not best solution
     // it would be better to use something tight to the first and second derivative
-    const step = 0.1;  
+    const step = 0.1;
 
     useEffect(() => {
         console.log("In FunctionAnimated, initializing points");
@@ -35,15 +35,15 @@ export default function FunctionAnimated({ state }: { state: BaseState }) {
 
         setPoints(initFunc);
     }, [t]);
-    
 
-    return (<Group>
-                <Line
-                    onClick={(event) => {console.log("Animated function clicked"); 
-                    }}
-                    points={points}
-                    stroke='green'
-                    strokeWidth={5}
-                    />
-            </Group>);
+
+    return (<Line
+        onClick={(event) => {
+            console.log("Animated function clicked");
+        }}
+        points={points}
+        stroke='green'
+        strokeWidth={5}
+        name={state.id}
+    />);
 }
