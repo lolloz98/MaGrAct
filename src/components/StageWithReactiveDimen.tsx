@@ -4,9 +4,8 @@ import React, { ReactElement, useEffect, useRef, useState } from "react"
 
 import { Stage } from "react-konva"
 
-export function StageWithReactiveDimen({ children, style }: { children?: ReactElement, style?: React.CSSProperties}) {
+export function StageWithReactiveDimen({ children }: { children?: ReactElement, style?: React.CSSProperties}) {
   const originalW = 1066;
-  const originalH = originalW * 9 / 16;
   const windowSize = useWindowSize();
   const divRef = useRef<HTMLInputElement>(null)
   const stageRef = useRef<Konva.Stage>(null)
@@ -23,13 +22,14 @@ export function StageWithReactiveDimen({ children, style }: { children?: ReactEl
   useEffect(() => {
     if (divRef.current?.offsetHeight && divRef.current?.offsetWidth) {
       const w = divRef.current.offsetWidth;
-      const h = w * 9 / 16;
+      const ratio = 9 / 16;
+      const h = w * ratio;
       setDimensions({
         width: w,
         height: h,
         scale: {
           x: w / originalW,
-          y: h / originalH
+          y: h / (originalW * ratio)
         }
       })
       console.log(divRef.current.offsetWidth, divRef.current.offsetHeight)
@@ -37,8 +37,12 @@ export function StageWithReactiveDimen({ children, style }: { children?: ReactEl
   }, [windowSize])
 
   return (
-    <Stack className='Stage' ref={divRef}>
-      <Stage width={dimensions.width} height={dimensions.height} scale={dimensions.scale} style={style}
+    <Stack ref={divRef} className="Stage">
+      <Stage 
+      width={dimensions.width} 
+      height={dimensions.height} 
+      scale={dimensions.scale} 
+      style={{background: "black"}}
       ref={stageRef}
       onClick={(e) => {
         console.log("Shape that we did hit", stageRef.current?.getAllIntersections(stageRef.current.pointerPos));
