@@ -3,12 +3,13 @@ import { Group, Line, Text } from "react-konva";
 import { useContext } from 'react';
 import { TimeContext } from '../TimeContext';
 import BaseState from "../states/BaseState";
+import { DispactherAction } from "../StoreContext";
 
 
-export default function FunctionAnimated({ state }: { state: BaseState }) {
+export default function FunctionAnimated({ state, dispatch }: { state: BaseState, dispatch: DispactherAction }) {
     const t = useContext(TimeContext);
     const [points, setPoints] = useState<number[]>([]);
-    const offest = state.offset;
+    const offest = state.position;
     const f = (x: number) => Math.cos(x / 100) * 100;
     const bounds = {
         x_min: -100,

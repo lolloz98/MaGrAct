@@ -13,7 +13,7 @@ export function createDefaultState(type: ComponentEnum) : BaseState {
     const obj: BaseState = {
         id: id,
         type: type,
-        offset: {
+        position: {
             x: 50,
             y: 100
         }
@@ -31,12 +31,12 @@ export function createDefaultState(type: ComponentEnum) : BaseState {
     }
 }
 
-export function getComponent(state: BaseState) {
+export function getComponent(state: BaseState, dispacth: DispactherAction) {
     switch (state.type) {
         case ComponentEnum.FUNCTION:
-            return (<Function state={state as FunctionState} key={state.id}></Function>);
+            return (<Function state={state as FunctionState} dispatch={dispacth} key={state.id}></Function>);
         case ComponentEnum.FUNCTION_ANIM:
-            return (<FunctionAnimated state={state} key={state.id}></FunctionAnimated>);
+            return (<FunctionAnimated state={state} dispatch={dispacth} key={state.id}></FunctionAnimated>);
         default:
             alert(`No getComponent specified for ${state.type}`);
     }

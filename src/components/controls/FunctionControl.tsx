@@ -1,13 +1,19 @@
 import { Input, Stack, TextField } from "@mui/material";
 import { DispactherAction, MyStore } from "../StoreContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { isNumeric } from "../Utils";
 import FunctionState from "../states/FunctionState";
 
 export default function FunctionControl({ state, dispatch }: { state: FunctionState, dispatch: DispactherAction }) {
-    const [x, setX] = useState<string|number>(state.offset.x);
-    const [y, setY] = useState<string|number>(state.offset.y);
+    const [x, setX] = useState<string|number>(state.position.x);
+    const [y, setY] = useState<string|number>(state.position.y);
     const [f, setF] = useState<string>(state.f);
+
+    useEffect(() => {
+        setX(state.position.x);
+        setY(state.position.y);
+        setF(state.f);
+    }, [state])
 
     return (
         <Stack border={1}>
@@ -16,7 +22,7 @@ export default function FunctionControl({ state, dispatch }: { state: FunctionSt
                     setX(e.target.value);
                     if (isNumeric(e.target.value)) {
                         const newState = {...state};
-                        newState.offset.x = +e.target.value;
+                        newState.position.x = +e.target.value;
                         dispatch( { type: 'modify', state: newState});
                     }
                 }
@@ -26,7 +32,7 @@ export default function FunctionControl({ state, dispatch }: { state: FunctionSt
                     setY(e.target.value);
                     if (isNumeric(e.target.value)) {
                         const newState = {...state};
-                        newState.offset.y = +e.target.value;
+                        newState.position.y = +e.target.value;
                         dispatch( { type: 'modify', state: newState});
                     }
                 }

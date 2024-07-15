@@ -2,12 +2,12 @@ import { Group, Line, Text } from "react-konva";
 import { useContext } from 'react';
 import { TimeContext } from '../TimeContext';
 import FunctionState from "../states/FunctionState";
+import { DispactherAction } from "../StoreContext";
 
 
-export default function Function({ state }: { state: FunctionState }) {
+export default function Function({ state, dispatch }: { state: FunctionState, dispatch: DispactherAction }) {
     const timeC = useContext(TimeContext);
     const points: number[] = []
-    const offset = state.offset
     const f = (x: number) => Math.sin(x / 100) * 100;
     const bounds = {
         x_min: 0,
@@ -30,11 +30,18 @@ export default function Function({ state }: { state: FunctionState }) {
         <Line
             onClick={() => console.log("normal function clicked")}
             points={points}
+            draggable
+            onDragEnd={(e) => {
+                const newState = {...state};
+                newState.position.x = e.target.x();
+                newState.position.y = e.target.y();
+                dispatch({ type: "modify", state: newState })
+            }}
             stroke='blue'
             strokeWidth={30}
             name={state.id}
-            offsetX={offset.x}
-            offsetY={offset.y}
+            x={state.position.x}
+            y={state.position.y}
         />
         <Text text={`${timeC}`} offsetX={-500} fontSize={15} fill={"white"} />
     </Group>);

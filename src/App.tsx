@@ -82,7 +82,7 @@ function App() {
   const modifiers = [];
   const selected = [];
   for (const comp of state.components) {
-    children.push(getComponent(comp));
+    children.push(getComponent(comp, dispacth));
     modifiers.push(getModifier(comp, dispacth));
     if (isContained(state.selected, comp)) {
       selected.push(getModifier(comp, dispacth))

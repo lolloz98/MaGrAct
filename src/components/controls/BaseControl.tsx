@@ -6,8 +6,8 @@ import BaseState from "../states/BaseState";
 
 
 export default function BaseControl({ state, dispatch }: { state: BaseState, dispatch: DispactherAction }) {
-    const [x, setX] = useState<string|number>(state.offset.x);
-    const [y, setY] = useState<string|number>(state.offset.y);
+    const [x, setX] = useState<string|number>(state.position.x);
+    const [y, setY] = useState<string|number>(state.position.y);
 
     return (
         <Stack border={1}>
@@ -16,7 +16,7 @@ export default function BaseControl({ state, dispatch }: { state: BaseState, dis
                     setX(e.target.value);
                     if (isNumeric(e.target.value)) {
                         const newState = {...state};
-                        newState.offset.x = +e.target.value;
+                        newState.position.x = +e.target.value;
                         dispatch( { type: 'modify', state: newState});
                     }
                 }
@@ -26,7 +26,7 @@ export default function BaseControl({ state, dispatch }: { state: BaseState, dis
                     setY(e.target.value);
                     if (isNumeric(e.target.value)) {
                         const newState = {...state};
-                        newState.offset.y = +e.target.value;
+                        newState.position.y = +e.target.value;
                         dispatch( { type: 'modify', state: newState});
                     }
                 }
