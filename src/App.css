@@ -49,3 +49,8 @@ body {
   aspect-ratio: 16 / 9;
   display: block;
 }
+
+.scrollModifiers {
+  max-height: 70vh;
+  overflow: auto;
+}

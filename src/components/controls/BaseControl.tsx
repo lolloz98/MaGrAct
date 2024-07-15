@@ -10,7 +10,7 @@ export default function BaseControl({ state, dispatch }: { state: BaseState, dis
     const [y, setY] = useState<string|number>(state.position.y);
 
     return (
-        <Stack border={1}>
+        <Stack border={1} margin={8}>
             <TextField label="Outlined" variant="outlined" onChange={
                 (e) => {
                     setX(e.target.value);

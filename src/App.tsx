@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './App.css';
 import Slider from '@mui/material/Slider';
-import { Button, Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import { Layer } from 'react-konva';
@@ -92,7 +92,7 @@ function App() {
   return (
     <div className="App">
       <Stack justifyContent="space-around" padding="16px">
-        <Stack alignItems="center">
+        <Stack alignItems="center" justifyContent="space-around" direction="row">
           <TimeContext.Provider value={getTime(tick)}>
             <StageWithReactiveDimen dispatch={dispacth}>
               <Layer>
@@ -101,6 +101,16 @@ function App() {
               </Layer>
             </StageWithReactiveDimen>
           </TimeContext.Provider>
+          <Box
+            sx={{
+              '& .MuiTextField-root': { m: 1, width: '25ch' },
+            }}
+            className={"scrollModifiers"}
+          >
+          <Stack overflow={"auto"} spacing={2} direction="column">
+            {modifiers}
+          </Stack>
+          </Box>
         </Stack>
         <Stack
           direction="row"
@@ -136,7 +146,6 @@ function App() {
           >
             {"Add"}
         </Button>
-        {modifiers}
       </Stack>
     </div>
   );
