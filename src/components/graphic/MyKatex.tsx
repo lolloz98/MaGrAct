@@ -13,11 +13,11 @@ export default function MyKatex() {
     // we can for sure find a better solution to do this: we need rect to wrap around our latex,
     // so that getAllIntersections upon click can find this component
     return (
-        <Group x={100}>
-        <Html divProps={{ style: { pointerEvents: "none" }}} groupProps={{ preventDefault: true }}>
+        <Group width={w} height={h}>
+        <Html divProps={{ style: { pointerEvents: "none" } }} groupProps={{ preventDefault: true }}>
             <KaTeX setW={setW} setH={setH}></KaTeX>
         </Html>
-        <Rect width={w} height={h} x={0} y={0}/>
+        <Rect width={w} fill="red" height={h} x={0} y={0}/>
     </Group>)
 }
 

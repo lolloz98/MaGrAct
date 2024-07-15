@@ -32,7 +32,6 @@ export default function Function({ state }: { state: FunctionState }) {
             points={points}
             stroke='blue'
             strokeWidth={30}
-            draggable={true}
             name={state.id}
             offsetX={offset.x}
             offsetY={offset.y}
