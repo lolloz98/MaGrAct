@@ -140,18 +140,9 @@ function App() {
                 </Layer>
               </StageWithReactiveDimen>
             </TimeContext.Provider>
-            <Box
-              sx={{
-                '& .MuiTextField-root': { m: 1, width: '25ch' },
-              }}
-              className={"scrollModifiers"}
-            >
-              <Stack overflow={"auto"} spacing={2} direction="column">
                 <ListOfControls>
                   {modifiers}
                 </ListOfControls>
-              </Stack>
-            </Box>
           </Stack>
           <Stack
             direction="row"
