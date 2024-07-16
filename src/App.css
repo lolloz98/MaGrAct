@@ -50,7 +50,28 @@ body {
   display: block;
 }
 
+/* scrollbar */
 .scrollModifiers {
   max-height: 70vh;
   overflow: auto;
+  position: relative;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+  background: transparent;
+}
+
+.scrollModifiers:hover::-webkit-scrollbar-thumb {
+  background: #61dafb;
+}
+
+::-webkit-scrollbar-track-piece {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 6px;
+}
+/* scrollbar end */
