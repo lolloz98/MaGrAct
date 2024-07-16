@@ -1,7 +1,7 @@
 import React, { useEffect, ReactElement } from 'react';
 import './App.css';
 import Slider from '@mui/material/Slider';
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Button, createTheme, CssBaseline, PaletteMode, Stack, ThemeProvider } from '@mui/material';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import { Layer } from 'react-konva';
@@ -15,6 +15,18 @@ import { useMutativeReducer } from 'use-mutative';
 import MyKatex from './components/graphic/MyKatex';
 import ListOfControls from './components/controls/ListOfControls';
 import BaseState from './components/states/BaseState';
+
+const getDesignTokens = (mode: PaletteMode) => ({
+  palette: {
+    mode,
+    ...{
+      // palette values for dark mode
+      background: {
+        default: "#202020",
+      },
+    },
+  },
+});
 
 function checkAndUpdateTitle(state: BaseState, draft: MyStore) {
   const t = state.title;
@@ -69,6 +81,9 @@ function useMyMutative() {
 
 
 function App() {
+  const [mode, setMode] = React.useState<PaletteMode>('dark');
+  const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+
   const [tick, setTick] = React.useState<number>(0);
   const [play, setPlay] = React.useState<boolean>(false);
   const step = 50;
@@ -112,66 +127,69 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <Stack justifyContent="space-around" padding="16px">
-        <Stack alignItems="center" justifyContent="space-around" direction="row">
-          <TimeContext.Provider value={getTime(tick)}>
-            <StageWithReactiveDimen dispatch={dispacth}>
-              <Layer>
-                <MyKatex></MyKatex>
-                {children}    
-              </Layer>
-            </StageWithReactiveDimen>
-          </TimeContext.Provider>
-          <Box
-            sx={{
-              '& .MuiTextField-root': { m: 1, width: '25ch' },
-            }}
-            className={"scrollModifiers"}
-          >
-          <Stack overflow={"auto"} spacing={2} direction="column">
-            <ListOfControls>
-              {modifiers}
-            </ListOfControls>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <main className="App">
+        <Stack justifyContent="space-around" padding="16px">
+          <Stack alignItems="center" justifyContent="space-around" direction="row">
+            <TimeContext.Provider value={getTime(tick)}>
+              <StageWithReactiveDimen dispatch={dispacth}>
+                <Layer>
+                  <MyKatex></MyKatex>
+                  {children}
+                </Layer>
+              </StageWithReactiveDimen>
+            </TimeContext.Provider>
+            <Box
+              sx={{
+                '& .MuiTextField-root': { m: 1, width: '25ch' },
+              }}
+              className={"scrollModifiers"}
+            >
+              <Stack overflow={"auto"} spacing={2} direction="column">
+                <ListOfControls>
+                  {modifiers}
+                </ListOfControls>
+              </Stack>
+            </Box>
           </Stack>
-          </Box>
-        </Stack>
-        <Stack
-          direction="row"
-          justifyContent="space-around"
-          padding="16px"
-          alignItems="stretch"
-          spacing={8}
-          flexGrow={1}
-        >
+          <Stack
+            direction="row"
+            justifyContent="space-around"
+            padding="16px"
+            alignItems="stretch"
+            spacing={8}
+            flexGrow={1}
+          >
+            <Button
+              variant="outlined"
+              startIcon={play ? <PauseCircleIcon /> : <PlayCircleIcon />}
+              onClick={() => setPlay(!play)}
+              style={{ width: "150px" }}
+            >
+              {play ? "Pause" : "Play"}
+            </Button>
+            <Slider
+              value={tick}
+              onChange={handleSliderChange}
+              marks={marks}
+              max={maxTicks}
+              track={false} />
+            <p style={{ width: "100px" }}>{getFormattedTime(tick)}</p>
+          </Stack>
           <Button
             variant="outlined"
-            startIcon={play ? <PauseCircleIcon /> : <PlayCircleIcon />}
-            onClick={() => setPlay(!play)}
-            style={{ width: "150px" }}
-          >
-            {play ? "Pause" : "Play"}
-          </Button>
-          <Slider
-            value={tick}
-            onChange={handleSliderChange}
-            marks={marks}
-            max={maxTicks}
-            track={false} />
-          <p style={{ width: "100px" }}>{getFormattedTime(tick)}</p>
-        </Stack>
-        <Button
-            variant="outlined"
-            onClick={() => dispacth( {
+            onClick={() => dispacth({
               type: 'add',
               state: createDefaultState(ComponentEnum.FUNCTION)
             })}
             style={{ width: "150px" }}
           >
             {"Add"}
-        </Button>
-      </Stack>
-    </div>
+          </Button>
+        </Stack>
+      </main>
+    </ThemeProvider>
   );
 }
 
