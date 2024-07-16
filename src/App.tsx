@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, ReactElement } from 'react';
 import './App.css';
 import Slider from '@mui/material/Slider';
 import { Box, Button, Stack } from '@mui/material';
@@ -13,6 +13,17 @@ import { createDefaultState, getComponent, getModifier, isContained } from './co
 import ComponentEnum from './components/ComponentEnum';
 import { useMutativeReducer } from 'use-mutative';
 import MyKatex from './components/graphic/MyKatex';
+import ListOfControls from './components/controls/ListOfControls';
+import BaseState from './components/states/BaseState';
+
+function checkAndUpdateTitle(state: BaseState, draft: MyStore) {
+  const t = state.title;
+  let n = 1;
+  while (draft.titles.has(state.title)) {
+    state.title = `${t}_${n++}`;
+  }
+  draft.titles.add(state.title);
+}
 
 function reducer(
   draft: Draft<MyStore>,
@@ -22,13 +33,22 @@ function reducer(
     case 'reset':
       return rawReturn(initState);
     case 'delete':
+      const cur = draft.components.filter(c => c.id === action.id)[0];
+      draft.titles.delete(cur.title);
       draft.components = draft.components.filter(c => c.id !== action.id);
       draft.selected = draft.selected.filter(id => id !== action.id);
       return draft;
     case 'add':
+      checkAndUpdateTitle(action.state, draft);
       return void draft.components.push(action.state);
     case 'modify':
-      draft.components[draft.components.findIndex(a => a.id === action.state.id)] = action.state;
+      const ind = draft.components.findIndex(a => a.id === action.state.id);
+      const prev = draft.components[ind];
+      if (prev.title !== action.state.title) {
+        draft.titles.delete(prev.title);
+        checkAndUpdateTitle(action.state, draft);
+      }
+      draft.components[ind] = action.state;
       return draft;
     case 'changeSelection':
       for (const id of action.ids) {
@@ -54,6 +74,7 @@ function App() {
   const step = 50;
   const maxTicks = 100;
   const { state, dispacth } = useMyMutative();
+  console.log(JSON.stringify(state));
 
   const handleSliderChange = (event: Event, newValue: number | number[]) => {
     setPlay(false);
@@ -79,11 +100,12 @@ function App() {
   const marks = Array.from({ length: numberOfMarks + 1 }, (value, key) => { return { value: Math.round(maxTicks * key / numberOfMarks) }; })
 
   const children = [];
-  const modifiers = [];
+  const modifiers: ReactElement[] = [];
   const selected = [];
   for (const comp of state.components) {
     children.push(getComponent(comp, dispacth));
-    modifiers.push(getModifier(comp, dispacth));
+    const control = getModifier(comp, dispacth);
+    if (control && control as ReactElement) modifiers.push(control);
     if (isContained(state.selected, comp)) {
       selected.push(getModifier(comp, dispacth))
     }
@@ -108,7 +130,9 @@ function App() {
             className={"scrollModifiers"}
           >
           <Stack overflow={"auto"} spacing={2} direction="column">
-            {modifiers}
+            <ListOfControls>
+              {modifiers}
+            </ListOfControls>
           </Stack>
           </Box>
         </Stack>

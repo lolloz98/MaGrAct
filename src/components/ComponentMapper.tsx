@@ -12,6 +12,7 @@ export function createDefaultState(type: ComponentEnum) : BaseState {
     const id = uuid();
     const obj: BaseState = {
         id: id,
+        title: type,
         type: type,
         position: {
             x: 50,

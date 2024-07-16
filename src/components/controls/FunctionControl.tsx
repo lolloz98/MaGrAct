@@ -3,11 +3,13 @@ import { DispactherAction, MyStore } from "../StoreContext";
 import { useEffect, useState } from "react";
 import { isNumeric } from "../Utils";
 import FunctionState from "../states/FunctionState";
+import MyCustomInput from "./CustomTextField";
 
 export default function FunctionControl({ state, dispatch }: { state: FunctionState, dispatch: DispactherAction }) {
     const [x, setX] = useState<string|number>(state.position.x);
     const [y, setY] = useState<string|number>(state.position.y);
     const [f, setF] = useState<string>(state.f);
+    const [t, setT] = useState<string>(state.title);
 
     useEffect(() => {
         setX(state.position.x);
@@ -17,36 +19,28 @@ export default function FunctionControl({ state, dispatch }: { state: FunctionSt
 
     return (
         <Stack border={1}>
-            <TextField label="Outlined" variant="outlined" onChange={
+            <MyCustomInput label="Outlined" variant="outlined" onMyChange={
                 (e) => {
-                    setX(e.target.value);
-                    if (isNumeric(e.target.value)) {
+                    const val = (e.target as HTMLInputElement).value;
+                    setX(val);
+                    if (isNumeric(val)) {
                         const newState = {...state};
-                        newState.position.x = +e.target.value;
+                        newState.position.x = +val;
                         dispatch( { type: 'modify', state: newState});
                     }
                 }
-            } value={x} />
-            <TextField label="Outlined" variant="outlined" onChange={
+            } onMyInput={(e) => setX((e.target as HTMLInputElement).value)} value={x} />
+            <MyCustomInput label="Outlined" variant="outlined" onMyChange={
                 (e) => {
-                    setY(e.target.value);
-                    if (isNumeric(e.target.value)) {
+                    const val = (e.target as HTMLInputElement).value;
+                    setY(val);
+                    if (isNumeric(val)) {
                         const newState = {...state};
-                        newState.position.y = +e.target.value;
+                        newState.position.y = +val;
                         dispatch( { type: 'modify', state: newState});
                     }
                 }
-            } value={y} />
-            <TextField label="Outlined" variant="outlined" onChange={
-                (e) => {
-                    setF(e.target.value);
-                    if (isNumeric(e.target.value)) {
-                        const newState = {...state};
-                        newState.f = e.target.value;
-                        dispatch( { type: 'modify', state: newState});
-                    }
-                }
-            } value={f} />
+            } onMyInput={(e) => setY((e.target as HTMLInputElement).value)} value={y} />
         </Stack>
     )
 }

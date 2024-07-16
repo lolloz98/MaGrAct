@@ -4,7 +4,8 @@ import BaseState from './states/BaseState';
 export interface MyStore {
     parent: Map<string, string> // each object has a parent, by navigating this object we can navigate to it
     components: Array<BaseState>
-    selected: Array<string>
+    selected: Array<string>,
+    titles: Set<string>
 }
 
 export type StoreAction = {
@@ -28,7 +29,8 @@ export type DispactherAction = React.Dispatch<StoreAction>;
 export const initState = {
     parent: new Map<string, string>(),
     components: [],
-    selected: []
+    selected: [],
+    titles: new Set<string>()
 };
 
 export const MyStoreContext = createContext<MyStore>(initState);
