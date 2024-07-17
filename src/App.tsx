@@ -172,7 +172,7 @@ function App() {
             variant="outlined"
             onClick={() => dispacth({
               type: 'add',
-              state: createDefaultState(ComponentEnum.FUNCTION)
+              state: createDefaultState(ComponentEnum.AXES)
             })}
             style={{ width: "150px" }}
           >

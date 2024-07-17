@@ -7,6 +7,7 @@ import FunctionControl from "./controls/FunctionControl";
 import { DispactherAction } from "./StoreContext";
 import BaseState from "./states/BaseState";
 import FunctionState from "./states/FunctionState";
+import Axes from "./graphic/Axes";
 
 export function createDefaultState(type: ComponentEnum) : BaseState {
     const id = uuid();
@@ -25,6 +26,8 @@ export function createDefaultState(type: ComponentEnum) : BaseState {
             return obj2;
         case ComponentEnum.FUNCTION_ANIM:
             return obj;
+        case ComponentEnum.AXES:
+            return obj;
         default:
             console.error(`No default state specified for component ${type}`);
             obj.type = ComponentEnum.UNKOWN;
@@ -38,6 +41,8 @@ export function getComponent(state: BaseState, dispacth: DispactherAction) {
             return (<Function state={state as FunctionState} dispatch={dispacth} key={state.id}></Function>);
         case ComponentEnum.FUNCTION_ANIM:
             return (<FunctionAnimated state={state} dispatch={dispacth} key={state.id}></FunctionAnimated>);
+        case ComponentEnum.AXES:
+            return (<Axes state={state} dispatch={dispacth} key={state.id}></Axes>);
         default:
             alert(`No getComponent specified for ${state.type}`);
     }
@@ -48,6 +53,8 @@ export function getModifier(state: BaseState, dispacth: DispactherAction) {
         case ComponentEnum.FUNCTION:
             return (<FunctionControl state={state as FunctionState} dispatch={dispacth} key={state.id}></FunctionControl>);
         case ComponentEnum.FUNCTION_ANIM:
+            return (<BaseControl state={state} dispatch={dispacth} key={state.id}></BaseControl>);
+        case ComponentEnum.AXES:
             return (<BaseControl state={state} dispatch={dispacth} key={state.id}></BaseControl>);
         default:
             alert(`No getComponent specified for ${state.type}`);
