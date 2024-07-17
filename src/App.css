@@ -53,6 +53,8 @@ body {
 /* scrollbar */
 .scrollModifiers {
   max-height: 70vh;
+  max-width: 250px;
+  min-width: 100px;
   overflow: auto;
   position: relative;
 }

@@ -5,7 +5,7 @@ export default function ListOfControls({ children }: { children?: ReactElement[]
 
     return (<Box
         sx={{
-            '& .MuiTextField-root': { m: 1, width: '25ch' },
+            '& .MuiTextField-root': { m: 1 },
         }}
         className={"scrollModifiers"}
     >
