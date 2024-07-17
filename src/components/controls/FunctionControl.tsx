@@ -8,7 +8,15 @@ import MyCustomInput from "./MyCustomInput";
 export default function FunctionControl({ state, dispatch }: { state: FunctionState, dispatch: DispactherAction }) {
     return (
         <Stack border={1}>
-            <MyCustomInput label="Outlined" variant="outlined" onMyChange={
+            <MyCustomInput label="Title" variant="outlined" onMyChange={
+                (e) => {
+                    const val = (e.target as HTMLInputElement).value;
+                    const newState = {...state};
+                    newState.title = val;
+                    dispatch( { type: 'modify', state: newState});
+                }
+            } state={`${state.title}`} />
+            <MyCustomInput label="Position_X" variant="outlined" onMyChange={
                 (e) => {
                     const val = (e.target as HTMLInputElement).value;
                     if (isNumeric(val)) {
@@ -18,7 +26,7 @@ export default function FunctionControl({ state, dispatch }: { state: FunctionSt
                     }
                 }
             } state={`${state.position.x}`} />
-            <MyCustomInput label="Outlined" variant="outlined" onMyChange={
+            <MyCustomInput label="Position_Y" variant="outlined" onMyChange={
                 (e) => {
                     const val = (e.target as HTMLInputElement).value;
                     if (isNumeric(val)) {

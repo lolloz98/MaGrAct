@@ -1,5 +1,5 @@
 import { TextField, TextFieldProps, TextFieldVariants } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function MyCustomInput<Variant extends TextFieldVariants>(
     props: {
@@ -9,21 +9,24 @@ export default function MyCustomInput<Variant extends TextFieldVariants>(
          */
         variant?: Variant;
     } & Omit<TextFieldProps, 'variant'> & 
-    { onMyChange?: (event: Event) => void } & 
+    { onMyChange: (event: Event) => void } & 
     { state: string }
 ): JSX.Element {
     const {onMyChange, state, ...rest} = props;
 
     const [a, setA] = useState(state);
-    useEffect(() => {
-        setA(state);
-    }, [state]);
+    const [triggered, setTriggered] = useState(true);
+    const trigger = () => setTriggered(!triggered);
+    useMemo(() => setA(state), [state, triggered]);
 
     const onMyInput = (e: Event) => setA((e.target as HTMLInputElement).value);
 
     const registerCallbacks = (element: HTMLInputElement | null) => {
         if (element) {
-            element.onchange = onMyChange ?? (() => { console.debug("onChange triggered, but not implemented for this component") });
+            element.onchange = (e) => {
+                onMyChange(e);
+                trigger();
+            }
             element.oninput = onMyInput ?? (() => { console.debug("onInput triggered, but not implemented for this component") });
         }
     };
