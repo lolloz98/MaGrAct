@@ -1,4 +1,5 @@
-import { Input, Stack, TextField } from "@mui/material";
+import { Button, IconButton, Input, Stack, TextField } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 import { DispactherAction, MyStore } from "../StoreContext";
 import { useEffect, useState } from "react";
 import { isNumeric } from "../Utils";
@@ -8,6 +9,7 @@ import MyCustomInput from "./MyCustomInput";
 export default function FunctionControl({ state, dispatch }: { state: FunctionState, dispatch: DispactherAction }) {
     return (
         <Stack border={1} borderRadius={2}>
+            <Button startIcon={<DeleteIcon />} onClick={() => dispatch({ type: "delete", id: state.id })}/>
             <MyCustomInput label="Title" variant="outlined" onMyChange={
                 (e) => {
                     const val = (e.target as HTMLInputElement).value;
