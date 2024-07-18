@@ -15,6 +15,8 @@ import { useMutativeReducer } from 'use-mutative';
 import MyKatex from './components/graphic/MyKatex';
 import ListOfControls from './components/controls/ListOfControls';
 import BaseState from './components/states/BaseState';
+import { StaticTreeDataProvider, Tree, UncontrolledTreeEnvironment } from 'react-complex-tree';
+import TitleList from './components/TitleList';
 
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
@@ -140,9 +142,12 @@ function App() {
                 </Layer>
               </StageWithReactiveDimen>
             </TimeContext.Provider>
-                <ListOfControls>
-                  {modifiers}
-                </ListOfControls>
+            <Stack direction={"column"}>
+              <ListOfControls>
+                {modifiers}
+              </ListOfControls>
+              <TitleList/>
+            </Stack>
           </Stack>
           <Stack
             direction="row"
