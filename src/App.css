@@ -131,8 +131,6 @@ body {
   padding-left: var(--depthOffset, 0px);
 }
 
-.rct-tree-child-list {
-}
 .rct-tree-item-button {
   flex-grow: 1;
   display: flex;
