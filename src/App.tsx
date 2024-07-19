@@ -60,6 +60,7 @@ function reducer(
   draft: Draft<MyStore>,
   action: StoreAction
 ) {
+  console.trace(action);
   switch (action.type) {
     case 'reset':
       return rawReturn(initState);
