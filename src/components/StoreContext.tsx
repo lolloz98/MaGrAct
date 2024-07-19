@@ -22,7 +22,7 @@ export type StoreAction = {
 } | {
     type: 'changeSelection',
     ids: string[] | []
-};
+} | { type: 'reorder', id: string, destinationId?: string, index: number };
 
 export type DispactherAction = React.Dispatch<StoreAction>;
 

@@ -9,14 +9,13 @@ import { StageWithReactiveDimen } from './components/graphic/StageWithReactiveDi
 import { TimeContext } from './components/TimeContext';
 import { Draft, rawReturn } from 'mutative';
 import { initState, MyStore, StoreAction } from './components/StoreContext';
-import { createDefaultState, getComponent, getModifier, isContained } from './components/ComponentMapper';
+import { createDefaultState, getComponent, getModifier, isContained, MyTreeElement } from './components/ComponentMapper';
 import ComponentEnum from './components/ComponentEnum';
 import { useMutativeReducer } from 'use-mutative';
 import MyKatex from './components/graphic/MyKatex';
 import ListOfControls from './components/controls/ListOfControls';
 import BaseState from './components/states/BaseState';
-import { StaticTreeDataProvider, Tree, UncontrolledTreeEnvironment } from 'react-complex-tree';
-import TitleList from './components/TitleList';
+import TitleList from './components/titles/TitleList';
 
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
@@ -27,6 +26,24 @@ const getDesignTokens = (mode: PaletteMode) => ({
         default: "#202020",
       },
     },
+    components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          "*": {
+            margin: 0,
+            padding: 0
+          },
+          ul: {
+            listStyle: "none"
+          }
+        }
+      },
+      MuiSvgIcon: {
+        styleOverrides: {
+          root: { verticalAlign: "middle" }
+        }
+      }
+    }
   },
 });
 
@@ -68,6 +85,12 @@ function reducer(
       for (const id of action.ids) {
         draft.selected.push(id);
       }
+      return draft;
+    case 'reorder':
+      // todo: handle reorder when elements can be nested
+      const indexFrom = draft.components.findIndex(a => a.id === action.id);
+      const indexTo = action.index;
+      [draft.components[indexFrom], draft.components[indexTo]] = [draft.components[indexTo], draft.components[indexFrom]]; 
       return draft;
   }
 }
@@ -119,8 +142,16 @@ function App() {
   const children = [];
   const modifiers: ReactElement[] = [];
   const selected = [];
+  const tree: MyTreeElement[] = [];
   for (const comp of state.components) {
-    children.push(getComponent(comp, dispacth));
+    const cur = getComponent(comp, dispacth);
+    if (cur.jsx) {
+      children.push(cur.jsx);
+    } else {
+      console.error(`Component was undefined ${comp}`);
+      continue;
+    }
+    tree.push(cur.treeEl);
     const control = getModifier(comp, dispacth);
     if (control && control as ReactElement) modifiers.push(control);
     if (isContained(state.selected, comp)) {
@@ -146,7 +177,7 @@ function App() {
               <ListOfControls>
                 {modifiers}
               </ListOfControls>
-              <TitleList/>
+              <TitleList tree={tree} dispatch={dispacth}/>
             </Stack>
           </Stack>
           <Stack

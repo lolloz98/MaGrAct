@@ -8,6 +8,8 @@ import { DispactherAction } from "./StoreContext";
 import BaseState from "./states/BaseState";
 import FunctionState from "./states/FunctionState";
 import Axes from "./graphic/Axes";
+import { ReactElement } from "react";
+import { NodeModel } from "@minoru/react-dnd-treeview";
 
 export function createDefaultState(type: ComponentEnum) : BaseState {
     const id = uuid();
@@ -35,16 +37,35 @@ export function createDefaultState(type: ComponentEnum) : BaseState {
     }
 }
 
-export function getComponent(state: BaseState, dispacth: DispactherAction) {
+export type MyTreeElement = NodeModel<BaseState>;
+export function getComponent(state: BaseState, dispacth: DispactherAction): {
+    jsx?: ReactElement,
+    treeEl: MyTreeElement
+} {
+    const treeEl: MyTreeElement = {
+        id: state.id,
+        parent: state.parent ?? 0,
+        droppable: state.isParent ?? false,
+        text: state.title,
+        data: state
+    };
+    let jsx = undefined;
     switch (state.type) {
         case ComponentEnum.FUNCTION:
-            return (<Function state={state as FunctionState} dispatch={dispacth} key={state.id}></Function>);
+            jsx = (<Function state={state as FunctionState} dispatch={dispacth} key={state.id}></Function>);
+            break;
         case ComponentEnum.FUNCTION_ANIM:
-            return (<FunctionAnimated state={state} dispatch={dispacth} key={state.id}></FunctionAnimated>);
+            jsx = (<FunctionAnimated state={state} dispatch={dispacth} key={state.id}></FunctionAnimated>);
+                    break;
         case ComponentEnum.AXES:
-            return (<Axes state={state} dispatch={dispacth} key={state.id}></Axes>);
+            jsx = (<Axes state={state} dispatch={dispacth} key={state.id}></Axes>);
+            break;
         default:
             alert(`No getComponent specified for ${state.type}`);
+    }
+    return {
+        jsx: jsx,
+        treeEl: treeEl
     }
 }
 

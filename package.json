@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@minoru/react-dnd-treeview": "^3.4.4",
     "@mui/icons-material": "^5.15.21",
     "@mui/material": "^5.15.21",
     "@testing-library/jest-dom": "^5.17.0",
@@ -19,7 +20,7 @@
     "konva": "^9.3.13",
     "mutative": "^1.0.6",
     "react": "^18.3.1",
-    "react-complex-tree": "^2.4.4",
+    "react-dnd": "^16.0.1",
     "react-dom": "^18.3.1",
     "react-konva": "^18.2.10",
     "react-konva-utils": "^1.0.6",
