@@ -25,7 +25,7 @@ export default function TitleList({ tree, dispatch }: {
     const handleDrop = (newTree: MyTreeElement[], options: DropOptions) => {
       console.log(options);
       if (options.dragSourceId !== undefined && options.destinationIndex !== undefined && options.dragSourceId !== 0) {
-        dispatch({ type: 'reorder', id: `${options.dragSourceId}`, destinationId: `${options.dropTargetId}`, index: options.destinationIndex });
+        dispatch({ type: 'reorder', id: `${options.dragSourceId}`, destinationId: `${options.dropTargetId ?? 0}`, index: options.destinationIndex });
       } else {
         console.error("A condition was not met upon drag and drop, no changes applied", options);
       }
