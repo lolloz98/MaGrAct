@@ -15,6 +15,7 @@ import ListOfControls from './components/controls/ListOfControls';
 import BaseState from './components/states/BaseState';
 import TitleList from './components/titles/TitleList';
 import MyTimeline from './components/Timeline';
+import AddIcon from "@mui/icons-material/Add";
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import 'react-reflex/styles.css'
 
@@ -171,15 +172,15 @@ function App() {
 
                 <ReflexSplitter />
 
-                <ReflexElement>
+                <ReflexElement propagateDimensionsRate={200}
+                  propagateDimensions={true}
+                  flex={0.81}>
 
                   <Button
-                    variant="outlined"
                     onClick={() => dispacth({
                       type: 'add',
                       state: createDefaultState(ComponentEnum.AXES)
-                    })}
-                    style={{ width: "150px" }}
+                    })} startIcon={<AddIcon />}
                   >
                     {"Add"}
                   </Button>
