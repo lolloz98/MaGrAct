@@ -44,8 +44,7 @@ body {
 .Stage {
   user-select: none;
   background: black;
-  position: relative;
-  width: 70%;
+  width: 100%;
   aspect-ratio: 16 / 9;
   display: block;
 }

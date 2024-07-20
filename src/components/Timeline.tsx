@@ -37,6 +37,7 @@ export default function MyTimeline({ tick, setTick, step }: {
             justifyContent="space-around"
             padding="16px"
             alignItems="stretch"
+            width={"100%"}
             spacing={8}
             flexGrow={1}
         >

@@ -143,21 +143,23 @@ function App() {
       <CssBaseline />
       <main className="App">
         <Stack justifyContent="space-around" padding="16px">
-          <Stack alignItems="center" justifyContent="space-around" direction="row">
+          <Stack alignItems="center" justifyContent="space-around" spacing={2} direction="row">
+            <Stack alignItems="center" justifyContent="space-around" flex={1} width={'60%'} direction="column">
               <StageWithReactiveDimen dispatch={dispacth}>
                 <Layer>
                   <MyKatex></MyKatex>
                   {children}
                 </Layer>
               </StageWithReactiveDimen>
-            <Stack direction={"column"}>
+              <MyTimeline tick={tick} setTick={setTick} step={step} />
+            </Stack>
+            <Stack direction={"column"} width={'20%'}>
               <ListOfControls>
                 {modifiers}
               </ListOfControls>
               <TitleList tree={tree} dispatch={dispacth}/>
             </Stack>
           </Stack>
-          <MyTimeline tick={tick} setTick={setTick} step={step} />
           <Button
             variant="outlined"
             onClick={() => dispacth({
