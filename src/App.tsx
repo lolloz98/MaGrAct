@@ -184,8 +184,9 @@ function App() {
             <ReflexElement>
               <ReflexContainer orientation="horizontal">
                 <ReflexElement>
-
-                  {selectedController}
+                  <div style={{ padding: 8 }}>
+                    {selectedController}
+                  </div>
                 </ReflexElement>
 
                 <ReflexSplitter />
