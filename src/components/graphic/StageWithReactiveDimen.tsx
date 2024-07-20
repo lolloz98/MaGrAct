@@ -5,18 +5,25 @@ import React, { ReactElement, useEffect, useRef, useState } from "react"
 import { Stage } from "react-konva"
 import { DispactherAction } from "../StoreContext";
 
-export function StageWithReactiveDimen({ children, dispatch }: { 
+function fitBounds (value: number, min: number, max: number) {
+  return Math.max(Math.min(value, max), min)
+}
+
+export function StageWithReactiveDimen({ children, dispatch, dimensions }: { 
   children?: ReactElement, 
   dispatch: DispactherAction,
-  style?: React.CSSProperties
+  style?: React.CSSProperties,
+  dimensions?: {
+    width: number,
+    height: number
+  }
 }) {
   const originalW = 1066;
-  const windowSize = useWindowSize();
   const divRef = useRef<HTMLInputElement>(null)
   const stageRef = useRef<Konva.Stage>(null)
 
-  const [dimensions, setDimensions] = useState({
-    width: 0,
+  const [dimensionsState, setDimensions] = useState({
+    width: dimensions?.width ?? 0,
     height: 0,
     scale: {
       x: 1,
@@ -25,9 +32,8 @@ export function StageWithReactiveDimen({ children, dispatch }: {
   })
 
   useEffect(() => {
-    if (divRef.current?.offsetHeight && divRef.current?.offsetWidth) {
       // todo: increase precision for these operations -> dimens / scale should always get the same numbers
-      const w = divRef.current.offsetWidth;
+      const w = dimensions?.width ?? 0;
       const ratio = 9.0 / 16;
       const h = w * ratio;
       setDimensions({
@@ -39,18 +45,17 @@ export function StageWithReactiveDimen({ children, dispatch }: {
         }
       })
       console.debug("window was resized. New dimens (with scale applied) should not change", {
-        x: divRef.current.offsetWidth / dimensions.scale.x, y: divRef.current.offsetHeight / dimensions.scale.y
+        dimensions
       })
-    }
-  }, [windowSize])
+    }, [dimensions]);
 
   return (
-    <Stack ref={divRef} className="Stage">
+    <div>
       <Stage 
-      width={dimensions.width} 
-      height={dimensions.height} 
-      scale={dimensions.scale} 
-      style={{background: "black", width: dimensions.width, height: dimensions.height}}
+      width={dimensionsState.width} 
+      height={dimensionsState.height} 
+      scale={dimensionsState.scale} 
+      style={{background: "black", width: dimensionsState.width, height: dimensionsState.height}}
       ref={stageRef}
       onClick={(e) => {
         const shapes = stageRef.current?.getAllIntersections(stageRef.current.pointerPos);
@@ -71,7 +76,7 @@ export function StageWithReactiveDimen({ children, dispatch }: {
         }}>
         {children}
       </Stage>
-    </Stack>
+    </div>
   )
 }
 

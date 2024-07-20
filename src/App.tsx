@@ -15,6 +15,9 @@ import ListOfControls from './components/controls/ListOfControls';
 import BaseState from './components/states/BaseState';
 import TitleList from './components/titles/TitleList';
 import MyTimeline from './components/Timeline';
+import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
+import 'react-reflex/styles.css'
+
 
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
@@ -90,7 +93,7 @@ function reducer(
       // todo: handle reorder when elements can be nested
       const indexFrom = draft.components.findIndex(a => a.id === action.id);
       const indexTo = action.index;
-      [draft.components[indexFrom], draft.components[indexTo]] = [draft.components[indexTo], draft.components[indexFrom]]; 
+      [draft.components[indexFrom], draft.components[indexTo]] = [draft.components[indexTo], draft.components[indexFrom]];
       return draft;
   }
 }
@@ -140,38 +143,54 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <TimeContext.Provider value={getTime(tick)}>
-      <CssBaseline />
-      <main className="App">
-        <Stack justifyContent="space-around" padding="16px">
-          <Stack alignItems="center" justifyContent="space-around" spacing={2} direction="row">
-            <Stack alignItems="center" justifyContent="space-around" flex={1} width={'60%'} direction="column">
-              <StageWithReactiveDimen dispatch={dispacth}>
+        <CssBaseline />
+        <main className="App">
+          <ReflexContainer orientation="vertical" style={{ height: '100vh' }} >
+            <ReflexElement propagateDimensionsRate={200}
+              propagateDimensions={true}
+              flex={0.81}>
+              <StageWithReactiveDimen dispatch={dispacth} >
                 <Layer>
                   <MyKatex></MyKatex>
                   {children}
                 </Layer>
               </StageWithReactiveDimen>
               <MyTimeline tick={tick} setTick={setTick} step={step} />
-            </Stack>
-            <Stack direction={"column"} width={'20%'}>
-              <ListOfControls>
-                {modifiers}
-              </ListOfControls>
-              <TitleList tree={tree} dispatch={dispacth}/>
-            </Stack>
-          </Stack>
-          <Button
-            variant="outlined"
-            onClick={() => dispacth({
-              type: 'add',
-              state: createDefaultState(ComponentEnum.AXES)
-            })}
-            style={{ width: "150px" }}
-          >
-            {"Add"}
-          </Button>
-        </Stack>
-      </main>
+            </ReflexElement>
+
+            <ReflexSplitter style={{ height: "auto" }} />
+
+            <ReflexElement>
+              <ReflexContainer orientation="horizontal">
+                <ReflexElement>
+
+                  <ListOfControls>
+                    {modifiers}
+                  </ListOfControls>
+                </ReflexElement>
+
+                <ReflexSplitter />
+
+                <ReflexElement>
+
+                  <Button
+                    variant="outlined"
+                    onClick={() => dispacth({
+                      type: 'add',
+                      state: createDefaultState(ComponentEnum.AXES)
+                    })}
+                    style={{ width: "150px" }}
+                  >
+                    {"Add"}
+                  </Button>
+                  <TitleList tree={tree} dispatch={dispacth} />
+                </ReflexElement>
+
+              </ReflexContainer>
+
+            </ReflexElement>
+          </ReflexContainer>
+        </main>
       </TimeContext.Provider>
     </ThemeProvider>
   );
