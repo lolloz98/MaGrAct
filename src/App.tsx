@@ -75,6 +75,7 @@ function reducer(
       return draft;
     case 'add':
       checkAndUpdateTitle(action.state, draft);
+      draft.selected_from_list = action.state;
       return void draft.components.push(action.state);
     case 'modify':
       const ind = draft.components.findIndex(a => a.id === action.state.id);
