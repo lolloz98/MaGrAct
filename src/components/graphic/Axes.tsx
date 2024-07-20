@@ -52,8 +52,8 @@ export default function Axes({ state, dispatch }: { state: BaseState, dispatch: 
             x={0}
             y={0}
         />
-        <Circle x={0} y={0} radius={5} fill={"blue"}></Circle>
-        <Circle x={10} y={10} radius={5} fill={"red"}></Circle>
+        <Circle x={0} y={0} radius={5} fill={"blue"} name={state.id}></Circle>
+        <Circle x={10} y={10} radius={5} fill={"red"} name={state.id}></Circle>
         <Line
             scaleX={scale}
             scaleY={scale}

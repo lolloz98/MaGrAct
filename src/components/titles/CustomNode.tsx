@@ -16,9 +16,11 @@ type Props = {
     node: MyTreeElement;
     depth: number;
     isOpen: boolean;
-    onToggle: (id: NodeModel["id"]) => void;
-    onDelete: (id: NodeModel["id"]) => void;
-    onTextChange: (id: NodeModel["id"], value: string) => void;
+    isSelected: boolean;
+    onToggle: (id: MyTreeElement["id"]) => void;
+    onDelete: (id: MyTreeElement["id"]) => void;
+    onTextChange: (id: MyTreeElement["id"], value: string) => void;
+    onSelect: (node: MyTreeElement) => void;
 };
 
 export const CustomNode: React.FC<Props> = (props) => {
@@ -39,6 +41,8 @@ export const CustomNode: React.FC<Props> = (props) => {
         props.onToggle(props.node.id);
     };
 
+    const handleSelect = () => props.onSelect(props.node);
+
     const dragOverProps = useDragOver(id, props.isOpen, props.onToggle);
 
     const handleCancelRenaming = () => {
@@ -56,24 +60,29 @@ export const CustomNode: React.FC<Props> = (props) => {
 
 
     const normal = (
-        <>
+        <div
+            className={`tree-node ${styles.root} ${props.isSelected ? styles.isSelected : ""
+                }`}
+            style={{ paddingInlineStart: indent }}
+            onClick={handleSelect}
+        >
             {props.node.droppable && (<div onClick={handleToggle}> <ArrowRight /> </div>)}
-                <div className={styles.labelGridItem} onDoubleClick={handleShowInputForRenaming}> <Typography variant="body2">{props.node.text}</Typography></div>
-                {hover && (
-                    <>
-                        <div className={styles.actionButton}>
-                            <IconButton size="small" onClick={() => handleShowInputForRenaming()}>
-                                <EditIcon fontSize="small" />
-                            </IconButton>
-                        </div>
-                        <div className={styles.actionButton}>
-                            <IconButton size="small" onClick={() => props.onDelete(id)}>
-                                <Delete fontSize="small" />
-                            </IconButton>
-                        </div>
-                    </>
-                )}
-        </>
+            <div className={styles.labelGridItem} onDoubleClick={handleShowInputForRenaming}> <Typography variant="body2">{props.node.text}</Typography></div>
+            {hover && (
+                <>
+                    <div className={styles.actionButton}>
+                        <IconButton size="small" onClick={() => handleShowInputForRenaming()}>
+                            <EditIcon fontSize="small" />
+                        </IconButton>
+                    </div>
+                    <div className={styles.actionButton}>
+                        <IconButton size="small" onClick={() => props.onDelete(id)}>
+                            <Delete fontSize="small" />
+                        </IconButton>
+                    </div>
+                </>
+            )}
+        </div>
     );
 
     const renaming = (

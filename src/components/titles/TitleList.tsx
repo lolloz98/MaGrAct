@@ -5,10 +5,12 @@ import { CustomNode } from "./CustomNode";
 import { CustomDragPreview } from "./CustomDragPreview";
 import styles from "./TitleList.module.css";
 import { Placeholder } from "./PlaceHolder";
+import BaseState from "../states/BaseState";
 
 
-export default function TitleList({ tree, dispatch }: {
+export default function TitleList({ tree, currentlySelected, dispatch }: {
   tree: MyTreeElement[],
+  currentlySelected?: BaseState,
   dispatch: DispactherAction
 }) {
   const handleDelete = (id: NodeModel["id"]) => {
@@ -33,6 +35,11 @@ export default function TitleList({ tree, dispatch }: {
     }
   };
 
+  const handleSelect = (node: MyTreeElement) => {
+    if (node.data !== undefined)
+      dispatch({ type: 'select_from_list', state: node.data});
+  }
+
 
   return (
     <DndProvider backend={MultiBackend} options={getBackendOptions()}>
@@ -47,6 +54,8 @@ export default function TitleList({ tree, dispatch }: {
             isOpen={isOpen}
             onDelete={handleDelete}
             onTextChange={handleTextChange}
+            onSelect={handleSelect}
+            isSelected={currentlySelected?.id === node.id}
           />
         )}
         dragPreviewRender={(monitorProps) => {

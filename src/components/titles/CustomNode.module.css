@@ -46,3 +46,7 @@
 .nodeLabel {
     padding-right: 15px;
 }
+
+.root.isSelected {
+    color: #1967d2;
+}

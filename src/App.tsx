@@ -89,12 +89,18 @@ function reducer(
       for (const id of action.ids) {
         draft.selected.push(id);
       }
+      if (action.ids.length > 0) {
+        draft.selected_from_list = draft.components.find(a => a.id === action.ids[0]);
+      }
       return draft;
     case 'reorder':
       // todo: handle reorder when elements can be nested
       const indexFrom = draft.components.findIndex(a => a.id === action.id);
       const indexTo = action.index;
       [draft.components[indexFrom], draft.components[indexTo]] = [draft.components[indexTo], draft.components[indexFrom]];
+      return draft;
+    case 'select_from_list':
+      draft.selected_from_list = action.state;
       return draft;
   }
 }
@@ -122,7 +128,7 @@ function App() {
   }
 
   const children = [];
-  const modifiers: ReactElement[] = [];
+  let selectedController: ReactElement | undefined = undefined;
   const selected = [];
   const tree: MyTreeElement[] = [];
   for (const comp of state.components) {
@@ -134,8 +140,10 @@ function App() {
       continue;
     }
     tree.push(cur.treeEl);
-    const control = getModifier(comp, dispacth);
-    if (control && control as ReactElement) modifiers.push(control);
+    if (comp.id === state.selected_from_list?.id) {
+      selectedController = getModifier(comp, dispacth);
+    }
+    
     if (isContained(state.selected, comp)) {
       selected.push(getModifier(comp, dispacth))
     }
@@ -165,9 +173,7 @@ function App() {
               <ReflexContainer orientation="horizontal">
                 <ReflexElement>
 
-                  <ListOfControls>
-                    {modifiers}
-                  </ListOfControls>
+                  {selectedController}
                 </ReflexElement>
 
                 <ReflexSplitter />
@@ -184,7 +190,7 @@ function App() {
                   >
                     {"Add"}
                   </Button>
-                  <TitleList tree={tree} dispatch={dispacth} />
+                  <TitleList tree={tree} dispatch={dispacth} currentlySelected={state.selected_from_list} />
                 </ReflexElement>
 
               </ReflexContainer>
