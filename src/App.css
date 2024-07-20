@@ -63,7 +63,7 @@ body {
   background: transparent;
 }
 
-.scrollModifiers:hover::-webkit-scrollbar-thumb {
+*:hover::-webkit-scrollbar-thumb {
   background: #61dafb;
 }
 

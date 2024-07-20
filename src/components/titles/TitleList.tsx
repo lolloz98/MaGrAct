@@ -8,10 +8,14 @@ import { Placeholder } from "./PlaceHolder";
 import BaseState from "../states/BaseState";
 
 
-export default function TitleList({ tree, currentlySelected, dispatch }: {
+export default function TitleList({ tree, currentlySelected, dispatch, dimensions }: {
   tree: MyTreeElement[],
   currentlySelected?: BaseState,
-  dispatch: DispactherAction
+  dispatch: DispactherAction,
+  dimensions?: {
+    width: number,
+    height: number
+  }
 }) {
   const handleDelete = (id: NodeModel["id"]) => {
     if (id === 0) return;
@@ -42,6 +46,7 @@ export default function TitleList({ tree, currentlySelected, dispatch }: {
 
 
   return (
+    <div style={{maxHeight: (dimensions?.height ?? 0) * 0.8, overflow: "auto" }} className="">
     <DndProvider backend={MultiBackend} options={getBackendOptions()}>
       <Tree
         tree={tree}
@@ -79,5 +84,6 @@ export default function TitleList({ tree, currentlySelected, dispatch }: {
         )}
       />
     </DndProvider>
+    </div>
   );
 }

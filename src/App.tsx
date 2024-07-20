@@ -192,9 +192,10 @@ function App() {
 
                 <ReflexElement propagateDimensionsRate={200}
                   propagateDimensions={true}
-                  flex={0.81}>
+                  flex={0.81}
+                  style={{overflow: "auto"}}>
 
-                  <Button
+                  <Button 
                     onClick={() => dispacth({
                       type: 'add',
                       state: createDefaultState(ComponentEnum.AXES)
