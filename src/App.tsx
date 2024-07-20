@@ -156,12 +156,12 @@ function App() {
         <CssBaseline />
         <main className="App">
           <ReflexContainer orientation="vertical" style={{ height: '100vh' }} >
-            <ReflexElement>
+            <ReflexElement flex={2}>
               <ReflexContainer orientation="horizontal" style={{ height: '100vh' }} >
 
                 <ReflexElement propagateDimensionsRate={200}
                   propagateDimensions={true}
-                  flex={0.81}>
+                  flex={5}>
                   <StageWithReactiveDimen dispatch={dispacth} >
                     <Layer>
                       <MyKatex></MyKatex>
@@ -174,14 +174,14 @@ function App() {
 
                 <ReflexElement propagateDimensionsRate={200}
                   propagateDimensions={true}
-                  flex={0.81}>
+                  flex={1}>
                   <MyTimeline tick={tick} setTick={setTick} step={step} />
                 </ReflexElement>
               </ReflexContainer>
             </ReflexElement>
             <ReflexSplitter style={{ height: "auto" }} />
 
-            <ReflexElement>
+            <ReflexElement flex={0.8}>
               <ReflexContainer orientation="horizontal">
                 <ReflexElement>
                   <div style={{ padding: 8 }}>
@@ -193,7 +193,6 @@ function App() {
 
                 <ReflexElement propagateDimensionsRate={200}
                   propagateDimensions={true}
-                  flex={0.81}
                   style={{overflow: "auto"}}>
 
                   <Button 
