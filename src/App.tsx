@@ -143,7 +143,7 @@ function App() {
     if (comp.id === state.selected_from_list?.id) {
       selectedController = getModifier(comp, dispacth);
     }
-    
+
     if (isContained(state.selected, comp)) {
       selected.push(getModifier(comp, dispacth))
     }
@@ -155,18 +155,29 @@ function App() {
         <CssBaseline />
         <main className="App">
           <ReflexContainer orientation="vertical" style={{ height: '100vh' }} >
-            <ReflexElement propagateDimensionsRate={200}
-              propagateDimensions={true}
-              flex={0.81}>
-              <StageWithReactiveDimen dispatch={dispacth} >
-                <Layer>
-                  <MyKatex></MyKatex>
-                  {children}
-                </Layer>
-              </StageWithReactiveDimen>
-              <MyTimeline tick={tick} setTick={setTick} step={step} />
-            </ReflexElement>
+            <ReflexElement>
+              <ReflexContainer orientation="horizontal" style={{ height: '100vh' }} >
 
+                <ReflexElement propagateDimensionsRate={200}
+                  propagateDimensions={true}
+                  flex={0.81}>
+                  <StageWithReactiveDimen dispatch={dispacth} >
+                    <Layer>
+                      <MyKatex></MyKatex>
+                      {children}
+                    </Layer>
+                  </StageWithReactiveDimen>
+                </ReflexElement>
+
+                <ReflexSplitter />
+
+                <ReflexElement propagateDimensionsRate={200}
+                  propagateDimensions={true}
+                  flex={0.81}>
+                  <MyTimeline tick={tick} setTick={setTick} step={step} />
+                </ReflexElement>
+              </ReflexContainer>
+            </ReflexElement>
             <ReflexSplitter style={{ height: "auto" }} />
 
             <ReflexElement>
