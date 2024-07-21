@@ -8,6 +8,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MyNumbericInput from "../inputs/MyNumericInput";
+import MyColorPicker from "../inputs/MyColorPicker";
 
 export function SharedBaseControl({ state, dispatch }: { state: BaseState, dispatch: DispactherAction }) {
     const [open, setOpen] = useState(false);
@@ -57,7 +58,10 @@ export function SharedBaseControl({ state, dispatch }: { state: BaseState, dispa
                          state={state} get={() => state.animation.end_duration} 
                          set={(a: BaseState, n: number) => a.animation.end_duration = n} />
                     </Stack>
+                    <MyColorPicker state={state} dispatch={dispatch} label="Color"/>
+
                 </Stack>
+
             </Collapse>
         </Stack>
     )

@@ -15,6 +15,7 @@ export function convertDimen(d: number | undefined) {
 }
 
 function componentToHex(c: number) {
+    if (c > 255) c = 255;
     var hex = c.toString(16);
     return hex.length == 1 ? "0" + hex : hex;
 }
