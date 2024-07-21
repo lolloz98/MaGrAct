@@ -3,6 +3,7 @@ import React, { ReactElement, useEffect, useRef, useState } from "react"
 
 import { Stage } from "react-konva"
 import { DispactherAction } from "../StoreContext";
+import { convertDimen } from "../MyUtils";
 
 export function StageWithReactiveDimen({ children, dispatch, dimensions }: { 
   children?: ReactElement, 
@@ -14,11 +15,10 @@ export function StageWithReactiveDimen({ children, dispatch, dimensions }: {
   }
 }) {
   const originalW = 1066;
-  const divRef = useRef<HTMLInputElement>(null)
   const stageRef = useRef<Konva.Stage>(null)
 
   const [dimensionsState, setDimensions] = useState({
-    width: dimensions?.width ?? 0,
+    width: convertDimen(dimensions?.width),
     height: 0,
     scale: {
       x: 1,
@@ -28,7 +28,7 @@ export function StageWithReactiveDimen({ children, dispatch, dimensions }: {
 
   useEffect(() => {
       // todo: increase precision for these operations -> dimens / scale should always get the same numbers
-      const w = dimensions?.width ?? 0;
+      const w = convertDimen(dimensions?.width);
       const ratio = 9.0 / 16;
       const h = w * ratio;
       setDimensions({
@@ -54,7 +54,7 @@ export function StageWithReactiveDimen({ children, dispatch, dimensions }: {
       ref={stageRef}
       onClick={(e) => {
         const shapes = stageRef.current?.getAllIntersections(stageRef.current.pointerPos);
-        console.log("Shape that we did hit", shapes);
+        console.debug("Shape that we did hit", shapes);
         if (shapes) {
           const sel = shapes.map(s => s.name());
           console.log("selected: ", sel);

@@ -15,9 +15,9 @@ import ListOfControls from './components/controls/ListOfControls';
 import BaseState from './components/states/BaseState';
 import TitleList from './components/titles/TitleList';
 import MyTimeline from './components/Timeline';
-import AddIcon from "@mui/icons-material/Add";
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import 'react-reflex/styles.css'
+import AddButton from './components/add/AddButton';
 
 
 const getDesignTokens = (mode: PaletteMode) => ({
@@ -195,14 +195,7 @@ function App() {
                   propagateDimensions={true}
                   style={{overflow: "auto"}}>
 
-                  <Button 
-                    onClick={() => dispacth({
-                      type: 'add',
-                      state: createDefaultState(ComponentEnum.AXES)
-                    })} startIcon={<AddIcon />}
-                  >
-                    {"Add"}
-                  </Button>
+                  <AddButton dispatch={dispacth} tree={tree} />
                   <TitleList tree={tree} dispatch={dispacth} currentlySelected={state.selected_from_list} />
                 </ReflexElement>
 

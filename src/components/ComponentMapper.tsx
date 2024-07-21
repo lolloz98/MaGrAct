@@ -11,11 +11,11 @@ import Axes from "./graphic/Axes";
 import { ReactElement } from "react";
 import { NodeModel } from "@minoru/react-dnd-treeview";
 
-export function createDefaultState(type: ComponentEnum) : BaseState {
+export function createDefaultState(type: ComponentEnum, title: string | undefined) : BaseState {
     const id = uuid();
     const obj: BaseState = {
         id: id,
-        title: type,
+        title: title ?? type,
         type: type,
         position: {
             x: 50,

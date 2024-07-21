@@ -6,6 +6,7 @@ import { CustomDragPreview } from "./CustomDragPreview";
 import styles from "./TitleList.module.css";
 import { Placeholder } from "./PlaceHolder";
 import BaseState from "../states/BaseState";
+import { convertDimen } from "../MyUtils";
 
 
 export default function TitleList({ tree, currentlySelected, dispatch, dimensions }: {
@@ -46,7 +47,7 @@ export default function TitleList({ tree, currentlySelected, dispatch, dimension
 
 
   return (
-    <div style={{maxHeight: (dimensions?.height ?? 0) * 0.8, overflow: "auto" }} className="">
+    <div style={{maxHeight: convertDimen(dimensions?.height) * 0.8, overflow: "auto" }} className="">
     <DndProvider backend={MultiBackend} options={getBackendOptions()}>
       <Tree
         tree={tree}
