@@ -5,15 +5,12 @@ import {
   TextField,
   MenuItem,
   FormControl,
-  FormControlLabel,
   InputLabel,
-  Checkbox,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   SelectChangeEvent,
-  Box,
 } from "@mui/material";
 import styles from "./AddDialog.module.css";
 import { MyTreeElement } from "../ComponentMapper";
