@@ -13,5 +13,9 @@ export default interface BaseState {
     position: {
         x: number,
         y: number
+    },
+    time_constraint: {
+        start: number,
+        end: number
     }
 }

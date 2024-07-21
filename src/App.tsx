@@ -4,7 +4,7 @@ import Slider from '@mui/material/Slider';
 import { Box, Button, createTheme, CssBaseline, PaletteMode, Stack, ThemeProvider } from '@mui/material';
 import { Layer } from 'react-konva';
 import { StageWithReactiveDimen } from './components/graphic/StageWithReactiveDimen';
-import { TimeContext } from './components/TimeContext';
+import { MaxTimeContext, TimeContext } from './components/TimeContext';
 import { Draft, rawReturn } from 'mutative';
 import { initState, MyStore, StoreAction } from './components/StoreContext';
 import { createDefaultState, getComponent, getModifier, isContained, MyTreeElement } from './components/ComponentMapper';
@@ -122,6 +122,7 @@ function App() {
 
   const [tick, setTick] = React.useState<number>(0);
   const step = 50;
+  const maxTicks = 100;
 
   const { state, dispacth } = useMyMutative();
   const getTime = (tick: number) => {
@@ -153,57 +154,59 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <TimeContext.Provider value={getTime(tick)}>
-        <CssBaseline />
-        <main className="App">
-          <ReflexContainer orientation="vertical" style={{ height: '100vh' }} >
-            <ReflexElement flex={2}>
-              <ReflexContainer orientation="horizontal" style={{ height: '100vh' }} >
+        <MaxTimeContext.Provider value={getTime(maxTicks)}>
+          <CssBaseline />
+          <main className="App">
+            <ReflexContainer orientation="vertical" style={{ height: '100vh' }} >
+              <ReflexElement flex={2}>
+                <ReflexContainer orientation="horizontal" style={{ height: '100vh' }} >
 
-                <ReflexElement propagateDimensionsRate={200}
-                  propagateDimensions={true}
-                  flex={5}>
-                  <StageWithReactiveDimen dispatch={dispacth} >
-                    <Layer>
-                      <MyKatex></MyKatex>
-                      {children}
-                    </Layer>
-                  </StageWithReactiveDimen>
-                </ReflexElement>
+                  <ReflexElement propagateDimensionsRate={200}
+                    propagateDimensions={true}
+                    flex={5}>
+                    <StageWithReactiveDimen dispatch={dispacth} >
+                      <Layer>
+                        <MyKatex></MyKatex>
+                        {children}
+                      </Layer>
+                    </StageWithReactiveDimen>
+                  </ReflexElement>
 
-                <ReflexSplitter />
+                  <ReflexSplitter />
 
-                <ReflexElement propagateDimensionsRate={200}
-                  propagateDimensions={true}
-                  flex={1}>
-                  <MyTimeline tick={tick} setTick={setTick} step={step} />
-                </ReflexElement>
-              </ReflexContainer>
-            </ReflexElement>
-            <ReflexSplitter style={{ height: "auto" }} />
+                  <ReflexElement propagateDimensionsRate={200}
+                    propagateDimensions={true}
+                    flex={1}>
+                    <MyTimeline tick={tick} setTick={setTick} step={step} maxTicks={maxTicks} />
+                  </ReflexElement>
+                </ReflexContainer>
+              </ReflexElement>
+              <ReflexSplitter style={{ height: "auto" }} />
 
-            <ReflexElement flex={0.8}>
-              <ReflexContainer orientation="horizontal">
-                <ReflexElement>
-                  <div style={{ padding: 8 }}>
-                    {selectedController}
-                  </div>
-                </ReflexElement>
+              <ReflexElement flex={0.8}>
+                <ReflexContainer orientation="horizontal">
+                  <ReflexElement>
+                    <div style={{ padding: 8 }}>
+                      {selectedController}
+                    </div>
+                  </ReflexElement>
 
-                <ReflexSplitter />
+                  <ReflexSplitter />
 
-                <ReflexElement propagateDimensionsRate={200}
-                  propagateDimensions={true}
-                  style={{overflow: "auto"}}>
+                  <ReflexElement propagateDimensionsRate={200}
+                    propagateDimensions={true}
+                    style={{ overflow: "auto" }}>
 
-                  <AddButton dispatch={dispacth} tree={tree} />
-                  <TitleList tree={tree} dispatch={dispacth} currentlySelected={state.selected_from_list} />
-                </ReflexElement>
+                    <AddButton dispatch={dispacth} tree={tree} />
+                    <TitleList tree={tree} dispatch={dispacth} currentlySelected={state.selected_from_list} />
+                  </ReflexElement>
 
-              </ReflexContainer>
+                </ReflexContainer>
 
-            </ReflexElement>
-          </ReflexContainer>
-        </main>
+              </ReflexElement>
+            </ReflexContainer>
+          </main>
+        </MaxTimeContext.Provider>
       </TimeContext.Provider>
     </ThemeProvider>
   );

@@ -60,6 +60,28 @@ export function SharedBaseControl({ state, dispatch }: { state: BaseState, dispa
                             }
                         } state={`${state.scale.y}`} />
                     </Stack>
+                    <Stack direction={"row"} spacing={1}>
+                        <MyCustomInput label="Time_Start" variant="outlined" onMyChange={
+                            (e) => {
+                                const val = (e.target as HTMLInputElement).value;
+                                if (isNumeric(val)) {
+                                    const newState = { ...state };
+                                    newState.time_constraint.start = +val;
+                                    dispatch({ type: 'modify', state: newState });
+                                }
+                            }
+                        } state={`${state.time_constraint.start}`} />
+                        <MyCustomInput label="Time_End" variant="outlined" onMyChange={
+                            (e) => {
+                                const val = (e.target as HTMLInputElement).value;
+                                if (isNumeric(val)) {
+                                    const newState = { ...state };
+                                    newState.time_constraint.end = +val;
+                                    dispatch({ type: 'modify', state: newState });
+                                }
+                            }
+                        } state={`${state.time_constraint.end}`} />
+                    </Stack>
                 </Stack>
             </Collapse>
         </Stack>

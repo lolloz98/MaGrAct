@@ -11,7 +11,7 @@ import Axes from "./graphic/Axes";
 import { ReactElement } from "react";
 import { NodeModel } from "@minoru/react-dnd-treeview";
 
-export function createDefaultState(type: ComponentEnum, title: string | undefined) : BaseState {
+export function createDefaultState(type: ComponentEnum, title: string | undefined, maxTime: number) : BaseState {
     const id = uuid();
     const obj: BaseState = {
         id: id,
@@ -24,6 +24,10 @@ export function createDefaultState(type: ComponentEnum, title: string | undefine
         position: {
             x: 533,
             y: 330
+        },
+        time_constraint: {
+            start: 0,
+            end: maxTime
         }
     }
     switch (type) {

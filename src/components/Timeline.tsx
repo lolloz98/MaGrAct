@@ -4,14 +4,14 @@ import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import React, { useContext, useEffect } from "react";
 import { TimeContext } from "./TimeContext";
 
-export default function MyTimeline({ tick, setTick, step }: {
+export default function MyTimeline({ tick, setTick, step, maxTicks }: {
     tick: number,
     setTick: React.Dispatch<React.SetStateAction<number>>,
-    step: number
+    step: number,
+    maxTicks: number
 }) {
     const [play, setPlay] = React.useState<boolean>(false);
     const time = useContext(TimeContext);
-    const maxTicks = 100;
     const numberOfMarks = 10;
     const marks = Array.from({ length: numberOfMarks + 1 }, (value, key) => { return { value: Math.round(maxTicks * key / numberOfMarks) }; })
 
