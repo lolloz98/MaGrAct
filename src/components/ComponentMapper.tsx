@@ -10,6 +10,7 @@ import FunctionState from "./states/FunctionState";
 import Axes from "./graphic/Axes";
 import { ReactElement } from "react";
 import { NodeModel } from "@minoru/react-dnd-treeview";
+import MyKatex from "./graphic/MyKatex";
 
 export function createDefaultState(type: ComponentEnum, title: string | undefined, maxTime: number) : BaseState {
     const id = uuid();
@@ -43,6 +44,10 @@ export function createDefaultState(type: ComponentEnum, title: string | undefine
             return obj;
         case ComponentEnum.AXES:
             return obj;
+        case ComponentEnum.LATEX:
+            obj.scale.x = 1;
+            obj.scale.y = 1;
+            return obj;
         default:
             console.error(`No default state specified for component ${type}`);
             obj.type = ComponentEnum.UNKOWN;
@@ -69,9 +74,12 @@ export function getComponent(state: BaseState, dispacth: DispactherAction): {
             break;
         case ComponentEnum.FUNCTION_ANIM:
             jsx = (<FunctionAnimated state={state} dispatch={dispacth} key={state.id}></FunctionAnimated>);
-                    break;
+            break;
         case ComponentEnum.AXES:
             jsx = (<Axes state={state} dispatch={dispacth} key={state.id}></Axes>);
+            break;
+        case ComponentEnum.LATEX:
+            jsx = (<MyKatex state={state} dispatch={dispacth} key={state.id}/>);
             break;
         default:
             alert(`No getComponent specified for ${state.type}`);
@@ -90,8 +98,10 @@ export function getModifier(state: BaseState, dispacth: DispactherAction) {
             return (<BaseControl state={state} dispatch={dispacth} key={state.id}></BaseControl>);
         case ComponentEnum.AXES:
             return (<BaseControl state={state} dispatch={dispacth} key={state.id}></BaseControl>);
+        case ComponentEnum.LATEX:
+            return (<BaseControl state={state} dispatch={dispacth} key={state.id}></BaseControl>);
         default:
-            alert(`No getComponent specified for ${state.type}`);
+            alert(`No getModifier specified for ${state.type}`);
     }
 }
 

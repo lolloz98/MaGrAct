@@ -45,12 +45,11 @@ function KaTeX({ setH, setW, state }: {
        
     useEffect(() => {
         if (reference.current) {
+            console.log("rendering");
             if (reference.current) new ResizeObserver(handleResize).observe(reference.current);
             katex.render("\\forall x \\in X, \\quad \\exists y \\leq \\epsilon", reference.current as HTMLInputElement);
         }
     }, [reference.current]);
-
-
 
     return <div style={{ color: computeColorDissolvenceAnimation(state, t), pointerEvents: 'none' }} ref={reference} />;
 }
