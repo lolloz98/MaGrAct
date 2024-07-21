@@ -32,7 +32,7 @@ export function createDefaultState(type: ComponentEnum, title: string | undefine
         },
         color: "#ffffffff",
         animation: {
-            start_duration: 0.3,
+            start_duration: 0,
             end_duration: 0.3
         }
     }
