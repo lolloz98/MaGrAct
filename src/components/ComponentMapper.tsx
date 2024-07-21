@@ -17,9 +17,13 @@ export function createDefaultState(type: ComponentEnum, title: string | undefine
         id: id,
         title: title ?? type,
         type: type,
-        position: {
-            x: 50,
+        scale: {
+            x: 100,
             y: 100
+        },
+        position: {
+            x: 533,
+            y: 330
         }
     }
     switch (type) {

@@ -15,27 +15,51 @@ export function SharedBaseControl({ state, dispatch }: { state: BaseState, dispa
         <Stack>
             <Button size="small" startIcon={open ? <ExpandLess /> : <ExpandMore />} onClick={() => setOpen(!open)}>Base Controls</Button>
             <Collapse in={open} timeout="auto" unmountOnExit>
-                <Stack direction={"row"} spacing={1}>
-                    <MyCustomInput label="Position_X" variant="outlined" onMyChange={
-                        (e) => {
-                            const val = (e.target as HTMLInputElement).value;
-                            if (isNumeric(val)) {
-                                const newState = { ...state };
-                                newState.position.x = +val;
-                                dispatch({ type: 'modify', state: newState });
+                <Stack direction={"column"} spacing={1}>
+                    <Stack direction={"row"} spacing={1}>
+                        <MyCustomInput label="Position_X" variant="outlined" onMyChange={
+                            (e) => {
+                                const val = (e.target as HTMLInputElement).value;
+                                if (isNumeric(val)) {
+                                    const newState = { ...state };
+                                    newState.position.x = +val;
+                                    dispatch({ type: 'modify', state: newState });
+                                }
                             }
-                        }
-                    } state={`${state.position.x}`} />
-                    <MyCustomInput label="Position_Y" variant="outlined" onMyChange={
-                        (e) => {
-                            const val = (e.target as HTMLInputElement).value;
-                            if (isNumeric(val)) {
-                                const newState = { ...state };
-                                newState.position.y = +val;
-                                dispatch({ type: 'modify', state: newState });
+                        } state={`${state.position.x}`} />
+                        <MyCustomInput label="Position_Y" variant="outlined" onMyChange={
+                            (e) => {
+                                const val = (e.target as HTMLInputElement).value;
+                                if (isNumeric(val)) {
+                                    const newState = { ...state };
+                                    newState.position.y = +val;
+                                    dispatch({ type: 'modify', state: newState });
+                                }
                             }
-                        }
-                    } state={`${state.position.y}`} />
+                        } state={`${state.position.y}`} />
+                    </Stack>
+                    <Stack direction={"row"} spacing={1}>
+                        <MyCustomInput label="Scale_X" variant="outlined" onMyChange={
+                            (e) => {
+                                const val = (e.target as HTMLInputElement).value;
+                                if (isNumeric(val)) {
+                                    const newState = { ...state };
+                                    newState.scale.x = +val;
+                                    dispatch({ type: 'modify', state: newState });
+                                }
+                            }
+                        } state={`${state.scale.x}`} />
+                        <MyCustomInput label="Scale_Y" variant="outlined" onMyChange={
+                            (e) => {
+                                const val = (e.target as HTMLInputElement).value;
+                                if (isNumeric(val)) {
+                                    const newState = { ...state };
+                                    newState.scale.y = +val;
+                                    dispatch({ type: 'modify', state: newState });
+                                }
+                            }
+                        } state={`${state.scale.y}`} />
+                    </Stack>
                 </Stack>
             </Collapse>
         </Stack>
