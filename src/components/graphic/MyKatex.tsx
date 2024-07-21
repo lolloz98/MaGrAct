@@ -20,12 +20,16 @@ export default function MyKatex({ state, dispatch }: {state: BaseState, dispatch
         ...getPositionAndScaleProps(state)
     };
 
+    const rectProps = {
+        ...getCommonProps(state, t)
+    }
+
     return (
         <Group width={w} height={h} {...props}>
             <Html divProps={{ style: { pointerEvents: "none" } }} groupProps={{ preventDefault: true }}>
                 <KaTeX setW={setW} setH={setH} state={state}></KaTeX>
             </Html>
-            <Rect width={w} fill="red" height={h} x={0} y={0} />
+            <Rect width={w} fill="red" height={h} x={0} y={0} {...rectProps} />
         </Group>)
 }
 
