@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import { Html } from 'react-konva-utils';
-import { Group, Rect, Text } from "react-konva";
-import Konva from "konva";
+import { Group, Rect } from "react-konva";
 
 // todo: create state for this component
 export default function MyKatex() {
@@ -26,9 +25,13 @@ function KaTeX({ setH, setW }: { setH: React.Dispatch<React.SetStateAction<numbe
     const reference = useRef<HTMLInputElement>(null);
     useEffect(() => {
         katex.render("\\forall x \\in X, \\quad \\exists y \\leq \\epsilon", reference.current as HTMLInputElement);
+    }, []);
+
+    useEffect(() => {
+        console.log("changing size");
         setH(reference.current?.offsetHeight ? reference.current?.offsetHeight : 0);
         setW(reference.current?.offsetWidth ? reference.current?.offsetWidth : 0);
-    }, []);
+    }, [reference.current?.offsetHeight, reference.current?.offsetWidth])
 
     return <div style={{color: "white", pointerEvents: 'none'}} ref={reference} />;
 }
