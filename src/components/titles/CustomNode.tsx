@@ -5,7 +5,7 @@ import { ArrowRight, Delete, FileCopy } from "@mui/icons-material";
 import { NodeModel, useDragOver } from "@minoru/react-dnd-treeview";
 import styles from "./CustomNode.module.css";
 import { MyTreeElement } from "../ComponentMapper";
-import MyCustomInput from "../controls/MyCustomInput";
+import MyCustomInput from "../inputs/MyCustomInput";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";

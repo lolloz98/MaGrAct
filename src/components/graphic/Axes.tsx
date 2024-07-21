@@ -37,7 +37,7 @@ export default function Axes({ state, dispatch }: { state: BaseState, dispatch: 
         <Line
             onClick={() => console.log("x axis clicked")}
             points={x_axis}
-            stroke='white'
+            stroke='#ffffffff'
             strokeWidth={1}
             name={state.id}
             x={0}

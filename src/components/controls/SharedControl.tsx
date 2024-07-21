@@ -1,5 +1,5 @@
 import { Button, Collapse, Stack } from "@mui/material";
-import MyCustomInput from "./MyCustomInput";
+import MyCustomInput from "../inputs/MyCustomInput";
 import BaseState from "../states/BaseState";
 import { DispactherAction } from "../StoreContext";
 import { useState } from "react";
