@@ -1,4 +1,7 @@
+import Konva from "konva";
 import BaseState from "./states/BaseState";
+import { DispactherAction } from "./StoreContext";
+import { KonvaEventObject } from "konva/lib/Node";
 
 export function isNumeric(str: string) {
     return !isNaN(+str) &&
@@ -72,3 +75,51 @@ export function computeColorDissolvenceAnimation(state: BaseState, curTime: numb
     }
     return color;
 }
+
+export function getLineColorProps(state: BaseState, currentTime: number) {
+    return {
+        stroke: computeColorDissolvenceAnimation(state, currentTime),
+        strokeWidth: 0.1
+    };
+}
+
+export function getPositionProps(state: BaseState) {
+    return {
+        x: state.position.x,
+        y: state.position.y,
+    };
+} 
+
+export function getScaleProps(state: BaseState) {
+    return {
+        scaleX: state.scale.x,
+        scaleY: state.scale.y
+    };
+}
+
+export function getPositionAndScaleProps(state: BaseState) {
+    return {
+        ...getPositionProps(state),
+        ...getScaleProps(state)
+    };
+}
+
+export function getDraggableProps(state: BaseState, dispatch: DispactherAction) {
+    return {
+        draggable: true,
+        onDragEnd: ((e: KonvaEventObject<DragEvent>) => {
+            const newState = {...state};
+            newState.position.x = e.target.x();
+            newState.position.y = e.target.y();
+            dispatch({ type: "modify", state: newState })
+        })
+    };
+}
+
+export function getCommonProps(state: BaseState, currentTime: number) {
+    return {
+        visible: currentTime >= state.time_constraint.start && currentTime < state.time_constraint.end,
+        name: state.id,
+        onClick: () => console.debug(`${state.type} clicked: ${state.id}`)
+    }
+};

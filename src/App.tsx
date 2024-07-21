@@ -166,7 +166,6 @@ function App() {
                     flex={5}>
                     <StageWithReactiveDimen dispatch={dispacth} >
                       <Layer>
-                        <MyKatex></MyKatex>
                         {children}
                       </Layer>
                     </StageWithReactiveDimen>
