@@ -4,7 +4,7 @@ import "katex/dist/katex.min.css";
 import { Html } from 'react-konva-utils';
 import { Group, Rect } from "react-konva";
 import BaseState from "../states/BaseState";
-import { computeColorDissolvenceAnimation, getCommonProps, getDraggableProps, getPositionAndScaleProps } from "../Utils";
+import { computeColorDissolvenceAnimation, getCommonProps, getDraggableProps, getPositionAndScaleProps, isVisible } from "../Utils";
 import { TimeContext } from "../TimeContext";
 import { DispactherAction } from "../StoreContext";
 
@@ -55,5 +55,7 @@ function KaTeX({ setH, setW, state }: {
         }
     }, [reference.current]);
 
-    return <div style={{ color: computeColorDissolvenceAnimation(state, t), pointerEvents: 'none' }} ref={reference} />;
+    const visibility = (isVisible(state, t)? 'visible' : 'hidden');
+
+    return <div style={{ color: computeColorDissolvenceAnimation(state, t), pointerEvents: 'none', visibility: visibility }} ref={reference} />;
 }

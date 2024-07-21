@@ -117,9 +117,13 @@ export function getDraggableProps(state: BaseState, dispatch: DispactherAction) 
     };
 }
 
+export function isVisible(state: BaseState, currentTime: number) {
+    return currentTime >= state.time_constraint.start && currentTime < state.time_constraint.end;
+}
+
 export function getCommonProps(state: BaseState, currentTime: number) {
     return {
-        visible: currentTime >= state.time_constraint.start && currentTime < state.time_constraint.end,
+        visible: isVisible(state, currentTime),
         name: state.id,
         onClick: () => console.debug(`${state.type} clicked: ${state.id}`)
     }
