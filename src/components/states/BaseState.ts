@@ -17,5 +17,10 @@ export default interface BaseState {
     time_constraint: {
         start: number,
         end: number
+    },
+    color: string,
+    animation: {
+        start_duration: number,
+        end_duration: number
     }
 }

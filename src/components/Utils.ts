@@ -1,3 +1,5 @@
+import BaseState from "./states/BaseState";
+
 export function isNumeric(str: string) {
     return !isNaN(+str) &&
         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
@@ -46,4 +48,27 @@ export function isRgba(str: string) {
 
 export function lerp(start: number, end: number, perc: number) {
     return Math.floor(start + (end - start) * perc);
+}
+
+export function computeColorDissolvenceAnimation(state: BaseState, curTime: number): string {
+    let color = state.color;
+    const startTime = state.time_constraint.start;
+    const endTime = state.time_constraint.end;
+    const animStartDuration = state.animation.start_duration;
+    const animEndDuration = state.animation.end_duration;
+    if (curTime >= startTime && curTime < startTime + animStartDuration && animStartDuration !== 0) {
+        const rgba = myHexToRgba(color);
+        if (rgba !== null) {
+            rgba.a = lerp(0, rgba.a, (curTime - startTime) / animStartDuration)
+            color = myRgbaToHex(rgba);
+        }
+    }
+    if (curTime < endTime && curTime > endTime - animEndDuration && animEndDuration !== 0) {
+        const rgba = myHexToRgba(color);
+        if (rgba !== null) {
+            rgba.a = lerp(0, rgba.a, (endTime - curTime) / animEndDuration)
+            color = myRgbaToHex(rgba);
+        }
+    }
+    return color;
 }

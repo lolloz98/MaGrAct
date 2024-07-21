@@ -4,7 +4,7 @@ import { TimeContext } from '../TimeContext';
 import FunctionState from "../states/FunctionState";
 import { DispactherAction } from "../StoreContext";
 import { hexToRgb } from "@mui/material";
-import { lerp, myHexToRgba, myRgbaToHex } from "../Utils";
+import { computeColorDissolvenceAnimation, lerp, myHexToRgba, myRgbaToHex } from "../Utils";
 
 
 export default function Function({ state, dispatch }: { state: FunctionState, dispatch: DispactherAction }) {
@@ -27,23 +27,9 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
 
     const startTime = state.time_constraint.start;
     const endTime = state.time_constraint.end;
-    const animTime = 1;
 
-    let color = "#ffffffff";
-    if (timeC >= startTime && timeC < startTime + animTime) {
-        const rgba = myHexToRgba(color);
-        if (rgba !== null) {
-            rgba.a = lerp(0, rgba.a, (timeC - startTime) / animTime)
-            color = myRgbaToHex(rgba);
-        }
-    }
-    if (timeC < endTime && timeC > endTime - animTime) {
-        const rgba = myHexToRgba(color);
-        if (rgba !== null) {
-            rgba.a = lerp(0, rgba.a, (endTime - timeC) / animTime)
-            color = myRgbaToHex(rgba);
-        }
-    }
+    const color = computeColorDissolvenceAnimation(state, timeC);
+    
     const isVisible = timeC >= startTime && timeC < endTime;
     // todo remove nest
     return (<Group

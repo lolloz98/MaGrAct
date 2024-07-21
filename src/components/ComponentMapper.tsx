@@ -28,6 +28,11 @@ export function createDefaultState(type: ComponentEnum, title: string | undefine
         time_constraint: {
             start: 0,
             end: maxTime
+        },
+        color: "#ffffffff",
+        animation: {
+            start_duration: 0.3,
+            end_duration: 0.3
         }
     }
     switch (type) {
