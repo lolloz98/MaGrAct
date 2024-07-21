@@ -76,7 +76,7 @@ export const AddDialog: React.FC<Props> = (props) => {
                     .filter((v) => (isNaN(Number(v)) && v !== (ComponentEnum.UNKOWN)))
                     .map((v) => {
                       return (
-                        <MenuItem value={v}>{v}</MenuItem>
+                        <MenuItem value={v} key={v}>{v}</MenuItem>
                     )})
                 }
               </Select>

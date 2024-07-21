@@ -3,7 +3,7 @@ import React, { ReactElement, useEffect, useRef, useState } from "react"
 
 import { Stage } from "react-konva"
 import { DispactherAction } from "../StoreContext";
-import { convertDimen } from "../MyUtils";
+import { convertDimen } from "../Utils";
 
 export function StageWithReactiveDimen({ children, dispatch, dimensions }: { 
   children?: ReactElement, 

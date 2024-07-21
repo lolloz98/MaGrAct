@@ -6,7 +6,7 @@ import { CustomDragPreview } from "./CustomDragPreview";
 import styles from "./TitleList.module.css";
 import { Placeholder } from "./PlaceHolder";
 import BaseState from "../states/BaseState";
-import { convertDimen } from "../MyUtils";
+import { convertDimen } from "../Utils";
 
 
 export default function TitleList({ tree, currentlySelected, dispatch, dimensions }: {
