@@ -10,6 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import MyNumbericInput from "../inputs/MyNumericInput";
 import MyColorPicker, { DefaultColorPicker } from "../inputs/MyColorPicker";
 import FunctionState, { Axis } from "../states/FunctionState";
+import MyTextInput from "../inputs/MyTextInput";
 
 export function SharedBaseControl({ state, dispatch }: { state: BaseState, dispatch: DispactherAction }) {
     const [open, setOpen] = useState(false);
@@ -146,6 +147,55 @@ export function SharedAxisControl({ state, getAxis, dispatch, title }: {
                             }} />
                         </FormGroup>
                     </Stack>                  
+                </Stack>
+            </Collapse>
+        </Stack>
+    )
+}
+
+export function SharedFunctionControl({ state, dispatch }: { 
+    state: FunctionState, 
+    dispatch: DispactherAction
+}) {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <Stack>
+            <Button size="small" startIcon={open ? <ExpandLess /> : <ExpandMore />} onClick={() => setOpen(!open)}>Main Function</Button>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+                <Stack direction={"column"} spacing={1}>
+                    <Stack direction={"row"} spacing={1}>
+                        <MyTextInput state={state} dispatch={dispatch} 
+                            label={"Function"} get={(a) => (a as FunctionState).fn} set={(a, nf) => (a as FunctionState).fn = nf} />
+                    </Stack>
+                    <Stack direction={"row"} spacing={1}>
+                        <MyNumbericInput label="Min X" variant="outlined" 
+                         dispatch={dispatch}
+                         state={state} get={(state) =>{ 
+                            return (state as FunctionState).x_bounds.min
+                        }} 
+                         set={(a: BaseState, n: number) => (a as FunctionState).x_bounds.min = n} />
+                        <MyNumbericInput label="Max X" variant="outlined" 
+                         dispatch={dispatch}
+                         state={state} get={(state) =>{ 
+                            return (state as FunctionState).x_bounds.max
+                        }} 
+                         set={(a: BaseState, n: number) => (a as FunctionState).x_bounds.max = n} />
+                    </Stack>
+                    <Stack direction={"row"} spacing={1}>
+                        <MyNumbericInput label="Min Y" variant="outlined" 
+                         dispatch={dispatch}
+                         state={state} get={(state) =>{ 
+                            return (state as FunctionState).y_bounds.min
+                        }} 
+                         set={(a: BaseState, n: number) => (a as FunctionState).y_bounds.min = n} />
+                        <MyNumbericInput label="Max Y" variant="outlined" 
+                         dispatch={dispatch}
+                         state={state} get={(state) =>{ 
+                            return (state as FunctionState).y_bounds.max
+                        }} 
+                         set={(a: BaseState, n: number) => (a as FunctionState).y_bounds.max = n} />
+                    </Stack>                
                 </Stack>
             </Collapse>
         </Stack>

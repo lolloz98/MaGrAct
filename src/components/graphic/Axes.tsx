@@ -17,17 +17,14 @@ export default function Axes({ state, dispatch }: { state: FunctionState, dispat
 
     const step = 0.05;
 
-    // problem with konva: cannot display points with numbers less than this
-    const threshold = 1e-5;
-
     const points_of_points: number[][] = [[]];
-    for (let x = -4; x < 4; x += step) {
+    for (let x = state.x_bounds.min; x < state.x_bounds.max; x += step) {
         const scope = {
             x: x
         };
         try {
             const y = evaluate(state.fn, scope);
-            if (y === undefined || isNaN(y) || y === Infinity || abs(y) > 10000) {
+            if (y === undefined || isNaN(y) || y === Infinity || y < state.y_bounds.min || y > state.y_bounds.max) {
                 points_of_points.push([]);
             } else {
                 points_of_points[points_of_points.length - 1].push(x);
