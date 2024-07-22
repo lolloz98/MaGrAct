@@ -29,7 +29,7 @@ export default function MyKatex({ state, dispatch }: {state: BaseState, dispatch
             <Html divProps={{ style: { pointerEvents: "none" } }} groupProps={{ preventDefault: true }}>
                 <KaTeX setW={setW} setH={setH} state={state}></KaTeX>
             </Html>
-            <Rect width={w} fill="red" height={h} x={0} y={0} {...rectProps} />
+            <Rect width={w} height={h} x={0} y={0} {...rectProps} />
         </Group>)
 }
 
