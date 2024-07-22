@@ -35,7 +35,8 @@ export default function Axes({ state, dispatch }: { state: FunctionState, dispat
             x: x
         };
         try {
-            const y = evaluate(state.fn, scope);
+            // we mirror on y, because konva has the axis inverted
+            const y = evaluate(`-(${state.fn})`, scope);
             if (y === undefined || isNaN(y) || y === Infinity || y < state.y_bounds.min || y > state.y_bounds.max) {
                 points_of_points.push([]);
             } else {
@@ -84,29 +85,32 @@ export default function Axes({ state, dispatch }: { state: FunctionState, dispat
 
     const x_marks = [];
     const y_marks = [];
-    const mark_l = 40;
+    const mark_width = 40;
+    const mark_thick = 4;
 
     for (let i = 0; i < x_marks_pos.length; i++) {
         x_marks.push((<Rect 
             {...commonProps}
             stroke={x_col}
-            y={- mark_l / 2}
-            x={x_marks_pos[i] * state.scale.x}
-            strokeWidth={4 / state.scale.x}
-            height={mark_l} 
+            y={- mark_width / 2}
+            x={(x_marks_pos[i]) * state.scale.x}
+            strokeWidth={mark_thick / state.scale.x}
+            height={mark_width} 
             visible={state.x_axis.marks.visible}
             scaleX={state.scale.x}
             key={i} />))
     }
 
     for (let i = 0; i < y_marks_pos.length; i++) {
+        const thick = mark_thick / state.scale.y;
+        const offset = y_marks_pos[i] > 0 ? thick/2 : -thick/2;
         y_marks.push((<Rect 
             {...commonProps}
             stroke={y_col}
             x={0}
-            y={y_marks_pos[i] * state.scale.y}
-            strokeWidth={mark_l}
-            height={4 / state.scale.y} 
+            y={y_marks_pos[i] * state.scale.y + offset}
+            strokeWidth={mark_width}
+            height={thick} 
             visible={state.y_axis.marks.visible}
             scaleY={state.scale.y}
             key={i} />))
