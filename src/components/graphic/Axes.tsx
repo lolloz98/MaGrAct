@@ -5,7 +5,6 @@ import { DispactherAction } from "../StoreContext";
 import { computeColorDissolvenceAnimation, getCommonProps, getDraggableProps, getLineColorProps, getPositionAndScaleProps, getPositionProps, getScaleProps } from "../Utils";
 import FunctionState from "../states/FunctionState";
 import { evaluate, isNaN } from "mathjs";
-import { visibility } from "html2canvas/dist/types/css/property-descriptors/visibility";
 
 
 function computeMarksPos(min: number, max: number, each: number, visible: boolean) {
