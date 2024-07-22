@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { TimeContext } from '../TimeContext';
 import { DispactherAction } from "../StoreContext";
 import BaseState from "../states/BaseState";
-import { getCommonProps, getDraggableProps, getLineColorProps, getPositionAndScaleProps, getPositionProps, getScaleProps } from "../Utils";
+import { computeColorDissolvenceAnimation, getCommonProps, getDraggableProps, getLineColorProps, getPositionAndScaleProps, getPositionProps, getScaleProps } from "../Utils";
 import FunctionState from "../states/FunctionState";
 import { abs, all, create, evaluate, isNaN, Matrix, number } from "mathjs";
 
@@ -73,7 +73,7 @@ export default function Axes({ state, dispatch }: { state: FunctionState, dispat
             {...axisCommonProps}
             visible={state.x_axis.visible}
             points={x_axis}
-            stroke='#ffffffff'
+            stroke={computeColorDissolvenceAnimation(state, t, (state) => (state as FunctionState).x_axis.color)}
             scaleX={state.scale.x}
             scaleY={state.x_axis.thickness}
             x={0}
@@ -83,7 +83,7 @@ export default function Axes({ state, dispatch }: { state: FunctionState, dispat
             {...axisCommonProps}
             visible={state.y_axis.visible}
             points={y_axis}
-            stroke='white'
+            stroke={computeColorDissolvenceAnimation(state, t, (state) => (state as FunctionState).y_axis.color)}
             scaleX={state.y_axis.thickness}
             scaleY={state.scale.y}
             x={0}

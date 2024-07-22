@@ -54,8 +54,8 @@ export function lerp(start: number, end: number, perc: number) {
     return Math.floor(start + (end - start) * perc);
 }
 
-export function computeColorDissolvenceAnimation(state: BaseState, curTime: number): string {
-    let color = state.color;
+export function computeColorDissolvenceAnimation(state: BaseState, curTime: number, getColor: ((state: BaseState) => string) = (s) => s.color): string {
+    let color = getColor(state);
     const startTime = state.time_constraint.start;
     const endTime = state.time_constraint.end;
     const animStartDuration = state.animation.start_duration;
