@@ -75,7 +75,7 @@ export function getModifier(state: BaseState, dispacth: DispactherAction) {
         case ComponentEnum.FUNCTION_ANIM:
             return (<BaseControl state={state} dispatch={dispacth} key={state.id}></BaseControl>);
         case ComponentEnum.AXES:
-            return (<BaseControl state={state} dispatch={dispacth} key={state.id}></BaseControl>);
+            return (<FunctionControl state={state as FunctionState} dispatch={dispacth} key={state.id}/>);
         case ComponentEnum.LATEX:
             return (<BaseControl state={state} dispatch={dispacth} key={state.id}></BaseControl>);
         default:

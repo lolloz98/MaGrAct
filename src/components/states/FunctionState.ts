@@ -16,7 +16,8 @@ export interface Axis {
     marks: {
         visible: boolean,
         each: number
-    }
+    },
+    color: string
 }
 
 export function getDefaultAxis(): Axis {
@@ -30,7 +31,8 @@ export function getDefaultAxis(): Axis {
         marks: {
             visible: true,
             each: 1
-        }
+        },
+        color: "#ffffffff"
     }
 }
 

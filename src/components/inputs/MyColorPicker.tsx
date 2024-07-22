@@ -7,8 +7,27 @@ import MyCustomInput from "./MyCustomInput";
 
 interface RGBA {r: number, g: number, b: number, a: number}
 
-export default function MyColorPicker({ state, dispatch, label }: {
+export function DefaultColorPicker({ 
+  state, 
+  dispatch, label 
+}: {
   state: BaseState,
+  dispatch: DispactherAction,
+  label: string
+}) {
+  return <MyColorPicker state={state} dispatch={dispatch} label={label} 
+    getColor={(state: BaseState) => state.color} setColor={(state: BaseState, n: string) => state.color = n}/>
+}
+
+export default function MyColorPicker({ 
+  state, 
+  getColor, 
+  setColor, 
+  dispatch, label 
+}: {
+  state: BaseState,
+  getColor: (state: BaseState) => string,
+  setColor: (state: BaseState, n: string) => void,
   dispatch: DispactherAction,
   label: string
 }) {
@@ -17,7 +36,7 @@ export default function MyColorPicker({ state, dispatch, label }: {
     console.log(isRgba(newColor));
     if (isRgba(newColor)){
       const newState = { ...state };
-      newState.color = newColor;
+      setColor(newState, newColor);
       dispatch({ type: 'modify', state: newState })
     }
   }
@@ -28,7 +47,7 @@ export default function MyColorPicker({ state, dispatch, label }: {
   return (<>
     {showPicker && (
       <MyPickerDialog
-        state={state.color}
+        state={getColor(state)}
         onClick={() => {
           setShowPicker(false)
         }}
@@ -42,8 +61,8 @@ export default function MyColorPicker({ state, dispatch, label }: {
       onMyChange={e => {
         onChangeHex((e.target as HTMLInputElement).value);
       }}
-      InputProps={{ style: { color: state.color } }}
-      state={state.color}
+      InputProps={{ style: { color: getColor(state) } }}
+      state={getColor(state)}
     />
   </>);
 };

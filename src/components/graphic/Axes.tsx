@@ -5,7 +5,7 @@ import { DispactherAction } from "../StoreContext";
 import BaseState from "../states/BaseState";
 import { getCommonProps, getDraggableProps, getLineColorProps, getPositionAndScaleProps, getPositionProps, getScaleProps } from "../Utils";
 import FunctionState from "../states/FunctionState";
-import { evaluate, isNaN } from "mathjs";
+import { abs, all, create, evaluate, isNaN, Matrix, number } from "mathjs";
 
 
 export default function Axes({ state, dispatch }: { state: FunctionState, dispatch: DispactherAction }) {
@@ -17,19 +17,28 @@ export default function Axes({ state, dispatch }: { state: FunctionState, dispat
 
     const step = 0.05;
 
+    // problem with konva: cannot display points with numbers less than this
+    const threshold = 1e-5;
+
     const points_of_points: number[][] = [[]];
     for (let x = -4; x < 4; x += step) {
         const scope = {
             x: x
         };
-        const y = evaluate(state.fn, scope);
-        if (isNaN(y)) {
-            points_of_points.push([]);
-        } else {
-            points_of_points[points_of_points.length - 1].push(x);
-            points_of_points[points_of_points.length - 1].push(y);
+        try {
+            const y = evaluate(state.fn, scope);
+            if (y === undefined || isNaN(y) || y === Infinity || abs(y) > 10000) {
+                points_of_points.push([]);
+            } else {
+                points_of_points[points_of_points.length - 1].push(x);
+                points_of_points[points_of_points.length - 1].push(y);
+            }
+        } catch (e) {
+            console.error("There was an error evaluating function", e);
+            break;
         }
     }
+    console.log(points_of_points);
 
     const groupProps = {
         ...getDraggableProps(state, dispatch),
@@ -57,6 +66,7 @@ export default function Axes({ state, dispatch }: { state: FunctionState, dispat
             key={i}
         />))
     }
+    console.log(fns);
 
     // todo remove nest
     return (<Group
