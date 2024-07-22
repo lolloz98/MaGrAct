@@ -17,7 +17,8 @@ export type StoreAction = {
     state: BaseState
 } | {
     type: "modify",
-    state: BaseState
+    id: string,
+    modifiers: ((state: BaseState) => void)[]
 } | {
     type: "reset"
 } | {

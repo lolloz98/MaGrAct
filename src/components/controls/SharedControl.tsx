@@ -76,9 +76,7 @@ export function SharedTitleControl({ state, dispatch }: { state: BaseState, disp
             <MyCustomInput label="Title" variant="outlined" onMyChange={
                 (e) => {
                     const val = (e.target as HTMLInputElement).value;
-                    const newState = { ...state };
-                    newState.title = val;
-                    dispatch({ type: 'modify', state: newState });
+                    dispatch({ type: 'modify', id: state.id, modifiers: [(s) => s.title = val] });
                 }
             } state={`${state.title}`} />
         </Stack>
@@ -132,18 +130,15 @@ export function SharedAxisControl({ state, getAxis, dispatch, title }: {
                             set={(a: BaseState, n: number) => getAxis(a as FunctionState).marks.each = n} />
                         <FormGroup>
                             <FormControlLabel control={<Checkbox defaultChecked />} label="Marks: Visible" onChange={(e) => {
-                                const newState = { ...state };
-                                getAxis(newState as FunctionState).marks.visible = (e.target as HTMLInputElement).checked;
-                                dispatch({ type: 'modify', state: newState })
+                                dispatch({ type: 'modify', id: state.id, modifiers: [(s) => getAxis(s as FunctionState).marks.visible = (e.target as HTMLInputElement).checked] });
+
                             }} />
                         </FormGroup>
                     </Stack>
                     <Stack direction={"row"} spacing={1}>
                         <FormGroup>
                             <FormControlLabel control={<Checkbox defaultChecked />} label="Visible" onChange={(e) => {
-                                const newState = { ...state };
-                                getAxis(newState as FunctionState).visible = (e.target as HTMLInputElement).checked;
-                                dispatch({ type: 'modify', state: newState })
+                                dispatch({ type: 'modify', id: state.id, modifiers: [(s) => getAxis(s as FunctionState).visible = (e.target as HTMLInputElement).checked] });
                             }} />
                         </FormGroup>
                     </Stack>

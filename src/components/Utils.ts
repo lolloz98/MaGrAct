@@ -112,10 +112,7 @@ export function getDraggableProps(state: BaseState, dispatch: DispactherAction) 
     return {
         draggable: true,
         onDragEnd: ((e: KonvaEventObject<DragEvent>) => {
-            const newState = {...state};
-            newState.position.x = e.target.x();
-            newState.position.y = e.target.y();
-            dispatch({ type: "modify", state: newState })
+            dispatch({ type: "modify", id: state.id, modifiers: [(s) => { s.position.x = e.target.x(); s.position.y = e.target.y()}] })
         })
     };
 }

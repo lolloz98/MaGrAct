@@ -32,12 +32,8 @@ export default function TitleList({ tree, currentlySelected, dispatch, dimension
   };
 
   const handleTextChange = (id: MyTreeElement["id"], value: string) => {
-    const changing = tree.filter((node) => node.id === id)[0];
-    changing.text = value;
-    if (changing.data) {
-      const toChange = {...changing.data};
-      toChange.title = value;
-      dispatch({ type: "modify", state: toChange });
+    if (id !== 0) {
+      dispatch({ type: "modify", id: `${id}`, modifiers: [(state: BaseState) => { state.title = value }] });
     }
   };
 

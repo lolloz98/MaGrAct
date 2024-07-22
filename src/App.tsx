@@ -78,13 +78,16 @@ function reducer(
       draft.selected_from_list = action.state;
       return void draft.components.push(action.state);
     case 'modify':
-      const ind = draft.components.findIndex(a => a.id === action.state.id);
-      const prev = draft.components[ind];
-      if (prev.title !== action.state.title) {
-        draft.titles.delete(prev.title);
-        checkAndUpdateTitle(action.state, draft);
+      const ind = draft.components.findIndex(a => a.id === action.id);
+      const state = draft.components[ind];
+      const prevTitle = state.title;
+      for (const m of action.modifiers) {
+        m(state);
       }
-      draft.components[ind] = action.state;
+      if (prevTitle !== state.title) {
+        draft.titles.delete(prevTitle);
+        checkAndUpdateTitle(state, draft);
+      }
       return draft;
     case 'changeSelection':
       for (const id of action.ids) {

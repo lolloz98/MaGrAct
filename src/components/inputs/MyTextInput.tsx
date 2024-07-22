@@ -18,9 +18,7 @@ export default function MyTextInput<Variant extends TextFieldVariants>(
 
     const onMyChange = (e: Event) => {
         const val = (e.target as HTMLInputElement).value;
-        const newState = { ...state };
-        set(newState, val);
-        dispatch({ type: 'modify', state: newState });
+        dispatch({ type: 'modify', id: state.id, modifiers: [(s) => set(s, val)] });
     }
 
     return (

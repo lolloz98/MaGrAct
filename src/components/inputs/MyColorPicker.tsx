@@ -35,9 +35,7 @@ export default function MyColorPicker({
   const onChangeHex = (newColor: string) => {
     console.log(isRgba(newColor));
     if (isRgba(newColor)){
-      const newState = { ...state };
-      setColor(newState, newColor);
-      dispatch({ type: 'modify', state: newState })
+      dispatch({ type: 'modify', id: state.id, modifiers: [(s) => setColor(s, newColor)] });
     }
   }
   const onChangeFromPicker = (newColor: RGBA) => {
