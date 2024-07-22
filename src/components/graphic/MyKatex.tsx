@@ -7,9 +7,10 @@ import BaseState from "../states/BaseState";
 import { computeColorDissolvenceAnimation, getCommonProps, getDraggableProps, getPositionAndScaleProps, isVisible } from "../Utils";
 import { TimeContext } from "../TimeContext";
 import { DispactherAction } from "../StoreContext";
+import KatexState from "../states/KatexState";
 
 // todo: create state for this component
-export default function MyKatex({ state, dispatch }: {state: BaseState, dispatch: DispactherAction}) {
+export default function MyKatex({ state, dispatch }: {state: KatexState, dispatch: DispactherAction}) {
     const [w, setW] = useState(0);
     const [h, setH] = useState(0);
     const t = useContext(TimeContext);
@@ -36,7 +37,7 @@ export default function MyKatex({ state, dispatch }: {state: BaseState, dispatch
 function KaTeX({ setH, setW, state }: {
     setH: React.Dispatch<React.SetStateAction<number>>, 
     setW: React.Dispatch<React.SetStateAction<number>>,
-    state: BaseState
+    state: KatexState
 }) {
     const reference = useRef<HTMLInputElement>(null);
     const t = useContext(TimeContext);
@@ -51,9 +52,13 @@ function KaTeX({ setH, setW, state }: {
         if (reference.current) {
             console.log("rendering");
             if (reference.current) new ResizeObserver(handleResize).observe(reference.current);
-            katex.render("\\forall x \\in X, \\quad \\exists y \\leq \\epsilon", reference.current as HTMLInputElement);
+            try {
+                katex.render(state.fn, reference.current as HTMLInputElement);
+            } catch (e) {
+                console.error(`In MyKatex error rendering function ${state.fn}. error: ${e}`);
+            }
         }
-    }, [reference.current]);
+    }, [reference.current, state]);
 
     const visibility = (isVisible(state, t)? 'visible' : 'hidden');
 

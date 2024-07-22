@@ -11,6 +11,8 @@ import Axes from "./graphic/Axes";
 import { ReactElement } from "react";
 import { NodeModel } from "@minoru/react-dnd-treeview";
 import MyKatex from "./graphic/MyKatex";
+import KatexState, { getDefaultKatexState } from "./states/KatexState";
+import KatexControl from "./controls/KatexControl";
 
 export function createDefaultState(type: ComponentEnum, title: string | undefined, maxTime: number) : BaseState {
     const id = uuid();
@@ -25,7 +27,7 @@ export function createDefaultState(type: ComponentEnum, title: string | undefine
         case ComponentEnum.LATEX:
             obj.scale.x = 1;
             obj.scale.y = 1;
-            return obj;
+            return getDefaultKatexState(obj);
         default:
             console.error(`No default state specified for component ${type}`);
             obj.type = ComponentEnum.UNKOWN;
@@ -57,7 +59,7 @@ export function getComponent(state: BaseState, dispacth: DispactherAction): {
             jsx = (<Axes state={state as FunctionState} dispatch={dispacth} key={state.id}></Axes>);
             break;
         case ComponentEnum.LATEX:
-            jsx = (<MyKatex state={state} dispatch={dispacth} key={state.id}/>);
+            jsx = (<MyKatex state={state as KatexState} dispatch={dispacth} key={state.id}/>);
             break;
         default:
             alert(`No getComponent specified for ${state.type}`);
@@ -77,7 +79,7 @@ export function getModifier(state: BaseState, dispacth: DispactherAction) {
         case ComponentEnum.AXES:
             return (<FunctionControl state={state as FunctionState} dispatch={dispacth} key={state.id}/>);
         case ComponentEnum.LATEX:
-            return (<BaseControl state={state} dispatch={dispacth} key={state.id}></BaseControl>);
+            return (<KatexControl state={state as KatexState} dispatch={dispacth} key={state.id} />);
         default:
             alert(`No getModifier specified for ${state.type}`);
     }
