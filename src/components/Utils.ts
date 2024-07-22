@@ -2,6 +2,7 @@ import Konva from "konva";
 import BaseState from "./states/BaseState";
 import { DispactherAction } from "./StoreContext";
 import { KonvaEventObject } from "konva/lib/Node";
+import FunctionState from "./states/FunctionState";
 
 export function isNumeric(str: string) {
     return !isNaN(+str) &&
@@ -17,7 +18,7 @@ export function convertDimen(d: number | undefined) {
 function componentToHex(c: number) {
     if (c > 255) c = 255;
     var hex = c.toString(16);
-    return hex.length == 1 ? "0" + hex : hex;
+    return hex.length === 1 ? "0" + hex : hex;
 }
 
 export function myRgbaToHexArr(rgba: number[]) {
@@ -80,7 +81,7 @@ export function computeColorDissolvenceAnimation(state: BaseState, curTime: numb
 export function getLineColorProps(state: BaseState, currentTime: number) {
     return {
         stroke: computeColorDissolvenceAnimation(state, currentTime),
-        strokeWidth: 0.1
+        strokeWidth: (state as FunctionState)? (state as FunctionState).strokeWidth : 0.1
     };
 }
 

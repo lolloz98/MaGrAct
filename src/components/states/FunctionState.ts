@@ -2,6 +2,7 @@ import BaseState from "./BaseState";
 
 export default interface FunctionState extends BaseState {
     fn: string,
+    strokeWidth: number,
     x_axis: Axis,
     y_axis: Axis,
     x_bounds: {
@@ -47,6 +48,7 @@ export function getDefaultAxis(): Axis {
 export function getDefaultFunctionState(state: BaseState): FunctionState {
     return {
         fn: "cos(x)",
+        strokeWidth: 0.1,
         x_axis: getDefaultAxis(),
         y_axis: getDefaultAxis(),
         x_bounds: {
