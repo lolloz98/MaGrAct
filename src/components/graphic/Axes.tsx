@@ -4,19 +4,31 @@ import { TimeContext } from '../TimeContext';
 import { DispactherAction } from "../StoreContext";
 import BaseState from "../states/BaseState";
 import { getCommonProps, getDraggableProps, getLineColorProps, getPositionAndScaleProps, getPositionProps, getScaleProps } from "../Utils";
+import FunctionState from "../states/FunctionState";
+import { evaluate, isNaN } from "mathjs";
 
 
-export default function Axes({ state, dispatch }: { state: BaseState, dispatch: DispactherAction }) {
-    const x_axis: number[] = [-4, 0, 4, 0]
-    const y_axis: number[] = [0, -4, 0, 4]
+export default function Axes({ state, dispatch }: { state: FunctionState, dispatch: DispactherAction }) {
+    const x_bounds = state.x_axis.bounds;
+    const y_bounds = state.y_axis.bounds;
+    const x_axis: number[] = [x_bounds.min, 0, x_bounds.max, 0]
+    const y_axis: number[] = [0, y_bounds.min, 0, y_bounds.max]
     const t = useContext(TimeContext);
 
     const step = 0.05;
 
-    const dummy_function: number[] = [];
+    const points_of_points: number[][] = [[]];
     for (let x = -4; x < 4; x += step) {
-        dummy_function.push(x);
-        dummy_function.push(Math.sin(x));
+        const scope = {
+            x: x
+        };
+        const y = evaluate(state.fn, scope);
+        if (isNaN(y)) {
+            points_of_points.push([]);
+        } else {
+            points_of_points[points_of_points.length - 1].push(x);
+            points_of_points[points_of_points.length - 1].push(y);
+        }
     }
 
     const groupProps = {
@@ -35,6 +47,16 @@ export default function Axes({ state, dispatch }: { state: BaseState, dispatch: 
         ...getScaleProps(state)
     }
 
+    const fns = [];
+    for (let i = 0; i < points_of_points.length; i++) {
+        fns.push((<Line
+            points={points_of_points[i]}
+            {...fnProps}
+            x={0}
+            y={0}
+            key={i}
+        />))
+    }
 
     // todo remove nest
     return (<Group
@@ -42,25 +64,24 @@ export default function Axes({ state, dispatch }: { state: BaseState, dispatch: 
     >   
         <Line
             {...axisCommonProps}
+            visible={state.x_axis.visible}
             points={x_axis}
             stroke='#ffffffff'
-            scaleX={state.scale.x === 0? 0 : state.scale.x}
+            scaleX={state.scale.x}
+            scaleY={state.x_axis.thickness}
             x={0}
             y={0}
         />
         <Line
             {...axisCommonProps}
+            visible={state.y_axis.visible}
             points={y_axis}
             stroke='white'
-            scaleY={state.scale.y === 0? 0 : state.scale.y}
+            scaleX={state.y_axis.thickness}
+            scaleY={state.scale.y}
             x={0}
             y={0}
         />
-        <Line
-            points={dummy_function}
-            {...fnProps}
-            x={0}
-            y={0}
-        />
+        {fns}
     </Group>);
 }

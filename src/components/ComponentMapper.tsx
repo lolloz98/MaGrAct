@@ -5,8 +5,8 @@ import uuid from "react-uuid";
 import BaseControl from "./controls/BaseControl";
 import FunctionControl from "./controls/FunctionControl";
 import { DispactherAction } from "./StoreContext";
-import BaseState from "./states/BaseState";
-import FunctionState from "./states/FunctionState";
+import BaseState, { getDefaultBaseState } from "./states/BaseState";
+import FunctionState, { getDefaultFunctionState } from "./states/FunctionState";
 import Axes from "./graphic/Axes";
 import { ReactElement } from "react";
 import { NodeModel } from "@minoru/react-dnd-treeview";
@@ -14,36 +14,14 @@ import MyKatex from "./graphic/MyKatex";
 
 export function createDefaultState(type: ComponentEnum, title: string | undefined, maxTime: number) : BaseState {
     const id = uuid();
-    const obj: BaseState = {
-        id: id,
-        title: title ?? type,
-        type: type,
-        scale: {
-            x: 100,
-            y: 100
-        },
-        position: {
-            x: 533,
-            y: 330
-        },
-        time_constraint: {
-            start: 0,
-            end: maxTime
-        },
-        color: "#ffffffff",
-        animation: {
-            start_duration: 0,
-            end_duration: 0.3
-        }
-    }
+    const obj = getDefaultBaseState(id, type, title, maxTime);
     switch (type) {
         case ComponentEnum.FUNCTION:
-            const obj2: FunctionState = {...obj, f: ""};
-            return obj2;
+            return getDefaultFunctionState(obj);
         case ComponentEnum.FUNCTION_ANIM:
             return obj;
         case ComponentEnum.AXES:
-            return obj;
+            return getDefaultFunctionState(obj);
         case ComponentEnum.LATEX:
             obj.scale.x = 1;
             obj.scale.y = 1;
@@ -76,7 +54,7 @@ export function getComponent(state: BaseState, dispacth: DispactherAction): {
             jsx = (<FunctionAnimated state={state} dispatch={dispacth} key={state.id}></FunctionAnimated>);
             break;
         case ComponentEnum.AXES:
-            jsx = (<Axes state={state} dispatch={dispacth} key={state.id}></Axes>);
+            jsx = (<Axes state={state as FunctionState} dispatch={dispacth} key={state.id}></Axes>);
             break;
         case ComponentEnum.LATEX:
             jsx = (<MyKatex state={state} dispatch={dispacth} key={state.id}/>);
