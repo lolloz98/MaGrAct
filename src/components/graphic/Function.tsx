@@ -79,8 +79,8 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
 
     const x_col = computeColorDissolvenceAnimation(state, t, (state) => (state as FunctionState).x_axis.color);
     const y_col = computeColorDissolvenceAnimation(state, t, (state) => (state as FunctionState).y_axis.color);
-    const x_marks_pos = computeMarksPos(state.x_bounds.min, state.x_bounds.max, state.x_axis.marks.each, state.x_axis.marks.visible)
-    const y_marks_pos = computeMarksPos(state.y_bounds.min, state.y_bounds.max, state.y_axis.marks.each, state.y_axis.marks.visible)
+    const x_marks_pos = computeMarksPos(state.x_axis.bounds.min, state.x_axis.bounds.max, state.x_axis.marks.each, state.x_axis.marks.visible)
+    const y_marks_pos = computeMarksPos(state.y_axis.bounds.min, state.y_axis.bounds.max, state.y_axis.marks.each, state.y_axis.marks.visible)
 
     const x_marks = [];
     const y_marks = [];
