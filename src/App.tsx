@@ -94,7 +94,7 @@ function getParentComponent(id: string, draft: MyStore, isIdOfParent: boolean): 
   console.log('parents', parents);
   return getParent(parents, parents.length - 1, draft);
 }
-function isMyGroup(cur: BaseState) {
+export function isMyGroup(cur: BaseState) {
   return (cur as MyGroupState).children !== undefined;
 }
 function isMyStore(cur: MyStore | BaseState) {
