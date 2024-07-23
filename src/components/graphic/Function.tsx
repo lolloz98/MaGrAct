@@ -26,7 +26,7 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
     const y_axis: number[] = [0, y_bounds.min, 0, y_bounds.max]
     const t = useContext(TimeContext);
 
-    const step = 0.05;
+    const step = window.innerWidth === 0? 0 : (state.x_bounds.max - state.x_bounds.min) / window.innerWidth;
 
     // we mirror on y, because konva has the axis inverted
     const expr = compile(`-(${state.fn})`);
