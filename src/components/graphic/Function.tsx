@@ -103,17 +103,15 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
     }
 
     for (let i = 0; i < y_marks_pos.length; i++) {
-        const thick = mark_thick / state.scale.y;
-        const offset = y_marks_pos[i] > 0 ? thick/2 : -thick/2;
         y_marks.push((<Rect 
             {...commonProps}
-            stroke={y_col}
-            x={0}
-            y={y_marks_pos[i] * state.scale.y + offset}
-            strokeWidth={mark_width}
-            height={thick} 
+            stroke={x_col}
+            y={- mark_width / 2}
+            x={(y_marks_pos[i]) * state.scale.y}
+            strokeWidth={mark_thick / state.scale.y}
+            height={mark_width} 
             visible={state.y_axis.marks.visible}
-            scaleY={state.scale.y}
+            scaleX={state.scale.y}
             key={i} />))
     }
 
@@ -143,9 +141,11 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
                 x={0}
                 y={0}
             />
-            {y_marks}
+            <Group {...commonProps} rotation={90}>
+                {y_marks}
+            </Group>
         </Group>
-        <Group>
+        <Group {...commonProps}>
             {fns}
         </Group>
     </Group>);
