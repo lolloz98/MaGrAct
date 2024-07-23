@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import { Html } from 'react-konva-utils';
-import { Group, Rect } from "react-konva";
+import { Circle, Group, Rect } from "react-konva";
 import BaseState from "../states/BaseState";
 import { computeColorDissolvenceAnimation, getCommonProps, getDraggableProps, getPositionAndScaleProps, isVisible } from "../Utils";
 import { TimeContext } from "../TimeContext";
@@ -15,22 +15,26 @@ export default function MyKatex({ state, dispatch }: {state: KatexState, dispatc
     const [h, setH] = useState(0);
     const t = useContext(TimeContext);
 
+    const commonProps = {
+        ...getCommonProps(state, t)
+    }
+
     const props = {
-        ...getCommonProps(state, t),
+        ...commonProps,
         ...getDraggableProps(state, dispatch),
         ...getPositionAndScaleProps(state)
     };
 
-    const rectProps = {
-        ...getCommonProps(state, t)
-    }
 
     return (
         <Group width={w} height={h} {...props}>
-            <Html divProps={{ style: { pointerEvents: "none" } }} groupProps={{ preventDefault: true }}>
-                <KaTeX setW={setW} setH={setH} state={state}></KaTeX>
-            </Html>
-            <Rect width={w} height={h} x={0} y={0} {...rectProps} />
+            <Group x={-w / 2} y={-h / 2} {...commonProps}>
+                <Html divProps={{ style: { pointerEvents: "none" } }} groupProps={{ preventDefault: true }}>
+                    <KaTeX setW={setW} setH={setH} state={state}></KaTeX>
+                </Html>
+                <Rect width={w} height={h} x={0} y={0} {...commonProps} />
+            </Group>
+            {/* <Circle width={10} fill={"red"} x={0} y ={0} {...commonProps}/> */}
         </Group>)
 }
 
@@ -62,5 +66,9 @@ function KaTeX({ setH, setW, state }: {
 
     const visibility = (isVisible(state, t)? 'visible' : 'hidden');
 
-    return <div style={{ color: computeColorDissolvenceAnimation(state, t), pointerEvents: 'none', visibility: visibility }} ref={reference} />;
+    return <div style={{ 
+        color: computeColorDissolvenceAnimation(state, t), 
+        pointerEvents: 'none', 
+        visibility: visibility 
+    }} ref={reference} />;
 }
