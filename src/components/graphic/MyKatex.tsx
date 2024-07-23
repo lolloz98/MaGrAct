@@ -47,14 +47,12 @@ function KaTeX({ setH, setW, state }: {
     const t = useContext(TimeContext);
 
     function handleResize() {
-        console.log("changing size");
         setH(reference.current?.offsetHeight ? reference.current?.offsetHeight : 0);
         setW(reference.current?.offsetWidth ? reference.current?.offsetWidth : 0);
     }
        
     useEffect(() => {
         if (reference.current) {
-            console.log("rendering");
             if (reference.current) new ResizeObserver(handleResize).observe(reference.current);
             try {
                 katex.render(state.fn, reference.current as HTMLInputElement);
