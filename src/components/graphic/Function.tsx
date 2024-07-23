@@ -4,7 +4,7 @@ import { TimeContext } from '../TimeContext';
 import { DispactherAction } from "../StoreContext";
 import { computeColorDissolvenceAnimation, getCommonProps, getDraggableProps, getLineColorProps, getPositionAndScaleProps, getPositionProps, getScaleProps } from "../Utils";
 import FunctionState from "../states/FunctionState";
-import { evaluate, isNaN } from "mathjs";
+import { compile, evaluate, isNaN } from "mathjs";
 
 
 function computeMarksPos(min: number, max: number, each: number, visible: boolean) {
@@ -28,14 +28,16 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
 
     const step = 0.05;
 
+    // we mirror on y, because konva has the axis inverted
+    const expr = compile(`-(${state.fn})`);
+
     const points_of_points: number[][] = [[]];
     for (let x = state.x_bounds.min; x < state.x_bounds.max; x += step) {
         const scope = {
             x: x
         };
         try {
-            // we mirror on y, because konva has the axis inverted
-            const y = evaluate(`-(${state.fn})`, scope);
+            const y = expr.evaluate(scope);
             if (y === undefined || isNaN(y) || y === Infinity || y < state.y_bounds.min || y > state.y_bounds.max) {
                 points_of_points.push([]);
             } else {
