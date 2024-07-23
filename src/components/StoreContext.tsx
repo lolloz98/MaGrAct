@@ -6,7 +6,7 @@ export interface MyStore {
     components: Array<BaseState>
     selected: Array<string>,
     titles: Set<string>,
-    selected_from_list?: BaseState
+    selected_from_list?: string
 }
 
 export type StoreAction = {
@@ -25,7 +25,7 @@ export type StoreAction = {
     type: 'changeSelection',
     ids: string[] | []
 } | { type: 'reorder', id: string, destinationId: string, index: number } |
-{ type: 'select_from_list', state: BaseState};
+{ type: 'select_from_list', id: string};
 
 export type DispactherAction = React.Dispatch<StoreAction>;
 

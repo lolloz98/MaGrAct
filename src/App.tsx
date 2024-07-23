@@ -136,7 +136,7 @@ function reducer(
       return draft;
     case 'add':
       checkAndUpdateTitle(action.state, draft);
-      draft.selected_from_list = action.state;
+      draft.selected_from_list = action.state.id;
       return void draft.components.push(action.state);
     case 'modify':
       const lis = getList(getParentComponent(action.id, draft, false));
@@ -152,11 +152,8 @@ function reducer(
       }
       return draft;
     case 'changeSelection':
-      for (const id of action.ids) {
-        draft.selected.push(id);
-      }
       if (action.ids.length > 0) {
-        draft.selected_from_list = draft.components.find(a => a.id === action.ids[0]);
+        draft.selected_from_list = action.ids[action.ids.length - 1];
       }
       return draft;
     case 'reorder':
@@ -181,11 +178,10 @@ function reducer(
       console.log('keeping: ', stateToKeep);
       console.log('after keeping', li);
       // todo: better strategy for modifying selected
-      draft.selected = [];
       draft.selected_from_list = undefined;
       return draft;
     case 'select_from_list':
-      draft.selected_from_list = action.state;
+      draft.selected_from_list = action.id;
       return draft;
   }
 }
@@ -214,21 +210,18 @@ function App() {
   }
 
   const children = [];
-  let selectedController: ReactElement | undefined = undefined;
+  let currentlySelected: ReactElement | undefined = undefined;
   const selected = [];
   let tree: MyTreeElement[] = [];
+
+  // todo add add selection for elements
   for (const comp of state.components) {
-    const cur = getComponent(comp, dispacth, state.parent);
-    if (cur.jsx) {
-      children.push(cur.jsx);
-    } else {
-      console.error(`Component was undefined ${comp}`);
-      continue;
+    const cur = getComponent(comp, dispacth, state);
+    if (cur.selectedEl !== undefined) {
+      currentlySelected = getModifier(cur.selectedEl, dispacth);
     }
+    children.push(cur.jsx);
     tree = tree.concat(cur.treeEl);
-    if (comp.id === state.selected_from_list?.id) {
-      selectedController = getModifier(comp, dispacth);
-    }
 
     if (isContained(state.selected, comp)) {
       selected.push(getModifier(comp, dispacth))
@@ -270,7 +263,7 @@ function App() {
                 <ReflexContainer orientation="horizontal">
                   <ReflexElement>
                     <div style={{ padding: 8 }}>
-                      {selectedController}
+                      {currentlySelected}
                     </div>
                   </ReflexElement>
 

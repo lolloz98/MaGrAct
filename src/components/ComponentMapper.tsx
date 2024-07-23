@@ -37,19 +37,28 @@ export function createDefaultState(type: ComponentEnum, title: string | undefine
     }
 }
 
-export type MyTreeElement = NodeModel<BaseState>;
-export function getComponent(state: BaseState, dispacth: DispactherAction, parent: Map<string, string>): {
-    jsx?: ReactElement,
-    treeEl: MyTreeElement[]
-} {
-    let treeEl: MyTreeElement[] = [{
+function getTreeElem(state: BaseState, parent: Map<string, string>) {
+    return {
         id: state.id,
         parent: parent.get(state.id) ?? 0,
         droppable: state.isParent ?? false,
         text: state.title,
         data: state
-    }];
+    };
+}
+
+export type MyTreeElement = NodeModel<BaseState>;
+export function getComponent(state: BaseState, dispacth: DispactherAction, store: MyStore): {
+    jsx?: ReactElement,
+    treeEl: MyTreeElement[],
+    selectedEl?: BaseState
+} {
+    let treeEl: MyTreeElement[] = [getTreeElem(state, store.parent)];
+    let selectedEl = undefined;
     let jsx = undefined;
+    if (state.id === store.selected_from_list) {
+        selectedEl = state;
+    }
     switch (state.type) {
         case ComponentEnum.FUNCTION:
             jsx = (<Function state={state as FunctionState} dispatch={dispacth} key={state.id}></Function>);
@@ -63,9 +72,12 @@ export function getComponent(state: BaseState, dispacth: DispactherAction, paren
         case ComponentEnum.GROUP:
             const children = [];
             for (const c of (state as MyGroupState).children) {
-                const cc = getComponent(c, dispacth, parent);
+                const cc = getComponent(c, dispacth, store);
                 if (cc.jsx) children.push(cc.jsx);
                 treeEl = treeEl.concat(cc.treeEl);
+                if (cc.selectedEl !== undefined) {
+                    selectedEl = cc.selectedEl;
+                }
             }
             jsx = (<MyGroup state={state as MyGroupState} dispatch={dispacth} key={state.id}>{children}</MyGroup>)
             break;
@@ -74,7 +86,8 @@ export function getComponent(state: BaseState, dispacth: DispactherAction, paren
     }
     return {
         jsx: jsx,
-        treeEl: treeEl
+        treeEl: treeEl,
+        selectedEl: selectedEl
     }
 }
 

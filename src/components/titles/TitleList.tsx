@@ -12,7 +12,7 @@ import { ForwardedRef, MutableRefObject, useRef, useState } from "react";
 
 export default function TitleList({ tree, currentlySelected, dispatch, dimensions, store }: {
   tree: MyTreeElement[],
-  currentlySelected?: BaseState,
+  currentlySelected?: string,
   dispatch: DispactherAction,
   store: MyStore,
   dimensions?: {
@@ -40,8 +40,8 @@ export default function TitleList({ tree, currentlySelected, dispatch, dimension
   };
 
   const handleSelect = (node: MyTreeElement) => {
-    if (node.data !== undefined)
-      dispatch({ type: 'select_from_list', state: node.data});
+    if (node.data !== undefined && node.id !== 0)
+      dispatch({ type: 'select_from_list', id: `${node.id}`});
   }
 
   return (
@@ -59,7 +59,7 @@ export default function TitleList({ tree, currentlySelected, dispatch, dimension
             onDelete={handleDelete}
             onTextChange={handleTextChange}
             onSelect={handleSelect}
-            isSelected={currentlySelected?.id === node.id}
+            isSelected={currentlySelected === node.id}
           />
         )}
         onDragEnd={(e) => {
