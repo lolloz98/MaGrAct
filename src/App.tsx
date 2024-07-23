@@ -113,6 +113,10 @@ function removeFromParent(id: string, cur: MyStore | MyGroupState): BaseState {
   return state;
 }
 
+function getList(cur: MyStore | MyGroupState) {
+  return isMyStore(cur)? (cur as MyStore).components : (cur as MyGroupState).children;
+}
+
 function reducer(
   draft: Draft<MyStore>,
   action: StoreAction
@@ -135,8 +139,9 @@ function reducer(
       draft.selected_from_list = action.state;
       return void draft.components.push(action.state);
     case 'modify':
-      const ind = draft.components.findIndex(a => a.id === action.id);
-      const state = draft.components[ind];
+      const lis = getList(getParentComponent(action.id, draft, false));
+      const ind = lis.findIndex(a => a.id === action.id);
+      const state = lis[ind];
       const prevTitle = state.title;
       for (const m of action.modifiers) {
         m(state);
