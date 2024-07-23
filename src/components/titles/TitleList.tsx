@@ -1,18 +1,20 @@
 import { MyTreeElement } from "../ComponentMapper";
-import { DndProvider, DropOptions, getBackendOptions, MultiBackend, NodeModel, Tree } from "@minoru/react-dnd-treeview";
-import { DispactherAction } from "../StoreContext";
+import { DndProvider, DropOptions, getBackendOptions, MultiBackend, NodeModel, Tree, TreeMethods } from "@minoru/react-dnd-treeview";
+import { DispactherAction, MyStore } from "../StoreContext";
 import { CustomNode } from "./CustomNode";
 import { CustomDragPreview } from "./CustomDragPreview";
 import styles from "./TitleList.module.css";
 import { Placeholder } from "./PlaceHolder";
 import BaseState from "../states/BaseState";
 import { convertDimen } from "../Utils";
+import { ForwardedRef, MutableRefObject, useRef, useState } from "react";
 
 
-export default function TitleList({ tree, currentlySelected, dispatch, dimensions }: {
+export default function TitleList({ tree, currentlySelected, dispatch, dimensions, store }: {
   tree: MyTreeElement[],
   currentlySelected?: BaseState,
   dispatch: DispactherAction,
+  store: MyStore,
   dimensions?: {
     width: number,
     height: number
@@ -23,8 +25,8 @@ export default function TitleList({ tree, currentlySelected, dispatch, dimension
     dispatch({ type: 'delete', id: `${id}` });
   };
   const handleDrop = (newTree: MyTreeElement[], options: DropOptions) => {
-    console.log(options);
-    if (options.dragSourceId !== undefined && options.destinationIndex !== undefined && options.dragSourceId !== 0) {
+    console.debug(`Options while dnd: ${options}`);
+    if (options.dragSourceId !== undefined && options.destinationIndex !== undefined) {
       dispatch({ type: 'reorder', id: `${options.dragSourceId}`, destinationId: `${options.dropTargetId ?? 0}`, index: options.destinationIndex });
     } else {
       console.error("A condition was not met upon drag and drop, no changes applied", options);
@@ -41,7 +43,6 @@ export default function TitleList({ tree, currentlySelected, dispatch, dimension
     if (node.data !== undefined)
       dispatch({ type: 'select_from_list', state: node.data});
   }
-
 
   return (
     <div style={{maxHeight: convertDimen(dimensions?.height) * 0.8, overflow: "auto" }} className="">
@@ -61,6 +62,9 @@ export default function TitleList({ tree, currentlySelected, dispatch, dimension
             isSelected={currentlySelected?.id === node.id}
           />
         )}
+        onDragEnd={(e) => {
+          console.debug("drag ended");
+        }}
         dragPreviewRender={(monitorProps) => {
           return (<CustomDragPreview monitorProps={monitorProps} />)
         }}
@@ -73,9 +77,11 @@ export default function TitleList({ tree, currentlySelected, dispatch, dimension
         sort={false}
         insertDroppableFirst={false}
         canDrop={(tree, { dragSource, dropTargetId, dropTarget }) => {
-          if (dragSource?.parent === dropTargetId) {
-            return true;
+          // parent should never be dropped on itself
+          if (dragSource?.id === dropTargetId) {
+            return false;
           }
+          return (dropTargetId === 0 || dropTarget?.droppable);
         }}
         placeholderRender={(node, { depth }) => (
           <Placeholder node={node} depth={depth} />

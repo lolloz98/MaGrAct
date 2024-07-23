@@ -3,7 +3,7 @@ import FunctionAnimated from "./graphic/FunctionAnimated";
 import uuid from "react-uuid";
 import BaseControl from "./controls/BaseControl";
 import FunctionControl from "./controls/FunctionControl";
-import { DispactherAction } from "./StoreContext";
+import { DispactherAction, MyStore } from "./StoreContext";
 import BaseState, { getDefaultBaseState } from "./states/BaseState";
 import FunctionState, { getDefaultFunctionState } from "./states/FunctionState";
 import { ReactElement } from "react";
@@ -12,6 +12,9 @@ import MyKatex from "./graphic/MyKatex";
 import KatexState, { getDefaultKatexState } from "./states/KatexState";
 import KatexControl from "./controls/KatexControl";
 import Function from './graphic/Function';
+import MyGroupControl from "./controls/MyGroupControl";
+import MyGroupState, { getDefaultMyGroupState } from "./states/MyGroupState";
+import MyGroup from "./graphic/MyGroup";
 
 export function createDefaultState(type: ComponentEnum, title: string | undefined, maxTime: number) : BaseState {
     const id = uuid();
@@ -25,6 +28,8 @@ export function createDefaultState(type: ComponentEnum, title: string | undefine
             obj.scale.x = 1;
             obj.scale.y = 1;
             return getDefaultKatexState(obj);
+        case ComponentEnum.GROUP:
+            return getDefaultMyGroupState(obj);
         default:
             console.error(`No default state specified for component ${type}`);
             obj.type = ComponentEnum.UNKOWN;
@@ -33,17 +38,17 @@ export function createDefaultState(type: ComponentEnum, title: string | undefine
 }
 
 export type MyTreeElement = NodeModel<BaseState>;
-export function getComponent(state: BaseState, dispacth: DispactherAction): {
+export function getComponent(state: BaseState, dispacth: DispactherAction, parent: Map<string, string>): {
     jsx?: ReactElement,
-    treeEl: MyTreeElement
+    treeEl: MyTreeElement[]
 } {
-    const treeEl: MyTreeElement = {
+    let treeEl: MyTreeElement[] = [{
         id: state.id,
-        parent: state.parent ?? 0,
+        parent: parent.get(state.id) ?? 0,
         droppable: state.isParent ?? false,
         text: state.title,
         data: state
-    };
+    }];
     let jsx = undefined;
     switch (state.type) {
         case ComponentEnum.FUNCTION:
@@ -54,6 +59,15 @@ export function getComponent(state: BaseState, dispacth: DispactherAction): {
             break;
         case ComponentEnum.LATEX:
             jsx = (<MyKatex state={state as KatexState} dispatch={dispacth} key={state.id}/>);
+            break;
+        case ComponentEnum.GROUP:
+            const children = [];
+            for (const c of (state as MyGroupState).children) {
+                const cc = getComponent(c, dispacth, parent);
+                if (cc.jsx) children.push(cc.jsx);
+                treeEl = treeEl.concat(cc.treeEl);
+            }
+            jsx = (<MyGroup state={state as MyGroupState} dispatch={dispacth} key={state.id}>{children}</MyGroup>)
             break;
         default:
             alert(`No getComponent specified for ${state.type}`);
@@ -72,6 +86,8 @@ export function getModifier(state: BaseState, dispacth: DispactherAction) {
             return (<BaseControl state={state} dispatch={dispacth} key={state.id}></BaseControl>);
         case ComponentEnum.LATEX:
             return (<KatexControl state={state as KatexState} dispatch={dispacth} key={state.id} />);
+        case ComponentEnum.GROUP:
+            return (<MyGroupControl state={state as KatexState} dispatch={dispacth} key={state.id} />);
         default:
             alert(`No getModifier specified for ${state.type}`);
     }

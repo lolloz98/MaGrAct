@@ -24,7 +24,7 @@ export type StoreAction = {
 } | {
     type: 'changeSelection',
     ids: string[] | []
-} | { type: 'reorder', id: string, destinationId?: string, index: number } |
+} | { type: 'reorder', id: string, destinationId: string, index: number } |
 { type: 'select_from_list', state: BaseState};
 
 export type DispactherAction = React.Dispatch<StoreAction>;

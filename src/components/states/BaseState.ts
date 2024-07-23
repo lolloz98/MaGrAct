@@ -5,7 +5,6 @@ export default interface BaseState {
     title: string,
     type: ComponentEnum,
     isParent?: boolean,
-    parent?: string,
     scale: {
         x: number,
         y: number

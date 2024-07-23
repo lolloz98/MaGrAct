@@ -18,7 +18,7 @@ import MyTimeline from './components/Timeline';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import 'react-reflex/styles.css'
 import AddButton from './components/add/AddButton';
-
+import MyGroupState from './components/states/MyGroupState';
 
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
@@ -59,6 +59,60 @@ function checkAndUpdateTitle(state: BaseState, draft: MyStore) {
   draft.titles.add(state.title);
 }
 
+function getParentHierarchy(id: string, draft: MyStore, isIdOfParent: boolean) {
+  const parents = [];
+  let cur = id;
+
+  if (isIdOfParent && cur !== "0") parents.push(id);
+
+  while (draft.parent.has(cur)) {
+    cur = draft.parent.get(cur) as string;
+    if (cur === "0") break;
+    parents.push(cur);
+  }
+  return parents;
+}
+
+function getParent(parents: string[], index: number, cur: MyStore | MyGroupState): MyStore | MyGroupState {
+  if (index === -1) {
+    return cur;
+  }
+  const comps = (isMyStore(cur))? (cur as MyStore).components : (cur as MyGroupState).children;
+  return getParent(parents, index - 1, comps.find(s => s.id === parents[index]) as MyGroupState);
+}
+function deleteInfoForChildrenAndCur(state: BaseState, draft: MyStore) {
+  draft.titles.delete(state.title);
+  draft.parent.delete(state.id);
+  if (isMyGroup(state)) {
+    for (const n of (state as MyGroupState).children) {
+      deleteInfoForChildrenAndCur(n, draft);
+    }
+  }
+}
+function getParentComponent(id: string, draft: MyStore, isIdOfParent: boolean): MyStore | MyGroupState {
+  const parents = getParentHierarchy(id, draft, isIdOfParent);
+  console.log('parents', parents);
+  return getParent(parents, parents.length - 1, draft);
+}
+function isMyGroup(cur: BaseState) {
+  return (cur as MyGroupState).children !== undefined;
+}
+function isMyStore(cur: MyStore | BaseState) {
+  return (cur as MyStore).components !== undefined;
+}
+
+function removeFromParent(id: string, cur: MyStore | MyGroupState): BaseState {
+  if (isMyStore(cur)) {
+    const state = (cur as MyStore).components.find(c => c.id === id) as BaseState; 
+    (cur as MyStore).components = (cur as MyStore).components.filter(c => c.id !== id);
+    return state;
+  }
+
+  const state = (cur as MyGroupState).children.find(c => c.id === id) as BaseState;
+  (cur as MyGroupState).children = (cur as MyGroupState).children.filter(c => c.id !== id);
+  return state;
+}
+
 function reducer(
   draft: Draft<MyStore>,
   action: StoreAction
@@ -68,10 +122,13 @@ function reducer(
     case 'reset':
       return rawReturn(initState);
     case 'delete':
-      const cur = draft.components.filter(c => c.id === action.id)[0];
-      draft.titles.delete(cur.title);
-      draft.components = draft.components.filter(c => c.id !== action.id);
-      draft.selected = draft.selected.filter(id => id !== action.id);
+      const cur = getParentComponent(action.id, draft, false);
+      const l = (isMyStore(cur))? (cur as MyStore).components : (cur as MyGroupState).children;
+      deleteInfoForChildrenAndCur(l.find(s => s.id === action.id) as BaseState, draft);
+      removeFromParent(action.id, cur);
+      // todo: better strategy for modifying selected
+      draft.selected = [];
+      draft.selected_from_list = undefined;
       return draft;
     case 'add':
       checkAndUpdateTitle(action.state, draft);
@@ -98,10 +155,29 @@ function reducer(
       }
       return draft;
     case 'reorder':
-      // todo: handle reorder when elements can be nested
-      const indexFrom = draft.components.findIndex(a => a.id === action.id);
       const indexTo = action.index;
-      [draft.components[indexFrom], draft.components[indexTo]] = [draft.components[indexTo], draft.components[indexFrom]];
+      const parent = getParentComponent(action.id, draft, false);
+      console.log("found parent", parent);
+      const nextParent = getParentComponent(action.destinationId, draft, true);
+      console.log("found next parent", nextParent);
+      const stateToKeep = removeFromParent(action.id, parent);
+      
+      if (action.destinationId === "0") {
+        if (draft.parent.has(action.id)) draft.parent.delete(action.id);
+      } else {
+        console.log("set parent", action.destinationId, 'for', action.id);
+        draft.parent.set(action.id, action.destinationId);
+      }
+
+      console.log("isNextParent MyStore: ", isMyStore(nextParent));
+      const li = isMyStore(nextParent)? (nextParent as MyStore).components: (nextParent as MyGroupState).children;
+      
+      li.splice(indexTo, 0, stateToKeep);
+      console.log('keeping: ', stateToKeep);
+      console.log('after keeping', li);
+      // todo: better strategy for modifying selected
+      draft.selected = [];
+      draft.selected_from_list = undefined;
       return draft;
     case 'select_from_list':
       draft.selected_from_list = action.state;
@@ -135,16 +211,16 @@ function App() {
   const children = [];
   let selectedController: ReactElement | undefined = undefined;
   const selected = [];
-  const tree: MyTreeElement[] = [];
+  let tree: MyTreeElement[] = [];
   for (const comp of state.components) {
-    const cur = getComponent(comp, dispacth);
+    const cur = getComponent(comp, dispacth, state.parent);
     if (cur.jsx) {
       children.push(cur.jsx);
     } else {
       console.error(`Component was undefined ${comp}`);
       continue;
     }
-    tree.push(cur.treeEl);
+    tree = tree.concat(cur.treeEl);
     if (comp.id === state.selected_from_list?.id) {
       selectedController = getModifier(comp, dispacth);
     }
@@ -200,7 +276,7 @@ function App() {
                     style={{ overflow: "auto" }}>
 
                     <AddButton dispatch={dispacth} tree={tree} />
-                    <TitleList tree={tree} dispatch={dispacth} currentlySelected={state.selected_from_list} />
+                    <TitleList store={state} tree={tree} dispatch={dispacth} currentlySelected={state.selected_from_list} />
                   </ReflexElement>
 
                 </ReflexContainer>
