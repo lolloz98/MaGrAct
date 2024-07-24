@@ -41,8 +41,8 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
             if (y === undefined || isNaN(y) || y === Infinity || y < state.y_bounds.min || y > state.y_bounds.max) {
                 points_of_points.push([]);
             } else {
-                points_of_points[points_of_points.length - 1].push(x);
-                points_of_points[points_of_points.length - 1].push(y);
+                points_of_points[points_of_points.length - 1].push(x * state.x_axis.unit_scale);
+                points_of_points[points_of_points.length - 1].push(y * state.y_axis.unit_scale);
             }
         } catch (e) {
             console.error("There was an error evaluating function", e);
@@ -94,11 +94,11 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
             {...commonProps}
             stroke={x_col}
             y={- mark_width / 2}
-            x={(x_marks_pos[i]) * state.scale.x}
-            strokeWidth={mark_thick / state.scale.x}
+            x={(x_marks_pos[i]) * state.x_axis.unit_scale}
+            strokeWidth={mark_thick / state.x_axis.unit_scale}
             height={mark_width} 
             visible={state.x_axis.marks.visible}
-            scaleX={state.scale.x}
+            scaleX={state.x_axis.unit_scale}
             key={i} />))
     }
 
@@ -107,11 +107,11 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
             {...commonProps}
             stroke={y_col}
             y={- mark_width / 2}
-            x={(y_marks_pos[i]) * state.scale.y}
-            strokeWidth={mark_thick / state.scale.y}
+            x={(y_marks_pos[i]) * state.y_axis.unit_scale}
+            strokeWidth={mark_thick / state.y_axis.unit_scale}
             height={mark_width} 
             visible={state.y_axis.marks.visible}
-            scaleX={state.scale.y}
+            scaleX={state.y_axis.unit_scale}
             key={i} />))
     }
 
@@ -124,7 +124,7 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
                 {...axisCommonProps}
                 points={x_axis}
                 stroke={x_col}
-                scaleX={state.scale.x}
+                scaleX={state.x_axis.unit_scale}
                 scaleY={state.x_axis.thickness}
                 x={0}
                 y={0}
@@ -137,7 +137,7 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
                 points={y_axis}
                 stroke={y_col}
                 scaleX={state.y_axis.thickness}
-                scaleY={state.scale.y}
+                scaleY={state.y_axis.unit_scale}
                 x={0}
                 y={0}
             />

@@ -107,6 +107,12 @@ export function SharedAxisControl({ state, getAxis, dispatch, title }: {
             <Button size="small" startIcon={open ? <ExpandLess /> : <ExpandMore />} onClick={() => setOpen(!open)}>{title}</Button>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <Stack direction={"column"} spacing={1}>
+                <MyNumbericInput label="Unit scale" variant="outlined" helperText={"Different from scale. This will not affect stroke width"}
+                            dispatch={dispatch}
+                            state={state} get={(state) => {
+                                return getAxis(state as FunctionState).unit_scale
+                            }}
+                            set={(a: BaseState, n: number) => getAxis(a as FunctionState).unit_scale = n} />
                     <Stack direction={"row"} spacing={1}>
                         <MyNumbericInput label="Min Value" variant="outlined"
                             dispatch={dispatch}

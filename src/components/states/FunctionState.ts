@@ -16,6 +16,7 @@ export default interface FunctionState extends BaseState {
 };
 
 export interface Axis {
+    unit_scale: number,
     bounds: {
         min: number,
         max: number
@@ -31,6 +32,7 @@ export interface Axis {
 
 export function getDefaultAxis(): Axis {
     return {
+        unit_scale: 100,
         bounds: {
             min: -4,
             max: 4
