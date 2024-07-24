@@ -105,7 +105,7 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
     for (let i = 0; i < y_marks_pos.length; i++) {
         y_marks.push((<Rect 
             {...commonProps}
-            stroke={x_col}
+            stroke={y_col}
             y={- mark_width / 2}
             x={(y_marks_pos[i]) * state.scale.y}
             strokeWidth={mark_thick / state.scale.y}
