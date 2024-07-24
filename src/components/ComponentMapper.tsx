@@ -100,7 +100,7 @@ export function getModifier(state: BaseState, dispacth: DispactherAction) {
         case ComponentEnum.LATEX:
             return (<KatexControl state={state as KatexState} dispatch={dispacth} key={state.id} />);
         case ComponentEnum.GROUP:
-            return (<MyGroupControl state={state as KatexState} dispatch={dispacth} key={state.id} />);
+            return (<MyGroupControl state={state as MyGroupState} dispatch={dispacth} key={state.id} />);
         default:
             alert(`No getModifier specified for ${state.type}`);
     }

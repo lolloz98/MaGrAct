@@ -112,6 +112,7 @@ export function getDraggableProps(state: BaseState, dispatch: DispactherAction) 
     return {
         draggable: true,
         onDragEnd: ((e: KonvaEventObject<DragEvent>) => {
+            e.cancelBubble = true;
             dispatch({ type: "modify", id: state.id, modifiers: [(s) => { s.position.x = e.target.x(); s.position.y = e.target.y()}] })
         })
     };

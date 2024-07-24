@@ -1,7 +1,9 @@
 import BaseState from "./BaseState";
 
 export default interface MyGroupState extends BaseState {
-    children: BaseState[]
+    children: BaseState[],
+    isOpen: boolean,
+    isGizmosVisible: boolean
 }
 
 export function getDefaultMyGroupState(state: BaseState): MyGroupState {
@@ -12,6 +14,8 @@ export function getDefaultMyGroupState(state: BaseState): MyGroupState {
     state.scale.y = 1;
     return {
         ...state,
-        children: []
+        children: [],
+        isOpen: false,
+        isGizmosVisible: true
     };
 }

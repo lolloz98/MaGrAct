@@ -1,4 +1,4 @@
-import { Button, Checkbox, Collapse, FormControlLabel, FormGroup, Stack } from "@mui/material";
+import { Button, Checkbox, Collapse, FormControlLabel, FormGroup, Stack, Typography } from "@mui/material";
 import MyCustomInput from "../inputs/MyCustomInput";
 import BaseState from "../states/BaseState";
 import { DispactherAction } from "../StoreContext";
@@ -11,6 +11,8 @@ import MyNumbericInput from "../inputs/MyNumericInput";
 import MyColorPicker, { DefaultColorPicker } from "../inputs/MyColorPicker";
 import FunctionState, { Axis } from "../states/FunctionState";
 import MyTextInput from "../inputs/MyTextInput";
+import MyGroupState from "../states/MyGroupState";
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 export function SharedBaseControl({ state, dispatch }: { state: BaseState, dispatch: DispactherAction }) {
     const [open, setOpen] = useState(false);
@@ -197,6 +199,38 @@ export function SharedFunctionControl({ state, dispatch }: {
                             }}
                             set={(a: BaseState, n: number) => (a as FunctionState).y_bounds.max = n} />
                     </Stack>
+                </Stack>
+            </Collapse>
+        </Stack>
+    )
+}
+
+export function SharedMyGroupControl({ state, dispatch }: {
+    state: MyGroupState,
+    dispatch: DispactherAction
+}) {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <Stack>
+            <Button size="small" startIcon={open ? <ExpandLess /> : <ExpandMore />} onClick={() => setOpen(!open)}>Common Group Controls</Button>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+                <Stack direction={"column"} spacing={1}>
+                    <FormGroup>
+                        <FormControlLabel control={<Checkbox defaultChecked />} label="Gizmos Visible" onChange={(e) => {
+                            dispatch({ type: 'modify', id: state.id, modifiers: [(s) => (s as MyGroupState).isGizmosVisible = (e.target as HTMLInputElement).checked] });
+                        }} />
+                    </FormGroup>
+                    <Typography>Children</Typography>
+                    {
+                        state.children.map((c) => {
+                            return (
+                                <Button key={c.id} onClick={() => {
+                                    dispatch({ type: 'select_from_list', id: c.id })
+                                }} endIcon={(<OpenInNewIcon />)} color="secondary" style={{ textTransform: 'none'}}>{c.title}</Button>
+                            )
+                        })
+                    }
                 </Stack>
             </Collapse>
         </Stack>
