@@ -19,6 +19,7 @@ import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import 'react-reflex/styles.css'
 import AddButton from './components/add/AddButton';
 import MyGroupState from './components/states/MyGroupState';
+import MoveButton from './components/move/MoveButton';
 
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
@@ -272,8 +273,10 @@ function App() {
                   <ReflexElement propagateDimensionsRate={200}
                     propagateDimensions={true}
                     style={{ overflow: "auto" }}>
-
-                    <AddButton dispatch={dispacth} tree={tree} />
+                    <Stack direction={"row"} justifyContent={"space-around"} alignContent={"center"}>
+                      <AddButton dispatch={dispacth} tree={tree} />
+                      <MoveButton store={state} dispatch={dispacth} />
+                    </Stack>
                     <TitleList store={state} tree={tree} dispatch={dispacth} currentlySelected={state.selected_from_list} />
                   </ReflexElement>
 
