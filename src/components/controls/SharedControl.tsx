@@ -13,6 +13,7 @@ import FunctionState, { Axis } from "../states/FunctionState";
 import MyTextInput from "../inputs/MyTextInput";
 import MyGroupState from "../states/MyGroupState";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { isMyGroup } from "../../App";
 
 export function SharedBaseControl({ state, dispatch }: { state: BaseState, dispatch: DispactherAction }) {
     const [open, setOpen] = useState(false);
@@ -57,18 +58,21 @@ export function SharedBaseControl({ state, dispatch }: { state: BaseState, dispa
                             state={state} get={() => state.time_constraint.end}
                             set={(a: BaseState, n: number) => a.time_constraint.end = n} />
                     </Stack>
-                    <Stack direction={"row"} spacing={1}>
-                        <MyNumbericInput label="Anim start duration" variant="outlined"
-                            dispatch={dispatch}
-                            state={state} get={() => state.animation.start_duration}
-                            set={(a: BaseState, n: number) => a.animation.start_duration = n} />
-                        <MyNumbericInput label="Anim end duration" variant="outlined"
-                            dispatch={dispatch}
-                            state={state} get={() => state.animation.end_duration}
-                            set={(a: BaseState, n: number) => a.animation.end_duration = n} />
-                    </Stack>
-                    <DefaultColorPicker state={state} dispatch={dispatch} label="Color" />
-
+                    {
+                        isMyGroup(state)? undefined:
+                        <Stack direction={"row"} spacing={1}>
+                            <MyNumbericInput label="Anim start duration" variant="outlined"
+                                dispatch={dispatch}
+                                state={state} get={() => state.animation.start_duration}
+                                set={(a: BaseState, n: number) => a.animation.start_duration = n} />
+                            <MyNumbericInput label="Anim end duration" variant="outlined"
+                                dispatch={dispatch}
+                                state={state} get={() => state.animation.end_duration}
+                                set={(a: BaseState, n: number) => a.animation.end_duration = n} />
+                        </Stack>
+                    }
+                    <DefaultColorPicker state={state} dispatch={dispatch} 
+                        label={isMyGroup(state)? "Gizmos Color": "Color"} />
                 </Stack>
 
             </Collapse>

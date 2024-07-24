@@ -12,6 +12,8 @@ export function getDefaultMyGroupState(state: BaseState): MyGroupState {
     state.position.y = 0;
     state.scale.x = 1;
     state.scale.y = 1;
+    state.animation.start_duration = 0;
+    state.animation.end_duration = 0;
     return {
         ...state,
         children: [],
