@@ -48,9 +48,11 @@ export function getDefaultAxis(): Axis {
 }
 
 export function getDefaultFunctionState(state: BaseState): FunctionState {
+    state.scale.x = 1;
+    state.scale.y = 1;
     return {
         fn: "cos(x)",
-        strokeWidth: 0.1,
+        strokeWidth: 8,
         x_axis: getDefaultAxis(),
         y_axis: getDefaultAxis(),
         x_bounds: {
