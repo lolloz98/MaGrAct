@@ -272,7 +272,7 @@ function App() {
 
                   <ReflexElement propagateDimensionsRate={200}
                     propagateDimensions={true}
-                    style={{ overflow: "auto" }}>
+                    style={{ overflow: "hidden" }}>
                     <Stack direction={"row"} justifyContent={"space-around"} alignContent={"center"}>
                       <AddButton dispatch={dispacth} tree={tree} />
                       <MoveButton store={state} dispatch={dispacth} />
