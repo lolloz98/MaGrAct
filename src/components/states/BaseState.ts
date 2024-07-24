@@ -21,7 +21,8 @@ export default interface BaseState {
     animation: {
         start_duration: number,
         end_duration: number
-    }
+    },
+    parent: string | undefined
 }
 
 export function getDefaultBaseState(
@@ -50,6 +51,7 @@ export function getDefaultBaseState(
         animation: {
             start_duration: 0,
             end_duration: 0.3
-        }
+        },
+        parent: undefined
     }
 }

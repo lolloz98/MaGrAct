@@ -167,9 +167,11 @@ function reducer(
       
       if (action.destinationId === "0") {
         if (draft.parent.has(action.id)) draft.parent.delete(action.id);
+        stateToKeep.parent = undefined;
       } else {
         console.log("set parent", action.destinationId, 'for', action.id);
         draft.parent.set(action.id, action.destinationId);
+        stateToKeep.parent = action.destinationId;
       }
 
       console.log("isNextParent MyStore: ", isMyStore(nextParent));

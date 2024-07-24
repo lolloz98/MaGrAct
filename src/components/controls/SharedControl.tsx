@@ -22,6 +22,11 @@ export function SharedBaseControl({ state, dispatch }: { state: BaseState, dispa
             <Button size="small" startIcon={open ? <ExpandLess /> : <ExpandMore />} onClick={() => setOpen(!open)}>Base Controls</Button>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <Stack direction={"column"} spacing={1}>
+                    {
+                        state.parent ? <Button onClick={() => {
+                            dispatch({ type: 'select_from_list', id: state.parent ?? "0" })
+                        }} endIcon={(<OpenInNewIcon />)} color="secondary" style={{ textTransform: 'none'}}>Go to Parent</Button>: undefined
+                    }
                     <Stack direction={"row"} spacing={1}>
                         <MyNumbericInput label="Position_X" variant="outlined"
                             dispatch={dispatch}
