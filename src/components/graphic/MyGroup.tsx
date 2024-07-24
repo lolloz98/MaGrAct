@@ -21,6 +21,7 @@ export default function MyGroup({ state, dispatch, children }: {
         <Group {...props}>
             {children}
             <Circle
+                visible={state.isGizmosVisible}
                 scaleX={1 / state.scale.x}
                 scaleY={1 / state.scale.y}
                 radius={10}
