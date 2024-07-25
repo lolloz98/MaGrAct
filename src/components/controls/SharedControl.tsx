@@ -26,7 +26,7 @@ export function SharedBaseControl({ state, dispatch }: { state: BaseState, dispa
                     {
                         state.parent ? <Button onClick={() => {
                             dispatch({ type: 'select_from_list', id: state.parent ?? "0" })
-                        }} endIcon={(<OpenInNewIcon />)} color="secondary" style={{ textTransform: 'none'}}>Go to Parent</Button>: undefined
+                        }} endIcon={(<OpenInNewIcon />)} color="secondary" style={{ textTransform: 'none' }}>Go to Parent</Button> : undefined
                     }
                     <Stack direction={"row"} spacing={1}>
                         <MyNumbericInput label="Position_X" variant="outlined"
@@ -59,20 +59,20 @@ export function SharedBaseControl({ state, dispatch }: { state: BaseState, dispa
                             set={(a: BaseState, n: number) => a.time_constraint.end = n} />
                     </Stack>
                     {
-                        isMyGroup(state)? undefined:
-                        <Stack direction={"row"} spacing={1}>
-                            <MyNumbericInput label="Anim start duration" variant="outlined"
-                                dispatch={dispatch}
-                                state={state} get={() => state.animation.start_duration}
-                                set={(a: BaseState, n: number) => a.animation.start_duration = n} />
-                            <MyNumbericInput label="Anim end duration" variant="outlined"
-                                dispatch={dispatch}
-                                state={state} get={() => state.animation.end_duration}
-                                set={(a: BaseState, n: number) => a.animation.end_duration = n} />
-                        </Stack>
+                        isMyGroup(state) ? undefined :
+                            <Stack direction={"row"} spacing={1}>
+                                <MyNumbericInput label="Anim start duration" variant="outlined"
+                                    dispatch={dispatch}
+                                    state={state} get={() => state.animation.start_duration}
+                                    set={(a: BaseState, n: number) => a.animation.start_duration = n} />
+                                <MyNumbericInput label="Anim end duration" variant="outlined"
+                                    dispatch={dispatch}
+                                    state={state} get={() => state.animation.end_duration}
+                                    set={(a: BaseState, n: number) => a.animation.end_duration = n} />
+                            </Stack>
                     }
-                    <DefaultColorPicker state={state} dispatch={dispatch} 
-                        label={isMyGroup(state)? "Gizmos Color": "Color"} />
+                    <DefaultColorPicker state={state} dispatch={dispatch}
+                        label={isMyGroup(state) ? "Gizmos Color" : "Color"} />
                 </Stack>
 
             </Collapse>
@@ -107,12 +107,19 @@ export function SharedAxisControl({ state, getAxis, dispatch, title }: {
             <Button size="small" startIcon={open ? <ExpandLess /> : <ExpandMore />} onClick={() => setOpen(!open)}>{title}</Button>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <Stack direction={"column"} spacing={1}>
-                <MyNumbericInput label="Unit scale" variant="outlined" helperText={"Different from scale. This will not affect stroke width"}
+                    <Stack direction={"row"} spacing={1} paddingBottom={2}>
+                        <MyNumbericInput label="Unit scale" variant="outlined" helperText={"NOT affect stroke width"}
                             dispatch={dispatch}
                             state={state} get={(state) => {
                                 return getAxis(state as FunctionState).unit_scale
                             }}
-                            set={(a: BaseState, n: number) => getAxis(a as FunctionState).unit_scale = n} />
+                            set={(a: BaseState, n: number) => getAxis(a as FunctionState).unit_scale = n} style={{width:"50%"}}/>
+                        <FormGroup style={{width:"50%"}}>
+                            <FormControlLabel control={<Checkbox />} checked={getAxis(state).flip} label="Flip axis" onChange={(e) => {
+                                dispatch({ type: 'modify', id: state.id, modifiers: [(s) => getAxis(s as FunctionState).flip = (e.target as HTMLInputElement).checked] });
+                            }} />
+                        </FormGroup>
+                    </Stack>
                     <Stack direction={"row"} spacing={1}>
                         <MyNumbericInput label="Min Value" variant="outlined"
                             dispatch={dispatch}
@@ -146,7 +153,7 @@ export function SharedAxisControl({ state, getAxis, dispatch, title }: {
                             }}
                             set={(a: BaseState, n: number) => getAxis(a as FunctionState).marks.each = n} />
                         <FormGroup>
-                            <FormControlLabel control={<Checkbox defaultChecked />} label="Marks: Visible" onChange={(e) => {
+                            <FormControlLabel control={<Checkbox />} checked={getAxis(state).marks.visible} label="Marks: Visible" onChange={(e) => {
                                 dispatch({ type: 'modify', id: state.id, modifiers: [(s) => getAxis(s as FunctionState).marks.visible = (e.target as HTMLInputElement).checked] });
 
                             }} />
@@ -154,7 +161,7 @@ export function SharedAxisControl({ state, getAxis, dispatch, title }: {
                     </Stack>
                     <Stack direction={"row"} spacing={1}>
                         <FormGroup>
-                            <FormControlLabel control={<Checkbox defaultChecked />} label="Visible" onChange={(e) => {
+                            <FormControlLabel control={<Checkbox />} checked={getAxis(state).visible} label="Visible" onChange={(e) => {
                                 dispatch({ type: 'modify', id: state.id, modifiers: [(s) => getAxis(s as FunctionState).visible = (e.target as HTMLInputElement).checked] });
                             }} />
                         </FormGroup>
@@ -232,7 +239,7 @@ export function SharedMyGroupControl({ state, dispatch }: {
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <Stack direction={"column"} spacing={1}>
                     <FormGroup>
-                        <FormControlLabel control={<Checkbox defaultChecked />} label="Gizmos Visible" onChange={(e) => {
+                        <FormControlLabel control={<Checkbox />} checked={state.isGizmosVisible} label="Gizmos Visible" onChange={(e) => {
                             dispatch({ type: 'modify', id: state.id, modifiers: [(s) => (s as MyGroupState).isGizmosVisible = (e.target as HTMLInputElement).checked] });
                         }} />
                     </FormGroup>
@@ -242,7 +249,7 @@ export function SharedMyGroupControl({ state, dispatch }: {
                             return (
                                 <Button key={c.id} onClick={() => {
                                     dispatch({ type: 'select_from_list', id: c.id })
-                                }} endIcon={(<OpenInNewIcon />)} color="secondary" style={{ textTransform: 'none'}}>{c.title}</Button>
+                                }} endIcon={(<OpenInNewIcon />)} color="secondary" style={{ textTransform: 'none' }}>{c.title}</Button>
                             )
                         })
                     }

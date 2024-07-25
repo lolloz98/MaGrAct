@@ -31,7 +31,7 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
     const step = window.innerWidth === 0? 0 : (state.x_bounds.max - state.x_bounds.min) / window.innerWidth;
 
     // we mirror on y, because konva has the axis inverted
-    const expr = compile(`-(${state.fn})`);
+    const expr = compile(state.fn);
 
     const points_of_points: number[][] = [[]];
     for (let x = state.x_bounds.min; x < state.x_bounds.max; x += step) {
@@ -43,8 +43,8 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
             if (y === undefined || isNaN(y) || y === Infinity || y < state.y_bounds.min || y > state.y_bounds.max) {
                 points_of_points.push([]);
             } else {
-                points_of_points[points_of_points.length - 1].push(x * state.x_axis.unit_scale);
-                points_of_points[points_of_points.length - 1].push(y * state.y_axis.unit_scale);
+                points_of_points[points_of_points.length - 1].push(state.x_axis.flip? -x * state.x_axis.unit_scale: x * state.x_axis.unit_scale);
+                points_of_points[points_of_points.length - 1].push(state.y_axis.flip? -y * state.y_axis.unit_scale: y * state.y_axis.unit_scale);
             }
         } catch (e) {
             console.error("There was an error evaluating function", e);

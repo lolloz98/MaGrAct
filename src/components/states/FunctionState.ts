@@ -17,6 +17,7 @@ export default interface FunctionState extends BaseState {
 
 export interface Axis {
     unit_scale: number,
+    flip: boolean,
     bounds: {
         min: number,
         max: number
@@ -30,9 +31,10 @@ export interface Axis {
     color: string
 }
 
-export function getDefaultAxis(): Axis {
+export function getDefaultAxis(flip: boolean): Axis {
     return {
         unit_scale: 100,
+        flip: flip,
         bounds: {
             min: -4,
             max: 4
@@ -53,8 +55,8 @@ export function getDefaultFunctionState(state: BaseState): FunctionState {
     return {
         fn: "cos(x)",
         strokeWidth: 8,
-        x_axis: getDefaultAxis(),
-        y_axis: getDefaultAxis(),
+        x_axis: getDefaultAxis(false),
+        y_axis: getDefaultAxis(true),
         x_bounds: {
             min: -4,
             max: 4
