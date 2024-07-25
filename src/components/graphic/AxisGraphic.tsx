@@ -11,7 +11,6 @@ function computeMarksPos(min: number, max: number, each: number, visible: boolea
     for (let i = Math.floor(min / each) * each; i <= max; i += each) {
         if (i !== 0) marks.push(i);
     }
-    console.log(marks);
     return marks
 }
 
@@ -55,7 +54,6 @@ export function AxisGraphic({ axis, state, dir  }: { axis: Axis, state: BaseStat
                 y={0}
             />
             {computeMarks(axis)}
-            <Circle fill={"red"} radius={10}/>
         </Group>
     )
 
