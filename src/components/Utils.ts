@@ -2,7 +2,7 @@ import Konva from "konva";
 import BaseState from "./states/BaseState";
 import { DispactherAction } from "./StoreContext";
 import { KonvaEventObject } from "konva/lib/Node";
-import FunctionState from "./states/FunctionState";
+import FunctionState, { Axis } from "./states/FunctionState";
 import { evaluate } from "mathjs";
 import { isNaN as mathjsIsNan } from 'mathjs';
 
@@ -130,18 +130,6 @@ export function getCommonProps(state: BaseState, currentTime: number) {
     }
 };
 
-export function evalFn(expr: string, context: {
-    t: number, // current time
-    st: number, // start time
-    et: number // end time
-}) {
-    try {
-        const y = evaluate(expr, context);
-        if (!(y === undefined || mathjsIsNan(y))) {
-            return y;
-        }
-    } catch(e) {
-        console.error(`Error computing function: ${expr}. Error: ${e}`)
-    }
-    return 0;
+export function scaleAndFlipXandY(val: number, axis: Axis) {
+    return axis.flip? -val * axis.unit_scale: val * axis.unit_scale
 }

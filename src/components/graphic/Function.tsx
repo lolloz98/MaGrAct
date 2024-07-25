@@ -2,7 +2,7 @@ import { Group, Line, Rect } from "react-konva";
 import { useContext } from 'react';
 import { TimeContext } from '../TimeContext';
 import { DispactherAction } from "../StoreContext";
-import { computeColorDissolvenceAnimation, getCommonProps, getDraggableProps, getLineColorProps, getPositionAndScaleProps, getPositionProps, getScaleProps } from "../Utils";
+import { computeColorDissolvenceAnimation, getCommonProps, getDraggableProps, getLineColorProps, getPositionAndScaleProps, getPositionProps, getScaleProps, scaleAndFlipXandY } from "../Utils";
 import FunctionState, { Axis } from "../states/FunctionState";
 import { compile, evaluate, isNaN } from "mathjs";
 import { AxisGraphic } from "./AxisGraphic";
@@ -13,7 +13,6 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
 
     const step = window.innerWidth === 0? 0 : (state.x_bounds.max - state.x_bounds.min) / window.innerWidth;
 
-    // we mirror on y, because konva has the axis inverted
     const expr = compile(state.fn);
 
     const points_of_points: number[][] = [[]];
@@ -26,8 +25,8 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
             if (y === undefined || isNaN(y) || y === Infinity || y < state.y_bounds.min || y > state.y_bounds.max) {
                 points_of_points.push([]);
             } else {
-                points_of_points[points_of_points.length - 1].push(state.x_axis.flip? -x * state.x_axis.unit_scale: x * state.x_axis.unit_scale);
-                points_of_points[points_of_points.length - 1].push(state.y_axis.flip? -y * state.y_axis.unit_scale: y * state.y_axis.unit_scale);
+                points_of_points[points_of_points.length - 1].push(scaleAndFlipXandY(x, state.x_axis));
+                points_of_points[points_of_points.length - 1].push(scaleAndFlipXandY(y, state.y_axis));
             }
         } catch (e) {
             console.error("There was an error evaluating function", e);
