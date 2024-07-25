@@ -96,12 +96,12 @@ export default function MoveDialog({ state, onClose, dispatch }:
 
 
     const onChangeSel = (s: MoveDialogType | '', np: MoveDialogType) => {
+        setNewPosition(0);
         if (s === base) {
             setSel(base);
             setSiblingsList([]);
             setParentList([]);
             setNewParent({ id: "0", title: "(root)" });
-            setNewPosition(0);
             setNewPosConstraint(1);
             return;
         }
