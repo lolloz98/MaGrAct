@@ -31,8 +31,6 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
         fns.push((<Line
             points={points_of_points[i]}
             {...fnProps}
-            x={0}
-            y={0}
             key={i}
         />))
     }
