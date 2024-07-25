@@ -10,12 +10,20 @@ import {
     DialogContent,
     DialogActions,
     Stack,
+    List,
+    ListItem,
+    ListItemText,
+    ListSubheader,
+    Divider,
+    Typography,
+    ListItemButton,
 } from "@mui/material";
 import styles from './MoveDialog.module.css';
 import { DispactherAction, MyStore } from "../StoreContext";
 import BaseState from "../states/BaseState";
 import { isMyGroup } from "../../App";
 import MyGroupState from "../states/MyGroupState";
+import { title } from "process";
 
 type MoveDialogType = {
     id: string;
@@ -66,7 +74,7 @@ function stringify(s: MoveDialogType | '') {
 function myRange(min: number, max: number) {
     var len = max - min;
     var arr = new Array(len);
-    for (var i=0; i<len; i++) {
+    for (var i = 0; i < len; i++) {
         arr[i] = min + i;
     }
     return arr;
@@ -80,12 +88,12 @@ export default function MoveDialog({ state, onClose, dispatch }:
     const [parentlist, setParentList] = useState<MoveDialogType[]>([]);
     const [completeList, setCompleteList] = useState<MoveDialogType[]>([]);
 
-    const [newParent, setNewParent] = useState<MoveDialogType>({ id: "0", title: "(root)"});
+    const [newParent, setNewParent] = useState<MoveDialogType>({ id: "0", title: "(root)" });
     const [newPosition, setNewPosition] = useState<number>(0);
     // max number (exclusive)
     const [posConstraints, setNewPosConstraint] = useState<number>(1);
 
-    
+
 
     const onChangeSel = (s: MoveDialogType | '', np: MoveDialogType) => {
         if (s === base) {
@@ -97,7 +105,7 @@ export default function MoveDialog({ state, onClose, dispatch }:
             setNewPosConstraint(1);
             return;
         }
-       
+
         setNewParent(np);
         setSel(s);
         let nextParentList: MoveDialogType[] = [];
@@ -108,7 +116,8 @@ export default function MoveDialog({ state, onClose, dispatch }:
         setSiblingsList(nextSiblingList);
 
         if ((nextSiblingList.find(a => a.id === s.id) !== undefined)) {
-            setNewPosConstraint(nextSiblingList.length);}
+            setNewPosConstraint(nextSiblingList.length);
+        }
         else setNewPosConstraint(nextSiblingList.length + 1);
     }
 
@@ -118,6 +127,7 @@ export default function MoveDialog({ state, onClose, dispatch }:
             complete = complete.concat(dfs(c));
         }
         setCompleteList(complete);
+        setSiblingsList(dfsSiblings(state.components, newParent.id))
     }, [state]);
 
     return (
@@ -125,50 +135,59 @@ export default function MoveDialog({ state, onClose, dispatch }:
             <DialogTitle>Change Position of an Item</DialogTitle>
             <DialogContent className={styles.content} sx={{
                 '& .MuiTextField-root': { mt: 1 },
-            }}>
+            }} style={{ overflowY: 'hidden' }}>
                 <Stack direction={"row"} spacing={1} paddingTop={1} alignItems={"center"} justifyContent={'space-around'}>
-                
-                <Stack direction={"column"} spacing={1} paddingTop={1} flex={2}>
-                    <FormControl className={styles.select}>
-                        <InputLabel id="item-to-move-label">Select Item to Move</InputLabel>
-                        <Select label="Select Item to Move" labelId="item-to-move-label" onChange={(e) => onChangeSel(JSON.parse(e.target.value as string) as MoveDialogType, { id: "0", title: "(root)"})} value={stringify(sel)}>
-                            {completeList
-                                .map((c) => (
-                                    <MenuItem key={c.id} value={stringify({ id: c.id, title: c.title })}>
-                                        {c.title}
-                                    </MenuItem>
-                                ))}
-                        </Select>
-                    </FormControl>
-                    <FormControl className={styles.select}>
-                        <InputLabel id="new-parent-label">Select New Parent</InputLabel>
-                        <Select label="Select New Parent" labelId="new-parent-label" onChange={(e) => onChangeSel(sel, JSON.parse(e.target.value as string) as MoveDialogType)} value={stringify(newParent)}>
-                            <MenuItem value={stringify({ id: "0", title: "(root)" })}>(root)</MenuItem>
-                            {parentlist
-                                .map((c) => (
-                                    <MenuItem key={c.id} value={stringify({ id: c.id, title: c.title })}>
-                                        {c.title}
-                                    </MenuItem>
-                                ))}
-                        </Select>
-                    </FormControl>
-                    <FormControl className={styles.select}>
-                        <InputLabel id="new-position-label">Select New Position</InputLabel>
-                        <Select label="Select New Position" labelId="new-position-label" onChange={(e) => setNewPosition(e.target.value as number)} value={newPosition}>
-                            {myRange(0, posConstraints)
-                                .map((c) => (
-                                    <MenuItem key={c} value={`${c}`}>
-                                        {c}
-                                    </MenuItem>
-                                ))}
-                        </Select>
-                    </FormControl>
+
+                    <Stack direction={"column"} spacing={1} paddingTop={1} flex={2}>
+                        <FormControl className={styles.select}>
+                            <InputLabel id="item-to-move-label">Select Item to Move</InputLabel>
+                            <Select label="Select Item to Move" labelId="item-to-move-label" onChange={(e) => onChangeSel(JSON.parse(e.target.value as string) as MoveDialogType, { id: "0", title: "(root)" })} value={stringify(sel)}>
+                                {completeList
+                                    .map((c) => (
+                                        <MenuItem key={c.id} value={stringify({ id: c.id, title: c.title })}>
+                                            {c.title}
+                                        </MenuItem>
+                                    ))}
+                            </Select>
+                        </FormControl>
+                        <FormControl className={styles.select}>
+                            <InputLabel id="new-parent-label">Select New Parent</InputLabel>
+                            <Select label="Select New Parent" labelId="new-parent-label" onChange={(e) => onChangeSel(sel, JSON.parse(e.target.value as string) as MoveDialogType)} value={stringify(newParent)}>
+                                <MenuItem value={stringify({ id: "0", title: "(root)" })}>(root)</MenuItem>
+                                {parentlist
+                                    .map((c) => (
+                                        <MenuItem key={c.id} value={stringify({ id: c.id, title: c.title })}>
+                                            {c.title}
+                                        </MenuItem>
+                                    ))}
+                            </Select>
+                        </FormControl>
+                        <FormControl className={styles.select}>
+                            <InputLabel id="new-position-label">Select New Position</InputLabel>
+                            <Select label="Select New Position" labelId="new-position-label" onChange={(e) => setNewPosition(e.target.value as number)} value={newPosition}>
+                                {myRange(0, posConstraints)
+                                    .map((c) => (
+                                        <MenuItem key={c} value={`${c}`}>
+                                            {c}
+                                        </MenuItem>
+                                    ))}
+                            </Select>
+                        </FormControl>
                     </Stack>
-                    <Stack flex={1} overflow={"auto"} maxHeight={500} spacing={0}>
-                        <h3>New Siblings</h3>
-                        {siblingsList.map((c, i) => {
-                            return (<p>{i}: {c.title}</p>);
-                        })}
+                    <Stack direction={"column"} width={"50%"}>
+                        <Typography>{`In New Parent`}</Typography>
+                        <Divider />
+                        <List style={{ maxHeight: 400, overflow: 'auto' }}>
+                            {siblingsList.map((c, i) => {
+                                return (<ListItemButton key={c.id} onClick={(e) => {
+                                        onChangeSel({ id: c.id, title: c.title }, newParent);
+                                    }}>
+                                        <ListItemText key={c.id}
+                                            primary={`${i} ${c.title}`}
+                                        />
+                                    </ListItemButton>)
+                            })}
+                        </List>
                     </Stack>
                 </Stack>
             </DialogContent>
