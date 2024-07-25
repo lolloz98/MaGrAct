@@ -63,8 +63,6 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
     >   
         <AxisGraphic axis={state.x_axis} state={state} dir={'x'} />
         <AxisGraphic axis={state.y_axis} state={state} dir={'y'} />
-        <Group {...commonProps}>
-            {fns}
-        </Group>
+        {fns}
     </Group>);
 }
