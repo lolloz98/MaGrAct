@@ -34,8 +34,6 @@ export const CustomNode: React.FC<Props> = (props) => {
         setIsCurrentlyRenaming(false)
     }, [props.node.text]);
 
-    const indent = props.depth * 24;
-
     const handleToggle = (e: React.MouseEvent) => {
         e.stopPropagation();
         props.onToggle(props.node.id);
@@ -63,7 +61,6 @@ export const CustomNode: React.FC<Props> = (props) => {
         <div
             className={`tree-node ${styles.root} ${props.isSelected ? styles.isSelected : ""
                 }`}
-            style={{ paddingInlineStart: indent }}
             onClick={handleSelect}
         >
             {props.node.droppable && (<div onClick={handleToggle}> <ArrowRight /> </div>)}
@@ -105,7 +102,6 @@ export const CustomNode: React.FC<Props> = (props) => {
     return (
         <div
             className={`tree-node ${styles.root}`}
-            style={{ paddingInlineStart: indent }}
             {...dragOverProps}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
