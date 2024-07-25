@@ -24,6 +24,7 @@ import BaseState from "../states/BaseState";
 import { isMyGroup } from "../../App";
 import MyGroupState from "../states/MyGroupState";
 import { title } from "process";
+import { myRange } from "../Utils";
 
 type MoveDialogType = {
     id: string;
@@ -69,15 +70,6 @@ function dfsSiblings(cs: BaseState[], newParentId: string): MoveDialogType[] {
 function stringify(s: MoveDialogType | '') {
     if (s === '') return '';
     return JSON.stringify(s);
-}
-
-function myRange(min: number, max: number) {
-    var len = max - min;
-    var arr = new Array(len);
-    for (var i = 0; i < len; i++) {
-        arr[i] = min + i;
-    }
-    return arr;
 }
 
 export default function MoveDialog({ state, onClose, dispatch }:
