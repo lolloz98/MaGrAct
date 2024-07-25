@@ -2,8 +2,8 @@ import Konva from "konva";
 import BaseState from "./states/BaseState";
 import { DispactherAction } from "./StoreContext";
 import { KonvaEventObject } from "konva/lib/Node";
-import FunctionState, { Axis } from "./states/FunctionState";
-import { evaluate } from "mathjs";
+import FunctionState, { Axis, Bounds } from "./states/FunctionState";
+import { compile, evaluate } from "mathjs";
 import { isNaN as mathjsIsNan } from 'mathjs';
 
 export function isNumeric(str: string) {
@@ -132,4 +132,42 @@ export function getCommonProps(state: BaseState, currentTime: number) {
 
 export function scaleAndFlipXandY(val: number, axis: Axis) {
     return axis.flip? -val * axis.unit_scale: val * axis.unit_scale
+}
+
+/**
+ * @param fn function string
+ * @param x bounds for x
+ * @param y bounds for y
+ * @returns list of lists of connected point in the shape [x_0, y_0, x_1, y_1...]. If only output then [[y_0, y_1 ...]...]
+ * A list of lists is returned so that we can disconnect functions if the value computed for a certain x is out of bounds.
+ * @onError returns empty list
+ */
+export function evalFnAndGetPoints(fn: string, x: Axis, y: Axis, onlyOutput: boolean = false) {
+    const step = window.innerWidth === 0? 0 : (x.bounds.max - x.bounds.min) / window.innerWidth;
+
+    const expr = compile(fn);
+
+    const points_of_points: number[][] = [[]];
+    for (let x_val = x.bounds.min; x_val < x.bounds.max; x_val += step) {
+        const scope = {
+            x: x_val
+        };
+        try {
+            const y_val = expr.evaluate(scope);
+            if (y_val === undefined || isNaN(y_val) || y_val === Infinity || y_val < y.bounds.min || y_val > y.bounds.max) {
+                points_of_points.push([]);
+            } else {
+                if (!onlyOutput) points_of_points[points_of_points.length - 1].push(scaleAndFlipXandY(x_val, x));
+                points_of_points[points_of_points.length - 1].push(scaleAndFlipXandY(y_val, y));
+            }
+        } catch (e) {
+            console.error(`There was an error evaluating f(${x_val}), f(x)=${fn}:`, e);
+            return [];
+        }
+    }
+    return points_of_points;
+}
+
+function pointsToLines(points: number[][], max_points: number) {
+
 }

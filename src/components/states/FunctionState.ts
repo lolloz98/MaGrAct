@@ -5,23 +5,19 @@ export default interface FunctionState extends BaseState {
     strokeWidth: number,
     x_axis: Axis,
     y_axis: Axis,
-    x_bounds: {
-        min: number,
-        max: number
-    },
-    y_bounds: {
-        min: number,
-        max: number
-    }
+    x_bounds: Bounds,
+    y_bounds: Bounds
 };
+
+export interface Bounds {
+    min: number,
+    max: number
+}
 
 export interface Axis {
     unit_scale: number,
     flip: boolean,
-    bounds: {
-        min: number,
-        max: number
-    },
+    bounds: Bounds,
     thickness: number,
     visible: boolean,
     marks: {
