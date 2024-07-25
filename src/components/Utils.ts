@@ -130,31 +130,30 @@ export function getCommonProps(state: BaseState, currentTime: number) {
     }
 };
 
-export function scaleAndFlipXandY(val: number, axis: Axis) {
-    return axis.flip? -val * axis.unit_scale: val * axis.unit_scale
+export function scaleAndFlipXandY(val: number, modifiers: AxisModifications) {
+    return modifiers.flip? -val * modifiers.unit: val * modifiers.unit;
 }
 
 /**
  * @param fn function string
- * @param x bounds for x
- * @param y bounds for y
+ * @param x AxisModification is useful only if onlyOutput is false
  * @returns list of lists of connected point in the shape [x_0, y_0, x_1, y_1...]. If only output then [[y_0, y_1 ...]...]
  * A list of lists is returned so that we can disconnect functions if the value computed for a certain x is out of bounds.
  * @onError returns empty list
  */
-export function evalFnAndGetPoints(fn: string, x: Axis, y: Axis, onlyOutput: boolean = false) {
-    const step = window.innerWidth === 0? 0 : (x.bounds.max - x.bounds.min) / window.innerWidth;
+export function evalFnAndGetPoints(fn: string, x: Bounds & AxisModifications, y: Bounds & AxisModifications, onlyOutput: boolean = false) {
+    const step = window.innerWidth === 0? 0 : (x.max - x.min) / window.innerWidth;
 
     const expr = compile(fn);
 
     const points_of_points: number[][] = [[]];
-    for (let x_val = x.bounds.min; x_val < x.bounds.max; x_val += step) {
+    for (let x_val = x.min; x_val < x.max; x_val += step) {
         const scope = {
             x: x_val
         };
         try {
             const y_val = expr.evaluate(scope);
-            if (y_val === undefined || isNaN(y_val) || y_val === Infinity || y_val < y.bounds.min || y_val > y.bounds.max) {
+            if (y_val === undefined || isNaN(y_val) || y_val === Infinity || y_val < y.min || y_val > y.max) {
                 points_of_points.push([]);
             } else {
                 if (!onlyOutput) points_of_points[points_of_points.length - 1].push(scaleAndFlipXandY(x_val, x));
@@ -168,6 +167,16 @@ export function evalFnAndGetPoints(fn: string, x: Axis, y: Axis, onlyOutput: boo
     return points_of_points;
 }
 
-function pointsToLines(points: number[][], max_points: number) {
+export interface AxisModifications {
+    flip: boolean,
+    unit: number
+}
 
+export function extractFromAxis(a: Axis): Bounds & AxisModifications {
+    return {
+        min: a.bounds.min,
+        max: a.bounds.max,
+        unit: a.unit_scale,
+        flip: a.flip
+    };
 }

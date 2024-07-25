@@ -2,7 +2,7 @@ import { Group, Line, Rect } from "react-konva";
 import { useContext } from 'react';
 import { TimeContext } from '../TimeContext';
 import { DispactherAction } from "../StoreContext";
-import { computeColorDissolvenceAnimation, evalFnAndGetPoints, getCommonProps, getDraggableProps, getLineColorProps, getPositionAndScaleProps, getPositionProps, getScaleProps, scaleAndFlipXandY } from "../Utils";
+import { computeColorDissolvenceAnimation, evalFnAndGetPoints, extractFromAxis, getCommonProps, getDraggableProps, getLineColorProps, getPositionAndScaleProps, getPositionProps, getScaleProps, scaleAndFlipXandY } from "../Utils";
 import FunctionState, { Axis } from "../states/FunctionState";
 import { compile, evaluate, isNaN } from "mathjs";
 import { AxisGraphic } from "./AxisGraphic";
@@ -24,7 +24,10 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
         ...getLineColorProps(state, t)
     }
 
-    const points_of_points = evalFnAndGetPoints(state.fn, state.x_axis, state.y_axis);
+    const points_of_points = evalFnAndGetPoints(
+        state.fn, 
+        extractFromAxis(state.x_axis), 
+        extractFromAxis(state.y_axis));
 
     const fns = [];
     for (let i = 0; i < points_of_points.length; i++) {
