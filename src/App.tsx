@@ -187,6 +187,13 @@ function reducer(
     case 'select_from_list':
       draft.selected_from_list = action.id;
       return draft;
+    case 'set_max_ticks':
+      draft.maxTicks = action.maxTicks;
+      if (draft.tick > action.maxTicks) draft.tick = action.maxTicks;
+      return draft;
+    case 'set_tick':
+      draft.tick = action.tick;
+      return draft;
   }
 }
 
@@ -204,13 +211,9 @@ function App() {
   const [mode, setMode] = React.useState<PaletteMode>('dark');
   const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
-  const [tick, setTick] = React.useState<number>(0);
-  const step = 50;
-  const maxTicks = 100;
-
   const { state, dispacth } = useMyMutative();
   const getTime = (tick: number) => {
-    return step * tick / 1000;
+    return state.step * tick / 1000;
   }
 
   const children = [];
@@ -234,8 +237,8 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <TimeContext.Provider value={getTime(tick)}>
-        <MaxTimeContext.Provider value={getTime(maxTicks)}>
+      <TimeContext.Provider value={getTime(state.tick)}>
+        <MaxTimeContext.Provider value={getTime(state.maxTicks)}>
           <CssBaseline />
           <main className="App">
             <ReflexContainer orientation="vertical" style={{ height: '100vh' }} >
@@ -258,7 +261,8 @@ function App() {
                     propagateDimensions={true}
                     flex={1.3}>
                     <Stack alignContent={"center"}>
-                        <MyTimeline tick={tick} setTick={setTick} step={step} maxTicks={maxTicks} />
+                        <MyTimeline tick={state.tick} step={state.step} maxTicks={state.maxTicks} 
+                          setTick={(n) => dispacth({ type: 'set_tick', tick: n })} />
                         <MySettingsDialog dispatch={dispacth} state={state} />
                     </Stack>
                   </ReflexElement>

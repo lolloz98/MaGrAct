@@ -13,14 +13,15 @@ export default function MyNumbericInput<Variant extends TextFieldVariants>(
         variant?: Variant;
     } & Omit<TextFieldProps, 'variant'> & 
     { state: BaseState, get: (state: BaseState) => number, 
-        set: (state: BaseState, a: number) => void, dispatch: DispactherAction }
+        set: (state: BaseState, a: number) => void, dispatch: DispactherAction, actionType?: 'set_max_ticks' }
 ): JSX.Element {
-    const { get, set, dispatch, state, ...rest } = props;
+    const { get, set, dispatch, state, actionType, ...rest } = props;
 
     const onMyChange = (e: Event) => {
         const val = (e.target as HTMLInputElement).value;
         if (isNumeric(val)) {
-            dispatch({ type: 'modify', id: state.id, modifiers: [(s) => set(s, +val)] });
+            if (actionType === undefined) dispatch({ type: 'modify', id: state.id, modifiers: [(s) => set(s, +val)] });
+            else dispatch({ type: 'set_max_ticks', maxTicks: +val });
         }
     }
 

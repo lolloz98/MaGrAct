@@ -6,7 +6,10 @@ export interface MyStore {
     components: Array<BaseState>
     selected: Array<string>,
     titles: Set<string>,
-    selected_from_list?: string
+    selected_from_list?: string,
+    step: number,
+    maxTicks: number,
+    tick: number
 }
 
 export type StoreAction = {
@@ -25,7 +28,8 @@ export type StoreAction = {
     type: 'changeSelection',
     ids: string[] | []
 } | { type: 'reorder', id: string, destinationId: string, index: number } |
-{ type: 'select_from_list', id: string};
+{ type: 'select_from_list', id: string} | { type: 'set_max_ticks', maxTicks: number } |
+{ type: 'set_tick', tick: number };
 
 export type DispactherAction = React.Dispatch<StoreAction>;
 
@@ -34,7 +38,10 @@ export const initState = {
     components: [],
     selected: [],
     titles: new Set<string>(),
-    selected_from_list: undefined
+    selected_from_list: undefined,
+    step: 50, // in millis
+    maxTicks: 1000,
+    tick: 0
 };
 
 export const MyStoreContext = createContext<MyStore>(initState);

@@ -6,7 +6,7 @@ import { TimeContext } from "./TimeContext";
 
 export default function MyTimeline({ tick, setTick, step, maxTicks }: {
     tick: number,
-    setTick: React.Dispatch<React.SetStateAction<number>>,
+    setTick: (t: number) => void,
     step: number,
     maxTicks: number
 }) {
@@ -21,7 +21,7 @@ export default function MyTimeline({ tick, setTick, step, maxTicks }: {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            if (play) setTick(tick => (tick + 1) % (maxTicks + 1));
+            if (play) setTick((tick + 1) % (maxTicks + 1));
         }, step);
         return () => clearInterval(interval);
     }, [tick, play, step]);
