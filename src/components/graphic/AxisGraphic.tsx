@@ -16,7 +16,6 @@ function computeMarksPos(min: number, max: number, each: number, visible: boolea
 }
 
 export function AxisGraphic({ axis, state, dir  }: { axis: Axis, state: BaseState, dir: 'x' | 'y' }) {
-    const flip = axis.flip? -1 : 1;
     const maxi = axis.flip? -axis.bounds.min: axis.bounds.max;
     const mini = axis.flip? -axis.bounds.max: axis.bounds.min;
     const points = [mini, 0, maxi, 0];
