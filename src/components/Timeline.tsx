@@ -50,6 +50,7 @@ export default function MyTimeline({ tick, setTick, step, maxTicks }: {
                 {play ? "Pause" : "Play"}
             </Button>
             <Slider
+                style={{ minWidth: 200 }}
                 value={tick}
                 onChange={handleSliderChange}
                 marks={marks}

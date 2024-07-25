@@ -20,6 +20,7 @@ import 'react-reflex/styles.css'
 import AddButton from './components/add/AddButton';
 import MyGroupState from './components/states/MyGroupState';
 import MoveButton from './components/move/MoveButton';
+import MySettingsDialog from './components/settings/MySettingsDialog';
 
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
@@ -238,7 +239,7 @@ function App() {
           <CssBaseline />
           <main className="App">
             <ReflexContainer orientation="vertical" style={{ height: '100vh' }} >
-              <ReflexElement flex={2}>
+              <ReflexElement flex={1.7}>
                 <ReflexContainer orientation="horizontal" style={{ height: '100vh' }} >
 
                   <ReflexElement propagateDimensionsRate={200}
@@ -255,8 +256,11 @@ function App() {
 
                   <ReflexElement propagateDimensionsRate={200}
                     propagateDimensions={true}
-                    flex={1}>
-                    <MyTimeline tick={tick} setTick={setTick} step={step} maxTicks={maxTicks} />
+                    flex={1.3}>
+                    <Stack alignContent={"center"}>
+                        <MyTimeline tick={tick} setTick={setTick} step={step} maxTicks={maxTicks} />
+                        <MySettingsDialog dispatch={dispacth} state={state} />
+                    </Stack>
                   </ReflexElement>
                 </ReflexContainer>
               </ReflexElement>
