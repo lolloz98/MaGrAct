@@ -113,8 +113,8 @@ export function SharedAxisControl({ state, getAxis, dispatch, title }: {
                             state={state} get={(state) => {
                                 return getAxis(state as FunctionState).unit_scale
                             }}
-                            set={(a: BaseState, n: number) => getAxis(a as FunctionState).unit_scale = n} style={{width:"50%"}}/>
-                        <FormGroup style={{width:"50%"}}>
+                            set={(a: BaseState, n: number) => getAxis(a as FunctionState).unit_scale = n} style={{ width: "50%" }} />
+                        <FormGroup style={{ width: "50%" }}>
                             <FormControlLabel control={<Checkbox />} checked={getAxis(state).flip} label="Flip axis" onChange={(e) => {
                                 dispatch({ type: 'modify', id: state.id, modifiers: [(s) => getAxis(s as FunctionState).flip = (e.target as HTMLInputElement).checked] });
                             }} />
@@ -221,6 +221,12 @@ export function SharedFunctionControl({ state, dispatch }: {
                             }}
                             set={(a: BaseState, n: number) => (a as FunctionState).y_bounds.max = n} />
                     </Stack>
+                    <MyNumbericInput label="Granularity" variant="outlined" helperText={"The smaller the more definition on fn"}
+                        dispatch={dispatch}
+                        state={state} get={(state) => {
+                            return (state as FunctionState).granularity
+                        }}
+                        set={(a: BaseState, n: number) => (a as FunctionState).granularity = n} />
                 </Stack>
             </Collapse>
         </Stack>

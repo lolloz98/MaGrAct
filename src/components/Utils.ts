@@ -134,6 +134,16 @@ export function scaleAndFlipXandY(val: number, modifiers: AxisModifications) {
     return modifiers.flip? -val * modifiers.unit: val * modifiers.unit;
 }
 
+
+export function myRange(min: number, max: number, step: number = 1) {
+    const len = max - min;
+    const arr = [];
+    for (let i = 0; i < len; i += step) {
+        arr.push(min + i);
+    }
+    return arr;
+}
+
 /**
  * @param fn function string
  * @param x AxisModification is useful only if onlyOutput is false
@@ -141,13 +151,19 @@ export function scaleAndFlipXandY(val: number, modifiers: AxisModifications) {
  * A list of lists is returned so that we can disconnect functions if the value computed for a certain x is out of bounds.
  * @onError returns empty list
  */
-export function evalFnAndGetPoints(fn: string, x: Bounds & AxisModifications, y: Bounds & AxisModifications, onlyOutput: boolean = false) {
-    const step = window.innerWidth === 0? 0 : (x.max - x.min) / window.innerWidth;
+export function evalFnAndGetPoints(fn: string, x: ((Bounds & {granularity: number}) | number[]) & AxisModifications, y: Bounds & AxisModifications, onlyOutput: boolean = false) {
+    let in_val = [];
+    if ((x as Bounds).max !== undefined) {
+        const b = x as (Bounds & {granularity: number});
+        in_val = myRange(b.min, b.max, b.granularity);
+    } else {
+        in_val = (x as number[]);
+    }
 
     const expr = compile(fn);
 
     const points_of_points: number[][] = [[]];
-    for (let x_val = x.min; x_val < x.max; x_val += step) {
+    for (const x_val of in_val) {
         const scope = {
             x: x_val
         };

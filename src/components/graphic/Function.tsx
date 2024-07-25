@@ -26,7 +26,7 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
 
     const points_of_points = evalFnAndGetPoints(
         state.fn, 
-        extractFromAxis(state.x_axis), 
+        {...extractFromAxis(state.x_axis), granularity: state.granularity}, 
         extractFromAxis(state.y_axis));
 
     const fns = [];

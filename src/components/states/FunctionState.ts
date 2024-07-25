@@ -6,7 +6,8 @@ export default interface FunctionState extends BaseState {
     x_axis: Axis,
     y_axis: Axis,
     x_bounds: Bounds,
-    y_bounds: Bounds
+    y_bounds: Bounds,
+    granularity: number
 };
 
 export interface Bounds {
@@ -51,6 +52,7 @@ export function getDefaultFunctionState(state: BaseState): FunctionState {
     return {
         fn: "cos(x)",
         strokeWidth: 8,
+        granularity: 0.1,
         x_axis: getDefaultAxis(false),
         y_axis: getDefaultAxis(true),
         x_bounds: {
