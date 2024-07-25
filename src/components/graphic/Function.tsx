@@ -5,27 +5,10 @@ import { DispactherAction } from "../StoreContext";
 import { computeColorDissolvenceAnimation, getCommonProps, getDraggableProps, getLineColorProps, getPositionAndScaleProps, getPositionProps, getScaleProps } from "../Utils";
 import FunctionState, { Axis } from "../states/FunctionState";
 import { compile, evaluate, isNaN } from "mathjs";
-
-
-function computeMarksPos(min: number, max: number, each: number, visible: boolean) {
-    if (!visible) return [];
-    const marks = [];
-    for (let i = -each; i >= min; i -= each) {
-        marks.push(i);
-    }
-    for (let i = each; i <= max; i += each) {
-        marks.push(i);
-    }
-    return marks
-}
-
+import { AxisGraphic } from "./AxisGraphic";
 
 
 export default function Function({ state, dispatch }: { state: FunctionState, dispatch: DispactherAction }) {
-    const x_bounds = state.x_axis.bounds;
-    const y_bounds = state.y_axis.bounds;
-    const x_axis: number[] = [x_bounds.min, 0, x_bounds.max, 0]
-    const y_axis: number[] = [0, y_bounds.min, 0, y_bounds.max]
     const t = useContext(TimeContext);
 
     const step = window.innerWidth === 0? 0 : (state.x_bounds.max - state.x_bounds.min) / window.innerWidth;
@@ -60,10 +43,6 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
         ...getPositionAndScaleProps(state)
     };
 
-    const axisCommonProps = {
-        ...commonProps
-    }
-
     const fnProps = {
         ...commonProps,
         ...getLineColorProps(state, t)
@@ -80,62 +59,11 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
         />))
     }
 
-    const x_col = computeColorDissolvenceAnimation(state, t, (state) => (state as FunctionState).x_axis.color);
-    const y_col = computeColorDissolvenceAnimation(state, t, (state) => (state as FunctionState).y_axis.color);
-
-    function computeMarks(axis: Axis) {
-        const mark_pos = computeMarksPos(axis.bounds.min, axis.bounds.max, axis.marks.each, axis.marks.visible);
-        const thick = axis.thickness;
-        const mark_width = axis.thickness * 6;
-        const marks = [];
-        for (let i = 0; i < mark_pos.length; i++) {
-            marks.push((<Rect 
-                {...commonProps}
-                stroke={x_col}
-                y={- mark_width / 2}
-                x={(mark_pos[i]) * axis.unit_scale}
-                strokeWidth={thick / axis.unit_scale}
-                height={mark_width} 
-                visible={axis.marks.visible}
-                scaleX={axis.unit_scale}
-                key={i} />))
-        }
-        return marks;
-    }
-
-    const x_marks = computeMarks(state.x_axis);
-    const y_marks = computeMarks(state.y_axis);
-
-    // todo remove nest
     return (<Group
         {...groupProps}
     >   
-        <Group {...commonProps} visible={state.x_axis.visible}>
-            <Line
-                {...axisCommonProps}
-                points={x_axis}
-                stroke={x_col}
-                scaleX={state.x_axis.unit_scale}
-                scaleY={state.x_axis.thickness}
-                x={0}
-                y={0}
-            />
-            {x_marks}
-        </Group>
-        <Group {...commonProps} visible={state.y_axis.visible}>
-            <Line
-                {...axisCommonProps}
-                points={y_axis}
-                stroke={y_col}
-                scaleX={state.y_axis.thickness}
-                scaleY={state.y_axis.unit_scale}
-                x={0}
-                y={0}
-            />
-            <Group {...commonProps} rotation={90}>
-                {y_marks}
-            </Group>
-        </Group>
+        <AxisGraphic axis={state.x_axis} state={state} dir={'x'} />
+        <AxisGraphic axis={state.y_axis} state={state} dir={'y'} />
         <Group {...commonProps}>
             {fns}
         </Group>
