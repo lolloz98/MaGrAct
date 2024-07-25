@@ -57,7 +57,7 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
     const groupProps = {
         ...getDraggableProps(state, dispatch),
         ...commonProps,
-        ...getPositionProps(state)
+        ...getPositionAndScaleProps(state)
     };
 
     const axisCommonProps = {
@@ -66,8 +66,7 @@ export default function Function({ state, dispatch }: { state: FunctionState, di
 
     const fnProps = {
         ...commonProps,
-        ...getLineColorProps(state, t),
-        ...getScaleProps(state)
+        ...getLineColorProps(state, t)
     }
 
     const fns = [];
