@@ -39,9 +39,6 @@ export function StageWithReactiveDimen({ children, dispatch, dimensions }: {
           y: h / (originalW * ratio)
         }
       })
-      console.debug("window was resized. New dimens (with scale applied) should not change", {
-        dimensions
-      })
     }, [dimensions]);
 
   return (
