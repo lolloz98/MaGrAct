@@ -183,9 +183,11 @@ export function SharedFunctionControl({ state, dispatch }: {
         <Stack>
             <Button size="small" startIcon={open ? <ExpandLess /> : <ExpandMore />} onClick={() => setOpen(!open)}>Main Function</Button>
             <Collapse in={open} timeout="auto" unmountOnExit>
-                {(state as XOfTAndYOfXState).xOft !== undefined && 
-                    (<MyTextInput state={state} dispatch={dispatch}
-                        label={"X of T"} get={(a) => (a as XOfTAndYOfXState).xOft} set={(a, nf) => (a as XOfTAndYOfXState).xOft = nf} />)}
+                {(state as XOfTAndYOfXState).xOft !== undefined &&
+                    (<Stack paddingBottom={1}>
+                        <MyTextInput state={state} dispatch={dispatch}
+                            label={"X of T"} get={(a) => (a as XOfTAndYOfXState).xOft} set={(a, nf) => (a as XOfTAndYOfXState).xOft = nf} />
+                    </Stack>)}
                 <Stack direction={"column"} spacing={1}>
                     <Stack direction={"row"} spacing={1}>
                         <MyTextInput state={state} dispatch={dispatch}
