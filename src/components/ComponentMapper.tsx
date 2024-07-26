@@ -18,8 +18,11 @@ import MyGroup from "./graphic/MyGroup";
 import XOfTAndYOfXState, { getDefaultXOfTAndYOfXState } from "./states/XOfTAndYOfXState";
 import XOfTAndYOfX from "./graphic/XOfTAndYOfX";
 import XOfTAndYOfXControl from "./controls/XOfTAndYOfXControl";
+import CircleState, { getDeafultCircleState } from "./states/CircleState";
+import CircleGraphic from "./graphic/CircleGraphic";
+import CircleControl from "./controls/CircleControl";
 
-export function createDefaultState(type: ComponentEnum, title: string | undefined, maxTime: number) : BaseState {
+export function createDefaultState(type: ComponentEnum, title: string | undefined, maxTime: number): BaseState {
     const id = uuid();
     const obj = getDefaultBaseState(id, type, title, maxTime);
     switch (type) {
@@ -35,6 +38,8 @@ export function createDefaultState(type: ComponentEnum, title: string | undefine
             return getDefaultMyGroupState(obj);
         case ComponentEnum.X_OF_T_AND_Y_OF_X:
             return getDefaultXOfTAndYOfXState(obj);
+        case ComponentEnum.CIRCLE:
+            return getDeafultCircleState(obj);
         default:
             console.error(`No default state specified for component ${type}`);
             obj.type = ComponentEnum.UNKOWN;
@@ -72,7 +77,7 @@ export function getComponent(state: BaseState, dispacth: DispactherAction, store
             jsx = (<FunctionAnimated state={state} dispatch={dispacth} key={state.id}></FunctionAnimated>);
             break;
         case ComponentEnum.LATEX:
-            jsx = (<MyKatex state={state as KatexState} dispatch={dispacth} key={state.id}/>);
+            jsx = (<MyKatex state={state as KatexState} dispatch={dispacth} key={state.id} />);
             break;
         case ComponentEnum.GROUP:
             const children = [];
@@ -87,7 +92,10 @@ export function getComponent(state: BaseState, dispacth: DispactherAction, store
             jsx = (<MyGroup state={state as MyGroupState} dispatch={dispacth} key={state.id}>{children}</MyGroup>)
             break;
         case ComponentEnum.X_OF_T_AND_Y_OF_X:
-            jsx = (<XOfTAndYOfX state={state as XOfTAndYOfXState} dispatch={dispacth} />);
+            jsx = (<XOfTAndYOfX state={state as XOfTAndYOfXState} dispatch={dispacth} key={state.id}/>);
+            break;
+        case ComponentEnum.CIRCLE:
+            jsx = (<CircleGraphic state={state as CircleState} dispatch={dispacth} key={state.id}/>);
             break;
         default:
             alert(`No getComponent specified for ${state.type}`);
@@ -102,7 +110,7 @@ export function getComponent(state: BaseState, dispacth: DispactherAction, store
 export function getModifier(state: BaseState, dispacth: DispactherAction) {
     switch (state.type) {
         case ComponentEnum.FUNCTION:
-            return (<FunctionControl state={state as FunctionState} dispatch={dispacth} key={state.id}/>);
+            return (<FunctionControl state={state as FunctionState} dispatch={dispacth} key={state.id} />);
         case ComponentEnum.FUNCTION_ANIM:
             return (<BaseControl state={state} dispatch={dispacth} key={state.id}></BaseControl>);
         case ComponentEnum.LATEX:
@@ -111,6 +119,8 @@ export function getModifier(state: BaseState, dispacth: DispactherAction) {
             return (<MyGroupControl state={state as MyGroupState} dispatch={dispacth} key={state.id} />);
         case ComponentEnum.X_OF_T_AND_Y_OF_X:
             return (<XOfTAndYOfXControl state={state as XOfTAndYOfXState} dispatch={dispacth} key={state.id} />);
+        case ComponentEnum.CIRCLE:
+            return (<CircleControl state={state as CircleState} dispatch={dispacth} key={state.id} />);
         default:
             alert(`No getModifier specified for ${state.type}`);
     }
