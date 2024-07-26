@@ -10,11 +10,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import MyNumbericInput from "../inputs/MyNumericInput";
 import MyColorPicker, { DefaultColorPicker } from "../inputs/MyColorPicker";
 import FunctionState, { Axis } from "../states/FunctionState";
-import MyTextInput from "../inputs/MyTextInput";
 import MyGroupState from "../states/MyGroupState";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { isMyGroup } from "../../App";
 import XOfTAndYOfXState from "../states/XOfTAndYOfXState";
+import MyFunctionInput from "../inputs/MyFunctionInput";
 
 export function SharedBaseControl({ state, dispatch }: { state: BaseState, dispatch: DispactherAction }) {
     const [open, setOpen] = useState(false);
@@ -185,12 +185,12 @@ export function SharedFunctionControl({ state, dispatch }: {
             <Collapse in={open} timeout="auto" unmountOnExit>
                 {(state as XOfTAndYOfXState).xOft !== undefined &&
                     (<Stack paddingBottom={1}>
-                        <MyTextInput state={state} dispatch={dispatch}
+                        <MyFunctionInput state={state} dispatch={dispatch}
                             label={"X of T"} get={(a) => (a as XOfTAndYOfXState).xOft} set={(a, nf) => (a as XOfTAndYOfXState).xOft = nf} />
                     </Stack>)}
                 <Stack direction={"column"} spacing={1}>
                     <Stack direction={"row"} spacing={1}>
-                        <MyTextInput state={state} dispatch={dispatch}
+                        <MyFunctionInput state={state} dispatch={dispatch}
                             label={"Function"} get={(a) => (a as FunctionState).fn} set={(a, nf) => (a as FunctionState).fn = nf} />
                         <MyNumbericInput label="Stroke Width" variant="outlined"
                             dispatch={dispatch}
