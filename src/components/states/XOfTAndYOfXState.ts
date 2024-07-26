@@ -9,7 +9,7 @@ export function getDefaultXOfTAndYOfXState(state: BaseState) {
     const s = getDefaultFunctionState(state);
     s.granularity = 0.01;
     return {
-        ...getDefaultFunctionState(state),
+        ...s,
         xOft: "t"
     };
 }
