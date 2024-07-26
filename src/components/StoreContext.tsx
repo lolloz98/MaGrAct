@@ -33,12 +33,11 @@ export type StoreAction = {
 
 export type DispactherAction = React.Dispatch<StoreAction>;
 
-export const initState = {
+export const initState: MyStore = {
     parent: new Map<string, string>(),
     components: [],
     selected: [],
     titles: new Set<string>(),
-    selected_from_list: undefined,
     step: 50, // in millis
     maxTicks: 1000,
     tick: 0
