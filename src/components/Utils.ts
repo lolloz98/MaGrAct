@@ -24,7 +24,7 @@ function componentToHex(c: number) {
 }
 
 export function myRgbaToHexArr(rgba: number[]) {
-    if(!(rgba && (rgba.length === 4 || rgba.length === 3))) {
+    if (!(rgba && (rgba.length === 4 || rgba.length === 3))) {
         console.error(`rgbaToHex was provided a wrong rgba number array ${rgba}`)
         return "#000000";
     }
@@ -33,7 +33,7 @@ export function myRgbaToHexArr(rgba: number[]) {
     return rgb + componentToHex(rgba[3]);
 }
 
-export function myRgbaToHex(rgba: { r: number, g: number, b: number, a: number | undefined}) {
+export function myRgbaToHex(rgba: { r: number, g: number, b: number, a: number | undefined }) {
     const rgb = "#" + componentToHex(rgba.r) + componentToHex(rgba.g) + componentToHex(rgba.b);
     if (rgba.a === undefined) return rgb;
     return rgb + componentToHex(rgba.a);
@@ -45,7 +45,7 @@ export function myHexToRgba(hex: string) {
         r: parseInt(result[1], 16),
         g: parseInt(result[2], 16),
         b: parseInt(result[3], 16),
-        a: (isNaN(parseInt(result[4], 16))? 256 : parseInt(result[4], 16))
+        a: (isNaN(parseInt(result[4], 16)) ? 256 : parseInt(result[4], 16))
     } : null;
 }
 
@@ -83,7 +83,7 @@ export function computeColorDissolvenceAnimation(state: BaseState, curTime: numb
 export function getLineColorProps(state: BaseState, currentTime: number) {
     return {
         stroke: computeColorDissolvenceAnimation(state, currentTime),
-        strokeWidth: (state as FunctionState)? (state as FunctionState).strokeWidth : 0.1
+        strokeWidth: (state as FunctionState) ? (state as FunctionState).strokeWidth : 0.1
     };
 }
 
@@ -92,7 +92,7 @@ export function getPositionProps(state: BaseState) {
         x: state.position.x,
         y: state.position.y,
     };
-} 
+}
 
 export function getScaleProps(state: BaseState) {
     return {
@@ -113,7 +113,7 @@ export function getDraggableProps(state: BaseState, dispatch: DispactherAction) 
         draggable: true,
         onDragEnd: ((e: KonvaEventObject<DragEvent>) => {
             e.cancelBubble = true;
-            dispatch({ type: "modify", id: state.id, modifiers: [(s) => { s.position.x = e.target.x(); s.position.y = e.target.y()}] })
+            dispatch({ type: "modify", id: state.id, modifiers: [(s) => { s.position.x = e.target.x(); s.position.y = e.target.y() }] })
         })
     };
 }
@@ -131,7 +131,7 @@ export function getCommonProps(state: BaseState, currentTime: number) {
 };
 
 export function scaleAndFlipXandY(val: number, modifiers: AxisModifications) {
-    return modifiers.flip? -val * modifiers.unit: val * modifiers.unit;
+    return modifiers.flip ? -val * modifiers.unit : val * modifiers.unit;
 }
 
 
@@ -144,40 +144,44 @@ export function myRange(min: number, max: number, step: number = 1) {
     return arr;
 }
 
+export function getListOfPoints(x: (Bounds & { granularity: number })): number[] {
+    const b = x as (Bounds & { granularity: number });
+    return myRange(b.min, b.max, b.granularity);
+}
+
 /**
  * @param fn function string
- * @param x AxisModification is useful only if onlyOutput is false
+ * @param x AxisModification is useful only if onlyOutput is false. it's a list of lists so that we can separate lines if a middle point is not in the domain
  * @returns list of lists of connected point in the shape [x_0, y_0, x_1, y_1...]. If only output then [[y_0, y_1 ...]...]
  * A list of lists is returned so that we can disconnect functions if the value computed for a certain x is out of bounds.
  * @onError returns empty list
  */
-export function evalFnAndGetPoints(fn: string, x: ((Bounds & {granularity: number}) | number[]) & AxisModifications, y: Bounds & AxisModifications, onlyOutput: boolean = false) {
-    let in_val = [];
-    if ((x as Bounds).max !== undefined) {
-        const b = x as (Bounds & {granularity: number});
-        in_val = myRange(b.min, b.max, b.granularity);
-    } else {
-        in_val = (x as number[]);
-    }
-
+export function evalFnAndGetPoints(
+    fn: string, x: { points: (number[][])} & AxisModifications,
+    y: Bounds & AxisModifications,
+    onlyOutput: boolean = false,
+    getUpdatedScope: (i: number) => { [x: string]: any } = (i) => { return { x: i } }
+) {
     const expr = compile(fn);
 
-    const points_of_points: number[][] = [[]];
-    for (const x_val of in_val) {
-        const scope = {
-            x: x_val
-        };
-        try {
-            const y_val = expr.evaluate(scope);
-            if (y_val === undefined || isNaN(y_val) || y_val === Infinity || y_val < y.min || y_val > y.max) {
-                points_of_points.push([]);
-            } else {
-                if (!onlyOutput) points_of_points[points_of_points.length - 1].push(scaleAndFlipXandY(x_val, x));
-                points_of_points[points_of_points.length - 1].push(scaleAndFlipXandY(y_val, y));
+    const points_of_points: number[][] = [];
+    for (const outer of x.points) {
+        points_of_points.push([]);
+        for (const x_val of outer) {
+            const scope = getUpdatedScope(x_val);
+            try {
+                const y_val = expr.evaluate(scope);
+                if (y_val === undefined || isNaN(y_val) || y_val === Infinity || y_val < y.min || y_val > y.max) {
+                    if (points_of_points[points_of_points.length - 1].length > 0)
+                        points_of_points.push([]);
+                } else {
+                    if (!onlyOutput) points_of_points[points_of_points.length - 1].push(scaleAndFlipXandY(x_val, x));
+                    points_of_points[points_of_points.length - 1].push(scaleAndFlipXandY(y_val, y));
+                }
+            } catch (e) {
+                console.error(`There was an error evaluating f(${x_val}), f(x)=${fn}:`, e);
+                return [];
             }
-        } catch (e) {
-            console.error(`There was an error evaluating f(${x_val}), f(x)=${fn}:`, e);
-            return [];
         }
     }
     return points_of_points;
@@ -188,11 +192,11 @@ export interface AxisModifications {
     unit: number
 }
 
-export function extractFromAxis(a: Axis): Bounds & AxisModifications {
+export function extractFunctionInfo(a: Axis, bounds: Bounds): Bounds & AxisModifications {
     return {
-        min: a.bounds.min,
-        max: a.bounds.max,
         unit: a.unit_scale,
-        flip: a.flip
+        flip: a.flip,
+        min: bounds.min,
+        max: bounds.max
     };
 }

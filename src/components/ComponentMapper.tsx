@@ -15,6 +15,9 @@ import Function from './graphic/Function';
 import MyGroupControl from "./controls/MyGroupControl";
 import MyGroupState, { getDefaultMyGroupState } from "./states/MyGroupState";
 import MyGroup from "./graphic/MyGroup";
+import XOfTAndYOfXState, { getDefaultXOfTAndYOfXState } from "./states/XOfTAndYOfXState";
+import XOfTAndYOfX from "./graphic/XOfTAndYOfX";
+import XOfTAndYOfXControl from "./controls/XOfTAndYOfXControl";
 
 export function createDefaultState(type: ComponentEnum, title: string | undefined, maxTime: number) : BaseState {
     const id = uuid();
@@ -30,6 +33,8 @@ export function createDefaultState(type: ComponentEnum, title: string | undefine
             return getDefaultKatexState(obj);
         case ComponentEnum.GROUP:
             return getDefaultMyGroupState(obj);
+        case ComponentEnum.X_OF_T_AND_Y_OF_X:
+            return getDefaultXOfTAndYOfXState(obj);
         default:
             console.error(`No default state specified for component ${type}`);
             obj.type = ComponentEnum.UNKOWN;
@@ -81,6 +86,9 @@ export function getComponent(state: BaseState, dispacth: DispactherAction, store
             }
             jsx = (<MyGroup state={state as MyGroupState} dispatch={dispacth} key={state.id}>{children}</MyGroup>)
             break;
+        case ComponentEnum.X_OF_T_AND_Y_OF_X:
+            jsx = (<XOfTAndYOfX state={state as XOfTAndYOfXState} dispatch={dispacth} />);
+            break;
         default:
             alert(`No getComponent specified for ${state.type}`);
     }
@@ -101,6 +109,8 @@ export function getModifier(state: BaseState, dispacth: DispactherAction) {
             return (<KatexControl state={state as KatexState} dispatch={dispacth} key={state.id} />);
         case ComponentEnum.GROUP:
             return (<MyGroupControl state={state as MyGroupState} dispatch={dispacth} key={state.id} />);
+        case ComponentEnum.X_OF_T_AND_Y_OF_X:
+            return (<XOfTAndYOfXControl state={state as XOfTAndYOfXState} dispatch={dispacth} key={state.id} />);
         default:
             alert(`No getModifier specified for ${state.type}`);
     }

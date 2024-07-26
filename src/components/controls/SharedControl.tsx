@@ -14,6 +14,7 @@ import MyTextInput from "../inputs/MyTextInput";
 import MyGroupState from "../states/MyGroupState";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { isMyGroup } from "../../App";
+import XOfTAndYOfXState from "../states/XOfTAndYOfXState";
 
 export function SharedBaseControl({ state, dispatch }: { state: BaseState, dispatch: DispactherAction }) {
     const [open, setOpen] = useState(false);
@@ -182,6 +183,9 @@ export function SharedFunctionControl({ state, dispatch }: {
         <Stack>
             <Button size="small" startIcon={open ? <ExpandLess /> : <ExpandMore />} onClick={() => setOpen(!open)}>Main Function</Button>
             <Collapse in={open} timeout="auto" unmountOnExit>
+                {(state as XOfTAndYOfXState).xOft !== undefined && 
+                    (<MyTextInput state={state} dispatch={dispatch}
+                        label={"X of T"} get={(a) => (a as XOfTAndYOfXState).xOft} set={(a, nf) => (a as XOfTAndYOfXState).xOft = nf} />)}
                 <Stack direction={"column"} spacing={1}>
                     <Stack direction={"row"} spacing={1}>
                         <MyTextInput state={state} dispatch={dispatch}
