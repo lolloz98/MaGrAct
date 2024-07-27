@@ -1,5 +1,5 @@
 import { MyTreeElement } from "../ComponentMapper";
-import { DndProvider, DropOptions, getBackendOptions, MultiBackend, NodeModel, Tree, TreeMethods } from "@minoru/react-dnd-treeview";
+import { DndProvider, DropOptions, getBackendOptions, MultiBackend, NodeModel, Tree } from "@minoru/react-dnd-treeview";
 import { DispactherAction, MyStore } from "../StoreContext";
 import { CustomNode } from "./CustomNode";
 import { CustomDragPreview } from "./CustomDragPreview";
@@ -7,7 +7,6 @@ import styles from "./TitleList.module.css";
 import { Placeholder } from "./PlaceHolder";
 import BaseState from "../states/BaseState";
 import { convertDimen } from "../Utils";
-import { ForwardedRef, MutableRefObject, useRef, useState } from "react";
 
 
 export default function TitleList({ tree, currentlySelected, dispatch, dimensions, store }: {

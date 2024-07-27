@@ -1,16 +1,14 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormGroup, Stack, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Tooltip, Typography } from "@mui/material";
 import { DispactherAction, MyStore } from "../StoreContext";
 import styles from './MySettingsDialog.module.css';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SaveIcon from '@mui/icons-material/Save';
-import SaveAsIcon from '@mui/icons-material/SaveAs';
 import FileOpenIcon from '@mui/icons-material/FileOpen';
 import { ChangeEvent, useContext, useState } from "react";
-import MyTextInput from "../inputs/MyTextInput";
 import MyNumbericInput from "../inputs/MyNumericInput";
 import { getDefaultBaseState } from "../states/BaseState";
 import ComponentEnum from "../ComponentEnum";
-import { MaxTimeContext, TimeContext } from "../TimeContext";
+import { MaxTimeContext } from "../TimeContext";
 import { toJson } from "../saveAndLoad/save";
 import save from "save-file";
 import { fromJson } from "../saveAndLoad/load";

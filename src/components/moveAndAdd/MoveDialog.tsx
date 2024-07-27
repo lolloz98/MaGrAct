@@ -1,4 +1,3 @@
-import { useEffect, useMemo, useState } from "react";
 import {
     Button,
     Select,
@@ -11,21 +10,15 @@ import {
     DialogActions,
     Stack,
     List,
-    ListItem,
     ListItemText,
-    ListSubheader,
     Divider,
     Typography,
     ListItemButton,
 } from "@mui/material";
 import styles from './MoveDialog.module.css';
 import { DispactherAction, MyStore } from "../StoreContext";
-import BaseState from "../states/BaseState";
-import { isMyGroup } from "../../App";
-import MyGroupState from "../states/MyGroupState";
-import { title } from "process";
 import { myRange } from "../Utils";
-import { dfs, eligibleParentsForState, findListContainingIdRecursive, MoveDialogType, stringifyMoveDialog, useListingItems } from "./moveAndAddUtils";
+import { MoveDialogType, stringifyMoveDialog, useListingItems } from "./moveAndAddUtils";
 
 export default function MoveDialog({ state, onClose, dispatch }:
     { state: MyStore, onClose: () => void, dispatch: DispactherAction }) {
