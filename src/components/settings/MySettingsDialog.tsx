@@ -27,11 +27,15 @@ export default function MySettingsDialog({ dispatch, state }: {
           const reader = new FileReader();
           reader.onload = (e) => {
             const result = e.target?.result as string;
+            try {
             const obj = fromJson(result);
-            if (obj !== undefined)
-                dispatch({ type: 'load_from_file', newStore: obj });
-            else
-                console.error(`Could not load file ${file}`);
+                if (obj !== undefined)
+                    dispatch({ type: 'load_from_file', newStore: obj });
+                else
+                    console.error(`Could not load file ${file}`);
+            } catch (e) {
+                alert("Could not load the file. Please check that it's a valid .magract file");
+            }
           };
           reader.readAsText(file);
         }
