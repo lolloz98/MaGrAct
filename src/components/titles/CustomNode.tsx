@@ -8,7 +8,7 @@ import { MyTreeElement } from "../ComponentMapper";
 import MyCustomInput from "../inputs/MyCustomInput";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
-import { Stack } from "@mui/material";
+import { Stack, Tooltip } from "@mui/material";
 import BaseState from "../states/BaseState";
 
 
@@ -64,7 +64,10 @@ export const CustomNode: React.FC<Props> = (props) => {
             onClick={handleSelect}
         >
             {props.node.droppable && (<div onClick={handleToggle}> {props.isOpen? <ArrowRight style={{ rotate: "90deg" }} /> : <ArrowRight />} </div>)}
-            <div className={styles.labelGridItem} onDoubleClick={handleShowInputForRenaming}> <Typography variant="body2">{props.node.text}</Typography></div>
+            <div className={styles.labelGridItem} onDoubleClick={handleShowInputForRenaming}> 
+                <Tooltip title={props.node.text} arrow>
+                <Typography variant="body2" 
+                noWrap textOverflow={'ellipsis'} maxWidth={100}>{props.node.text}</Typography></Tooltip></div>
             {hover && (
                 <Stack direction={"row"} alignContent={"center"}>
                     <IconButton size="small" onClick={() => handleShowInputForRenaming()}>
