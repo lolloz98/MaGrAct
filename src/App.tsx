@@ -17,9 +17,9 @@ import TitleList from './components/titles/TitleList';
 import MyTimeline from './components/Timeline';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import 'react-reflex/styles.css'
-import AddButton from './components/add/AddButton';
+import AddButton from './components/moveAndAdd/AddButton';
 import MyGroupState from './components/states/MyGroupState';
-import MoveButton from './components/move/MoveButton';
+import MoveButton from './components/moveAndAdd/MoveButton';
 import MySettingsDialog from './components/settings/MySettingsDialog';
 import { replacer } from './components/saveAndLoad/save';
 import { reviver } from './components/saveAndLoad/load';

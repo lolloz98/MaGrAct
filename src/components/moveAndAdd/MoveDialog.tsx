@@ -25,102 +25,23 @@ import { isMyGroup } from "../../App";
 import MyGroupState from "../states/MyGroupState";
 import { title } from "process";
 import { myRange } from "../Utils";
-
-type MoveDialogType = {
-    id: string;
-    title: string;
-}
-
-function e(c: BaseState): MoveDialogType {
-    return { id: c.id, title: c.title };
-}
-
-function dfs(c: BaseState): MoveDialogType[] {
-    if (!isMyGroup(c)) return [e(c)];
-    let ret = [e(c)];
-    for (const n of (c as MyGroupState).children) {
-        ret = ret.concat(dfs(n));
-    }
-    return ret;
-}
-
-function dfsParent(c: BaseState, id: string): MoveDialogType[] {
-    if (!isMyGroup(c) || c.id === id) return [];
-    let ret = [e(c)];
-    for (const n of (c as MyGroupState).children) {
-        ret = ret.concat(dfsParent(n, id));
-    }
-    return ret;
-}
-
-function dfsSiblings(cs: BaseState[], newParentId: string): MoveDialogType[] {
-    if (newParentId === "0") return cs;
-    if (cs.length === 0) return [];
-    let ret: MoveDialogType[] = [];
-    for (const c of cs) {
-        if (isMyGroup(c)) {
-            if (c.id === newParentId) return (c as MyGroupState).children;
-            ret = ret.concat(dfsSiblings((c as MyGroupState).children, newParentId));
-            if (ret.length > 0) { break; }
-        }
-    }
-    return ret;
-}
+import { dfs, eligibleParentsForState, findListContainingIdRecursive, MoveDialogType, useListingItems } from "./moveAndAddUtils";
 
 function stringify(s: MoveDialogType | '') {
     if (s === '') return '';
     return JSON.stringify(s);
 }
 
-export default function MoveDialog({ state, onClose, dispatch }:
+export default function AddOrMoveDialog({ state, onClose, dispatch }:
     { state: MyStore, onClose: () => void, dispatch: DispactherAction }) {
-    const base = '';
-    const [sel, setSel] = useState<MoveDialogType | ''>(base);
-    const [siblingsList, setSiblingsList] = useState<MoveDialogType[]>([]);
-    const [parentlist, setParentList] = useState<MoveDialogType[]>([]);
-    const [completeList, setCompleteList] = useState<MoveDialogType[]>([]);
-
-    const [newParent, setNewParent] = useState<MoveDialogType>({ id: "0", title: "(root)" });
-    const [newPosition, setNewPosition] = useState<number>(0);
-    // max number (exclusive)
-    const [posConstraints, setNewPosConstraint] = useState<number>(1);
-
-
-
-    const onChangeSel = (s: MoveDialogType | '', np: MoveDialogType) => {
-        setNewPosition(0);
-        if (s === base) {
-            setSel(base);
-            setSiblingsList([]);
-            setParentList([]);
-            setNewParent({ id: "0", title: "(root)" });
-            setNewPosConstraint(1);
-            return;
-        }
-
-        setNewParent(np);
-        setSel(s);
-        let nextParentList: MoveDialogType[] = [];
-        for (const c of state.components) nextParentList = nextParentList.concat(dfsParent(c, s.id));
-        setParentList(nextParentList);
-
-        const nextSiblingList = dfsSiblings(state.components, np.id);
-        setSiblingsList(nextSiblingList);
-
-        if ((nextSiblingList.find(a => a.id === s.id) !== undefined)) {
-            setNewPosConstraint(nextSiblingList.length);
-        }
-        else setNewPosConstraint(nextSiblingList.length + 1);
-    }
-
-    useEffect(() => {
-        let complete: MoveDialogType[] = [];
-        for (const c of state.components) {
-            complete = complete.concat(dfs(c));
-        }
-        setCompleteList(complete);
-        setSiblingsList(dfsSiblings(state.components, newParent.id))
-    }, [state]);
+    
+    const {selected, 
+        newParent, 
+        completeList, 
+        newParentSiblingsList, 
+        eligibleParents, 
+        posConstraints, 
+        pos, onChange, onChangePos} = useListingItems(state, '');
 
     return (
         <Dialog open={true} onClose={onClose}>
@@ -133,7 +54,7 @@ export default function MoveDialog({ state, onClose, dispatch }:
                     <Stack direction={"column"} spacing={1} paddingTop={1} flex={2}>
                         <FormControl className={styles.select}>
                             <InputLabel id="item-to-move-label">Select Item to Move</InputLabel>
-                            <Select label="Select Item to Move" labelId="item-to-move-label" onChange={(e) => onChangeSel(JSON.parse(e.target.value as string) as MoveDialogType, { id: "0", title: "(root)" })} value={stringify(sel)}>
+                            <Select label="Select Item to Move" labelId="item-to-move-label" onChange={(e) => onChange(JSON.parse(e.target.value as string) as MoveDialogType, { id: "0", title: "(root)" })} value={stringify(selected)}>
                                 {completeList
                                     .map((c) => (
                                         <MenuItem key={c.id} value={stringify({ id: c.id, title: c.title })}>
@@ -144,9 +65,9 @@ export default function MoveDialog({ state, onClose, dispatch }:
                         </FormControl>
                         <FormControl className={styles.select}>
                             <InputLabel id="new-parent-label">Select New Parent</InputLabel>
-                            <Select label="Select New Parent" labelId="new-parent-label" onChange={(e) => onChangeSel(sel, JSON.parse(e.target.value as string) as MoveDialogType)} value={stringify(newParent)}>
+                            <Select label="Select New Parent" labelId="new-parent-label" onChange={(e) => onChange(selected, JSON.parse(e.target.value as string) as MoveDialogType)} value={stringify(newParent)}>
                                 <MenuItem value={stringify({ id: "0", title: "(root)" })}>(root)</MenuItem>
-                                {parentlist
+                                {eligibleParents
                                     .map((c) => (
                                         <MenuItem key={c.id} value={stringify({ id: c.id, title: c.title })}>
                                             {c.title}
@@ -156,7 +77,7 @@ export default function MoveDialog({ state, onClose, dispatch }:
                         </FormControl>
                         <FormControl className={styles.select}>
                             <InputLabel id="new-position-label">Select New Position</InputLabel>
-                            <Select label="Select New Position" labelId="new-position-label" onChange={(e) => setNewPosition(e.target.value as number)} value={newPosition}>
+                            <Select label="Select New Position" labelId="new-position-label" onChange={(e) => onChangePos(e.target.value as number)} value={pos}>
                                 {myRange(0, posConstraints)
                                     .map((c) => (
                                         <MenuItem key={c} value={`${c}`}>
@@ -170,9 +91,9 @@ export default function MoveDialog({ state, onClose, dispatch }:
                         <Typography>{`In New Parent`}</Typography>
                         <Divider />
                         <List style={{ maxHeight: 400, overflow: 'auto' }}>
-                            {siblingsList.map((c, i) => {
+                            {newParentSiblingsList.map((c, i) => {
                                 return (<ListItemButton key={c.id} onClick={(e) => {
-                                        onChangeSel({ id: c.id, title: c.title }, newParent);
+                                    onChange({ id: c.id, title: c.title }, newParent);
                                     }}>
                                         <ListItemText key={c.id}
                                             primary={`${i} ${c.title}`}
@@ -187,8 +108,8 @@ export default function MoveDialog({ state, onClose, dispatch }:
                 <Button onClick={onClose}>Cancel</Button>
                 <Button
                     onClick={() => {
-                        if (sel !== '' && newPosition < posConstraints) {
-                            dispatch({ type: 'reorder', id: sel.id, destinationId: newParent.id, index: newPosition })
+                        if (selected !== '' && pos < posConstraints) {
+                            dispatch({ type: 'reorder', id: selected.id, destinationId: newParent.id, index: pos })
                             onClose();
                         } else {
                             alert("Make sure to compile a new parent, an item and a valid position");
