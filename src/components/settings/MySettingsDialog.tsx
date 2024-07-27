@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Tooltip, Typography } from "@mui/material";
 import { DispactherAction, MyStore } from "../StoreContext";
 import styles from './MySettingsDialog.module.css';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -12,12 +12,14 @@ import { MaxTimeContext } from "../TimeContext";
 import { toJson } from "../saveAndLoad/save";
 import save from "save-file";
 import { fromJson } from "../saveAndLoad/load";
+import { saveAs } from "file-saver";
 
 export default function MySettingsDialog({ dispatch, state }: {
     dispatch: DispactherAction,
     state: MyStore
 }) {
     const [openSettings, setOpenSettings] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const t = useContext(MaxTimeContext);
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -50,9 +52,13 @@ export default function MySettingsDialog({ dispatch, state }: {
                 <Tooltip title={"Upload From File"}>
                     <Button component="label"><FileOpenIcon /><input type="file"  hidden onChange={handleFileChange} /></Button>
                 </Tooltip>
-                <Tooltip title={"Download"}>
-                    <Button onClick={() => save(toJson(state), 'example.magract')}><SaveIcon /></Button>
-                </Tooltip>
+                {isSaving? <CircularProgress color="primary" />: <Tooltip title={"Download"}>
+                    <Button onClick={() => {
+                        setIsSaving(true);
+                        saveAs(new Blob([toJson(state)]), 'example.magract');
+                        setIsSaving(false);
+                    }}><SaveIcon /></Button>
+                </Tooltip>}
 
             </Stack>
             {openSettings &&
