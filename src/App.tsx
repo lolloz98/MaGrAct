@@ -225,11 +225,11 @@ function App() {
 
   // todo add add selection for elements
   for (const comp of state.components) {
-    const cur = getComponent(comp, dispacth, state);
+    const cur = getComponent(comp, dispacth, state, getTime(state.tick));
     if (cur.selectedEl !== undefined) {
       currentlySelected = getModifier(cur.selectedEl, dispacth);
     }
-    children.push(cur.jsx);
+    if (cur.jsx !== undefined) children.push(cur.jsx);
     tree = tree.concat(cur.treeEl);
 
     if (isContained(state.selected, comp)) {

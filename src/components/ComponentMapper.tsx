@@ -58,7 +58,15 @@ function getTreeElem(state: BaseState, parent: Map<string, string>) {
 }
 
 export type MyTreeElement = NodeModel<BaseState>;
-export function getComponent(state: BaseState, dispacth: DispactherAction, store: MyStore): {
+
+function getJsxOrUndefined(jsx: ReactElement, state: BaseState, curTime: number) {
+    if (curTime < state.time_constraint.start || curTime > state.time_constraint.end) {
+        return undefined;
+    }
+    return jsx;
+}
+
+export function getComponent(state: BaseState, dispacth: DispactherAction, store: MyStore, curTime: number): {
     jsx?: ReactElement,
     treeEl: MyTreeElement[],
     selectedEl?: BaseState
@@ -71,31 +79,50 @@ export function getComponent(state: BaseState, dispacth: DispactherAction, store
     }
     switch (state.type) {
         case ComponentEnum.FUNCTION:
-            jsx = (<Function state={state as FunctionState} dispatch={dispacth} key={state.id}></Function>);
+            jsx = getJsxOrUndefined(
+                (<Function state={state as FunctionState} dispatch={dispacth} key={state.id}></Function>),
+                state,
+                curTime
+            );
             break;
         case ComponentEnum.FUNCTION_ANIM:
-            jsx = (<FunctionAnimated state={state} dispatch={dispacth} key={state.id}></FunctionAnimated>);
+            jsx = getJsxOrUndefined(
+                (<FunctionAnimated state={state} dispatch={dispacth} key={state.id}></FunctionAnimated>),
+                state,
+                curTime);
             break;
         case ComponentEnum.LATEX:
-            jsx = (<MyKatex state={state as KatexState} dispatch={dispacth} key={state.id} />);
+            jsx = getJsxOrUndefined(
+                (<MyKatex state={state as KatexState} dispatch={dispacth} key={state.id} />),
+                state,
+                curTime);
             break;
         case ComponentEnum.GROUP:
             const children = [];
             for (const c of (state as MyGroupState).children) {
-                const cc = getComponent(c, dispacth, store);
-                if (cc.jsx) children.push(cc.jsx);
+                const cc = getComponent(c, dispacth, store, curTime);
+                if (cc.jsx !== undefined) children.push(cc.jsx);
                 treeEl = treeEl.concat(cc.treeEl);
                 if (cc.selectedEl !== undefined) {
                     selectedEl = cc.selectedEl;
                 }
             }
-            jsx = (<MyGroup state={state as MyGroupState} dispatch={dispacth} key={state.id}>{children}</MyGroup>)
+            jsx = getJsxOrUndefined(
+                (<MyGroup state={state as MyGroupState} dispatch={dispacth} key={state.id}>{children}</MyGroup>),
+                state,
+                curTime);
             break;
         case ComponentEnum.X_OF_T_AND_Y_OF_X:
-            jsx = (<XOfTAndYOfX state={state as XOfTAndYOfXState} dispatch={dispacth} key={state.id}/>);
+            jsx = getJsxOrUndefined(
+                (<XOfTAndYOfX state={state as XOfTAndYOfXState} dispatch={dispacth} key={state.id}/>),
+                state,
+                curTime);
             break;
         case ComponentEnum.CIRCLE:
-            jsx = (<CircleGraphic state={state as CircleState} dispatch={dispacth} key={state.id}/>);
+            jsx = getJsxOrUndefined(
+                (<CircleGraphic state={state as CircleState} dispatch={dispacth} key={state.id}/>),
+                state,
+                curTime);
             break;
         default:
             alert(`No getComponent specified for ${state.type}`);
