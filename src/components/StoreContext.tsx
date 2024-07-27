@@ -17,7 +17,8 @@ export type StoreAction = {
     id: string
 } | {
     type: "add",
-    state: BaseState
+    state: BaseState,
+    index: number, parent: string
 } | {
     type: "modify",
     id: string,

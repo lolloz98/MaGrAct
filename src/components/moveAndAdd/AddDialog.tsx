@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Button,
   Select,
@@ -11,57 +11,57 @@ import {
   DialogContent,
   DialogActions,
   SelectChangeEvent,
+  Typography,
+  Stack,
+  Divider,
+  List,
+  ListItemButton,
+  ListItemText,
 } from "@mui/material";
 import styles from "./AddDialog.module.css";
-import { MyTreeElement } from "../ComponentMapper";
+import { createDefaultState, MyTreeElement } from "../ComponentMapper";
 import ComponentEnum from "../ComponentEnum";
+import { DispactherAction, MyStore } from "../StoreContext";
+import { MoveDialogType, stringifyMoveDialog, useListingItems } from "./moveAndAddUtils";
+import { myRange } from "../Utils";
+import { MaxTimeContext } from "../TimeContext";
 
-type Props = {
-  tree: MyTreeElement[];
-  onClose: () => void;
-  onSubmit: (stateType: ComponentEnum, title: string | undefined) => void;
-};
+export default function AddDialog({ state, onClose, dispatch }:
+  { state: MyStore, onClose: () => void, dispatch: DispactherAction }) {
 
-export const AddDialog: React.FC<Props> = (props) => {
-  const [title, setTitle] = useState("");
-  const [parent, setParent] = useState<string | number>(0);
   const [elType, setElType] = useState<ComponentEnum>(ComponentEnum.FUNCTION);
+  const [title, setTitle] = useState<string>();
+  const maxTime = useContext(MaxTimeContext);
+  // fake state: id must not be present in list!
+  const sel: MoveDialogType = { id: "-1", title: "" };
 
-  const handleChangeText = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setTitle(e.target.value);
-  };
-
-  const handleChangeParent = (e: SelectChangeEvent<string | number>) => {
-    setParent(e.target.value);
-  };
+  const { selected,
+    newParent,
+    completeList,
+    newParentSiblingsList,
+    eligibleParents,
+    posConstraints,
+    pos, onChange, onChangePos } = useListingItems(state, sel);
 
   return (
-    <Dialog open={true} onClose={props.onClose}>
-      <DialogTitle>Add New Graphic</DialogTitle>
+    <Dialog open={true} onClose={onClose}>
+      <DialogTitle>Add new Item</DialogTitle>
       <DialogContent className={styles.content} sx={{
-            '& .MuiTextField-root': { mt: 1 },
-        }}>
-        <TextField label="Title" placeholder={elType} onChange={(e) => handleChangeText(e)} value={title} InputLabelProps={{ shrink: true }}
-          inputProps={{
-            sx: {
-              "&::placeholder": {
-                color: "gray"
-              }
-            }
-          }} />
-          <FormControl className={styles.select}>
-            <InputLabel id="parent-input-label">Parent</InputLabel>
-            <Select label="Parent" labelId="parent-input-label" onChange={(e) => handleChangeParent(e)} value={parent}>
-              <MenuItem value={0}>(root)</MenuItem>
-              {props.tree
-                .filter((node) => node.data?.isParent === true)
-                .map((node) => (
-                  <MenuItem key={node.id} value={node.id}>
-                    {node.text}
-                  </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
+        '& .MuiTextField-root': { mt: 1 },
+      }} style={{ overflowY: 'hidden' }}>
+        <Stack direction={"row"} spacing={1} paddingTop={1} alignItems={"center"} justifyContent={'space-around'}>
+
+          <Stack direction={"column"} spacing={1} paddingTop={1}>
+            <TextField label="Title" placeholder={elType} 
+              onChange={(e) => setTitle((e.target as HTMLInputElement).value)}
+              value={title} InputLabelProps={{ shrink: true }}
+              inputProps={{
+                sx: {
+                  "&::placeholder": {
+                    color: "gray"
+                  }
+                }
+              }} />
             <FormControl className={styles.select}>
               <InputLabel id="graphic-type-label">Graphic Type</InputLabel>
               <Select
@@ -71,24 +71,61 @@ export const AddDialog: React.FC<Props> = (props) => {
                 value={elType}
               >
                 {
-                    Object
+                  Object
                     .values(ComponentEnum)
                     .filter((v) => (isNaN(Number(v)) && v !== (ComponentEnum.UNKOWN)))
                     .map((v) => {
                       return (
                         <MenuItem value={v} key={v}>{v}</MenuItem>
-                    )})
+                      )
+                    })
                 }
               </Select>
             </FormControl>
+            <FormControl className={styles.select}>
+              <InputLabel id="new-parent-label">Select New Parent</InputLabel>
+              <Select label="Select New Parent" labelId="new-parent-label" onChange={(e) => onChange(selected, JSON.parse(e.target.value as string) as MoveDialogType)} value={stringifyMoveDialog(newParent)}>
+                <MenuItem value={stringifyMoveDialog({ id: "0", title: "(root)" })}>(root)</MenuItem>
+                {eligibleParents
+                  .map((c) => (
+                    <MenuItem key={c.id} value={stringifyMoveDialog({ id: c.id, title: c.title })}>
+                      {c.title}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+            <FormControl className={styles.select}>
+              <InputLabel id="new-position-label">Select New Position</InputLabel>
+              <Select label="Select New Position" labelId="new-position-label" onChange={(e) => onChangePos(e.target.value as number)} value={pos}>
+                {myRange(0, posConstraints)
+                  .map((c) => (
+                    <MenuItem key={c} value={`${c}`}>
+                      {c}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+          </Stack>
+          <Stack direction={"column"} width={"50%"}>
+            <Typography>{`In Selected Parent`}</Typography>
+            <Divider />
+            <List style={{ maxHeight: 400, overflow: 'auto' }}>
+              {newParentSiblingsList.map((c, i) => {
+                return (<ListItemText key={c.id}
+                  primary={`${i} ${c.title}`}
+                />);
+              })}
+            </List>
+          </Stack>
+        </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.onClose}>Cancel</Button>
+        <Button onClick={onClose}>Cancel</Button>
         <Button
-          onClick={() =>{
-              props.onSubmit(elType, title === ""? elType :title);
-              props.onClose();
-            }}
+          onClick={() => {
+            dispatch({ type: 'add', state: createDefaultState(elType, title === "" ? elType : title, maxTime), index: pos, parent: newParent.id });
+            onClose();
+          }}
         >
           Submit
         </Button>

@@ -154,8 +154,12 @@ function reducer(
       return draft;
     case 'add':
       checkAndUpdateTitle(action.state, draft);
+      const newParent = getParentComponent(action.parent, draft, true);
+      const siblings = isMyStore(newParent)? (newParent as MyStore).components: (newParent as MyGroupState).children;
+      siblings.splice(action.index, 0, action.state);
       draft.selected_from_list = action.state.id;
-      return void draft.components.push(action.state);
+      setParentChildMapping(action.parent, action.state, draft);
+      return draft;
     case 'modify':
       const lis = getList(getParentComponent(action.id, draft, false));
       const ind = lis.findIndex(a => a.id === action.id);
@@ -182,14 +186,7 @@ function reducer(
       console.log("found next parent", nextParent);
       const stateToKeep = removeFromParent(action.id, parent);
       
-      if (action.destinationId === "0") {
-        if (draft.parent.has(action.id)) draft.parent.delete(action.id);
-        stateToKeep.parent = undefined;
-      } else {
-        console.log("set parent", action.destinationId, 'for', action.id);
-        draft.parent.set(action.id, action.destinationId);
-        stateToKeep.parent = action.destinationId;
-      }
+      setParentChildMapping(action.destinationId, stateToKeep, draft);
 
       console.log("isNextParent MyStore: ", isMyStore(nextParent));
       const li = isMyStore(nextParent)? (nextParent as MyStore).components: (nextParent as MyGroupState).children;
@@ -220,6 +217,16 @@ function reducer(
   }
 }
 
+function setParentChildMapping(newParent: string, state: BaseState, draft: MyStore) {
+  if (newParent === "0") {
+    if (draft.parent.has(state.id)) draft.parent.delete(state.id);
+    state.parent = undefined;
+  } else {
+    draft.parent.set(state.id, newParent);
+    state.parent = newParent;
+  }
+}
+
 function useMyMutative() {
   let [state, dispacth] = useMutativeReducer(
     reducer,
@@ -231,7 +238,7 @@ function useMyMutative() {
 
 
 function App() {
-  const [mode, setMode] = React.useState<PaletteMode>('dark');
+  const mode: PaletteMode = 'dark';
   const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
   const { state, dispacth } = useMyMutative();
@@ -307,7 +314,7 @@ function App() {
                     propagateDimensions={true}
                     style={{ overflow: "hidden" }}>
                     <Stack direction={"row"} justifyContent={"space-around"} alignContent={"center"}>
-                      <AddButton dispatch={dispacth} tree={tree} />
+                      <AddButton dispatch={dispacth} state={state} />
                       <MoveButton store={state} dispatch={dispacth} />
                     </Stack>
                     <TitleList store={state} tree={tree} dispatch={dispacth} currentlySelected={state.selected_from_list} />

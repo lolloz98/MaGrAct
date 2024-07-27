@@ -106,7 +106,12 @@ export function useListingItems(state: MyStore, initSelected: MoveDialogType | '
         }
         setCompleteList(complete);
         onChange(initSelected, newParent);
-    }, [state, initSelected]);
+    }, [state]);
 
     return {selected, newParent, completeList, newParentSiblingsList, eligibleParents, posConstraints, pos, onChange, onChangePos};
+}
+
+export function stringifyMoveDialog(s: MoveDialogType | '') {
+    if (s === '') return '';
+    return JSON.stringify(s);
 }

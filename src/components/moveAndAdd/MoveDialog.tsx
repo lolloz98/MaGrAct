@@ -25,12 +25,7 @@ import { isMyGroup } from "../../App";
 import MyGroupState from "../states/MyGroupState";
 import { title } from "process";
 import { myRange } from "../Utils";
-import { dfs, eligibleParentsForState, findListContainingIdRecursive, MoveDialogType, useListingItems } from "./moveAndAddUtils";
-
-function stringify(s: MoveDialogType | '') {
-    if (s === '') return '';
-    return JSON.stringify(s);
-}
+import { dfs, eligibleParentsForState, findListContainingIdRecursive, MoveDialogType, stringifyMoveDialog, useListingItems } from "./moveAndAddUtils";
 
 export default function AddOrMoveDialog({ state, onClose, dispatch }:
     { state: MyStore, onClose: () => void, dispatch: DispactherAction }) {
@@ -54,10 +49,10 @@ export default function AddOrMoveDialog({ state, onClose, dispatch }:
                     <Stack direction={"column"} spacing={1} paddingTop={1} flex={2}>
                         <FormControl className={styles.select}>
                             <InputLabel id="item-to-move-label">Select Item to Move</InputLabel>
-                            <Select label="Select Item to Move" labelId="item-to-move-label" onChange={(e) => onChange(JSON.parse(e.target.value as string) as MoveDialogType, { id: "0", title: "(root)" })} value={stringify(selected)}>
+                            <Select label="Select Item to Move" labelId="item-to-move-label" onChange={(e) => onChange(JSON.parse(e.target.value as string) as MoveDialogType, { id: "0", title: "(root)" })} value={stringifyMoveDialog(selected)}>
                                 {completeList
                                     .map((c) => (
-                                        <MenuItem key={c.id} value={stringify({ id: c.id, title: c.title })}>
+                                        <MenuItem key={c.id} value={stringifyMoveDialog({ id: c.id, title: c.title })}>
                                             {c.title}
                                         </MenuItem>
                                     ))}
@@ -65,11 +60,11 @@ export default function AddOrMoveDialog({ state, onClose, dispatch }:
                         </FormControl>
                         <FormControl className={styles.select}>
                             <InputLabel id="new-parent-label">Select New Parent</InputLabel>
-                            <Select label="Select New Parent" labelId="new-parent-label" onChange={(e) => onChange(selected, JSON.parse(e.target.value as string) as MoveDialogType)} value={stringify(newParent)}>
-                                <MenuItem value={stringify({ id: "0", title: "(root)" })}>(root)</MenuItem>
+                            <Select label="Select New Parent" labelId="new-parent-label" onChange={(e) => onChange(selected, JSON.parse(e.target.value as string) as MoveDialogType)} value={stringifyMoveDialog(newParent)}>
+                                <MenuItem value={stringifyMoveDialog({ id: "0", title: "(root)" })}>(root)</MenuItem>
                                 {eligibleParents
                                     .map((c) => (
-                                        <MenuItem key={c.id} value={stringify({ id: c.id, title: c.title })}>
+                                        <MenuItem key={c.id} value={stringifyMoveDialog({ id: c.id, title: c.title })}>
                                             {c.title}
                                         </MenuItem>
                                     ))}
