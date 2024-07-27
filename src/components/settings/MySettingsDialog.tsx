@@ -2,12 +2,15 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, 
 import { DispactherAction, MyStore } from "../StoreContext";
 import styles from './MySettingsDialog.module.css';
 import SettingsIcon from '@mui/icons-material/Settings';
+import SaveIcon from '@mui/icons-material/Save';
 import { useContext, useState } from "react";
 import MyTextInput from "../inputs/MyTextInput";
 import MyNumbericInput from "../inputs/MyNumericInput";
 import { getDefaultBaseState } from "../states/BaseState";
 import ComponentEnum from "../ComponentEnum";
 import { MaxTimeContext, TimeContext } from "../TimeContext";
+import { toJson } from "../saveAndLoad/save";
+import save from "save-file";
 
 export default function MySettingsDialog({ dispatch, state }: {
     dispatch: DispactherAction,
@@ -18,7 +21,10 @@ export default function MySettingsDialog({ dispatch, state }: {
 
     return (
         <Box>
-            <Button startIcon={(<SettingsIcon />)} onClick={() => setOpenSettings(true)}>Settings</Button>
+            <Stack direction={"row"} justifyContent={"center"} width={"100%"} alignItems={"center"}>
+                <Button startIcon={(<SettingsIcon />)} onClick={() => setOpenSettings(true)}>Settings</Button>
+                <Button startIcon={(<SaveIcon />)} onClick={() => save(toJson(state), 'example.magract')}>Save</Button>
+            </Stack>
             {openSettings &&
                 <Dialog open={openSettings} onClose={() => setOpenSettings(false)}>
                     <DialogTitle>Settings</DialogTitle>

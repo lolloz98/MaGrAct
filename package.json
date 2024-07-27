@@ -29,6 +29,7 @@
     "react-reflex": "^4.2.6",
     "react-scripts": "5.0.1",
     "react-uuid": "^2.0.0",
+    "save-file": "^2.3.1",
     "typescript": "^4.9.5",
     "use-mutative": "^1.1.4",
     "web-vitals": "^2.1.4"
