@@ -26,8 +26,8 @@ export function getDefaultGroupTransformState(state: BaseState) {
         ...getDefaultMyGroupState(state),
         move_x_anim: { ...defAnim },
         move_y_anim: { ...defAnim },
-        scale_x_anim: { ...defAnim },
-        scale_y_anim: { ...defAnim },
+        scale_x_anim: { ...defAnim, fn: "1"  },
+        scale_y_anim: { ...defAnim, fn: "1"  },
         rotate_anim: { ...defAnim }
     }
 }

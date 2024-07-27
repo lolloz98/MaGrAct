@@ -7,24 +7,24 @@ import { TimeContext } from "../TimeContext";
 import { evaluate, isNaN } from "mathjs";
 import GroupTransformState, { MyAnim } from "../states/GroupTransformState";
 
-function ev(myAnim: MyAnim, inp: number): number {
+function ev(myAnim: MyAnim, inp: number, def: number = 0): number {
     const { start, end, fn } = myAnim;
     if (inp < start) {
-        return 0;
+        return def;
     }
     if (inp > end) {
         inp = end;
     }
     try {
-        const y = evaluate(fn, { t: inp });
+        const y = evaluate(fn, { t: inp, dt: inp - start });
         if (y === undefined || isNaN(y) || y === Infinity) {
-            console.warn(`f(t)=${fn} has not valid output for t=${inp}. Returning 0 as computed value`);
-            return 0;
+            console.warn(`f(t)=${fn} has not valid output for t=${inp}. Returning ${def} as computed value`);
+            return def;
         }
         return y;
     } catch(e) {
-        console.warn(`An error happened while computing f(t)=${fn} for t=${inp}. Returning 0 as computed value`);
-        return 0;
+        console.warn(`An error happened while computing f(t)=${fn} for t=${inp}. Returning ${def} as computed value`);
+        return def;
     }
 }
 
@@ -43,21 +43,22 @@ export default function TransformGroup({ state, dispatch, children }: {
     return (
         <Group {...props}>
             <Group {...commonProps}
-                scaleX={1 + ev(state.scale_x_anim, t)}
-                scaleY={1 + ev(state.scale_y_anim, t)}
+                scaleX={ev(state.scale_x_anim, t, 1)}
+                scaleY={ev(state.scale_y_anim, t, 1)}
                 rotation={ev(state.rotate_anim, t)}
                 x={ev(state.move_x_anim, t)}
                 y={ev(state.move_y_anim, t)}
                 >
                 {children}
-            </Group>
-            <Circle
+                <Circle
+                visible={state.isGizmosVisible}
                 fill={state.color}
                 rotation={45}
                 scaleX={1 / state.scale.x}
                 scaleY={1 / state.scale.y}
                 radius={15}
                 />
+            </Group>
         </Group>
     )
 }
