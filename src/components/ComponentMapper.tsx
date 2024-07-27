@@ -21,6 +21,9 @@ import XOfTAndYOfXControl from "./controls/XOfTAndYOfXControl";
 import CircleState, { getDeafultCircleState } from "./states/CircleState";
 import CircleGraphic from "./graphic/CircleGraphic";
 import CircleControl from "./controls/CircleControl";
+import TransformGroup from "./graphic/TransformGroup";
+import GroupTransformState, { getDefaultGroupTransformState } from "./states/GroupTransformState";
+import GroupTransformControl from "./controls/GroupTransformControl";
 
 export function createDefaultState(type: ComponentEnum, title: string | undefined, maxTime: number): BaseState {
     const id = uuid();
@@ -36,6 +39,8 @@ export function createDefaultState(type: ComponentEnum, title: string | undefine
             return getDefaultKatexState(obj);
         case ComponentEnum.GROUP:
             return getDefaultMyGroupState(obj);
+        case ComponentEnum.GROUP_TRANSFORM:
+            return getDefaultGroupTransformState(obj);
         case ComponentEnum.X_OF_T_AND_Y_OF_X:
             return getDefaultXOfTAndYOfXState(obj);
         case ComponentEnum.CIRCLE:
@@ -64,6 +69,16 @@ function getJsxOrUndefined(jsx: ReactElement, state: BaseState, curTime: number)
         return undefined;
     }
     return jsx;
+}
+
+function getCompForGroup(state: MyGroupState, dispacth: DispactherAction, children: ReactElement[]) {
+    switch (state.type) {
+        case ComponentEnum.GROUP:
+            return (<MyGroup state={state as MyGroupState} dispatch={dispacth} key={state.id}>{children}</MyGroup>)
+        case ComponentEnum.GROUP_TRANSFORM:
+            return (<TransformGroup state={state as GroupTransformState} dispatch={dispacth} key={state.id}>{children}</TransformGroup>)
+    }
+    throw Error(`${state.type} not found in getCompForGroup`)
 }
 
 export function getComponent(state: BaseState, dispacth: DispactherAction, store: MyStore, curTime: number): {
@@ -97,7 +112,7 @@ export function getComponent(state: BaseState, dispacth: DispactherAction, store
                 state,
                 curTime);
             break;
-        case ComponentEnum.GROUP:
+        case ComponentEnum.GROUP, ComponentEnum.GROUP_TRANSFORM:
             const children = [];
             for (const c of (state as MyGroupState).children) {
                 const cc = getComponent(c, dispacth, store, curTime);
@@ -108,7 +123,7 @@ export function getComponent(state: BaseState, dispacth: DispactherAction, store
                 }
             }
             jsx = getJsxOrUndefined(
-                (<MyGroup state={state as MyGroupState} dispatch={dispacth} key={state.id}>{children}</MyGroup>),
+                getCompForGroup(state as MyGroupState, dispacth, children),
                 state,
                 curTime);
             break;
@@ -144,6 +159,8 @@ export function getModifier(state: BaseState, dispacth: DispactherAction) {
             return (<KatexControl state={state as KatexState} dispatch={dispacth} key={state.id} />);
         case ComponentEnum.GROUP:
             return (<MyGroupControl state={state as MyGroupState} dispatch={dispacth} key={state.id} />);
+        case ComponentEnum.GROUP_TRANSFORM:
+            return (<GroupTransformControl state={state as GroupTransformState} dispatch={dispacth} key={state.id} />);
         case ComponentEnum.X_OF_T_AND_Y_OF_X:
             return (<XOfTAndYOfXControl state={state as XOfTAndYOfXState} dispatch={dispacth} key={state.id} />);
         case ComponentEnum.CIRCLE:

@@ -39,7 +39,7 @@ export const initState: MyStore = {
     components: [],
     selected: [],
     titles: new Set<string>(),
-    step: 50, // in millis
+    step: 10, // in millis
     maxTicks: 1000,
     tick: 0
 };

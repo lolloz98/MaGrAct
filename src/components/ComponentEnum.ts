@@ -5,6 +5,7 @@ enum ComponentEnum {
     CIRCLE="Circle",
     LATEX="Latex",
     GROUP="Group",
+    GROUP_TRANSFORM="Group Transform",
     UNKOWN="Unknown"
 }
 
