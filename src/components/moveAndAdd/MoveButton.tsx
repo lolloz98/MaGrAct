@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import { DispactherAction, MyStore } from "../StoreContext";
 import { useState } from "react";
 import MoveDialog from "./MoveDialog";
@@ -12,7 +12,9 @@ export default function MoveButton({ dispatch, store }: {
     return (
         <div>
             { isDialogVisible? (<MoveDialog onClose={() => setIsDialogVisible(false)} state={store} dispatch={dispatch}/>) : undefined}
-            <Button onClick={() => setIsDialogVisible(true)} startIcon={<ReorderIcon />}>Move</Button>
+            <Tooltip title={"Drag & Drop is unstable and might not work. Use this as an alternative"}>
+                <Button onClick={() => setIsDialogVisible(true)} startIcon={<ReorderIcon />}>Move</Button>
+            </Tooltip>
         </div>
     );
 }
