@@ -194,6 +194,8 @@ function reducer(
     case 'set_tick':
       draft.tick = action.tick;
       return draft;
+    case 'load_from_file':
+      return rawReturn(action.newStore);
   }
 }
 
