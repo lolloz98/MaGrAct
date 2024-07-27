@@ -1,4 +1,4 @@
-import { Button, Slider, Stack } from "@mui/material";
+import { Button, Icon, IconButton, Slider, Stack, Tooltip, Typography } from "@mui/material";
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import React, { useContext, useEffect } from "react";
@@ -35,20 +35,16 @@ export default function MyTimeline({ tick, setTick, step, maxTicks }: {
         <Stack
             direction="row"
             justifyContent="space-around"
+            alignContent={"center"}
             padding="16px"
-            alignItems="stretch"
+            alignItems="center"
             width={"100%"}
             spacing={8}
             flexGrow={1}
         >
-            <Button
-                variant="outlined"
-                startIcon={play ? <PauseCircleIcon /> : <PlayCircleIcon />}
-                onClick={() => setPlay(!play)}
-                style={{ width: "150px" }}
-            >
-                {play ? "Pause" : "Play"}
-            </Button>
+            <Tooltip title={play ? "Pause" : "Play"} >
+                <IconButton color="primary" onClick={() => setPlay(!play)}>{play ? <PauseCircleIcon fontSize="large" /> : <PlayCircleIcon fontSize="large" />}</IconButton>
+            </Tooltip>
             <Slider
                 style={{ minWidth: 200 }}
                 value={tick}
@@ -56,7 +52,7 @@ export default function MyTimeline({ tick, setTick, step, maxTicks }: {
                 marks={marks}
                 max={maxTicks}
                 track={false} />
-            <p style={{ width: "100px" }}>{getFormattedTime()}</p>
+            <Typography style={{ width: "100px" }}>{getFormattedTime()}</Typography>
         </Stack>
     );
 }
