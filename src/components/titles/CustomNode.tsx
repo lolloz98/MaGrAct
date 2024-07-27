@@ -93,6 +93,11 @@ export const CustomNode: React.FC<Props> = (props) => {
                 ${styles.nodeInput}`}
                 value={props.node.data?.title}
                 onMyChange={handleSubmitRenaming}
+                onKeyUp={(e) => {
+                    if (e.key === 'Enter') {
+                        setIsCurrentlyRenaming(false)
+                    }
+                }}
             />
             <IconButton className={styles.editButton} onClick={handleCancelRenaming}>
                 <CloseIcon className={styles.editIcon} />
