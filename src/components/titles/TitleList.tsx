@@ -55,6 +55,7 @@ export default function TitleList({ tree, currentlySelected, dispatch, dimension
       <Tree
         tree={tree}
         rootId={0}
+        dropTargetOffset={5}
         render={(node: MyTreeElement, { depth, isOpen, onToggle }) => (
           <CustomNode
             node={node}

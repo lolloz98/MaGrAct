@@ -57,14 +57,13 @@ export const CustomNode: React.FC<Props> = (props) => {
         setIsCurrentlyRenaming(true);
     };
 
-
     const normal = (
         <div
             className={`tree-node ${styles.root} ${props.isSelected ? styles.isSelected : ""
                 }`}
             onClick={handleSelect}
         >
-            {props.node.droppable && (<div onClick={handleToggle}> <ArrowRight /> </div>)}
+            {props.node.droppable && (<div onClick={handleToggle}> {props.isOpen? <ArrowRight style={{ rotate: "90deg" }} /> : <ArrowRight />} </div>)}
             <div className={styles.labelGridItem} onDoubleClick={handleShowInputForRenaming}> <Typography variant="body2">{props.node.text}</Typography></div>
             {hover && (
                 <Stack direction={"row"} alignContent={"center"}>
@@ -85,7 +84,6 @@ export const CustomNode: React.FC<Props> = (props) => {
     const renaming = (
         <div className={styles.inputWrapper}>
             <MyCustomInput
-
                 variant="standard"
                 state={text}
                 className={`${styles.textField}
