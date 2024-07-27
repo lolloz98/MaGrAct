@@ -1,10 +1,7 @@
 import { Button } from "@mui/material";
 import { DispactherAction, MyStore } from "../StoreContext";
-import { createDefaultState, MyTreeElement } from "../ComponentMapper";
 import AddIcon from "@mui/icons-material/Add";
-import { useContext, useState } from "react";
-import ComponentEnum from "../ComponentEnum";
-import { MaxTimeContext } from "../TimeContext";
+import { useState } from "react";
 import AddDialog from "./AddDialog";
 
 export default function AddButton({ dispatch, state }: {
