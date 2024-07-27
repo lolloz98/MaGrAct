@@ -1,8 +1,10 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormGroup, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import { DispactherAction, MyStore } from "../StoreContext";
 import styles from './MySettingsDialog.module.css';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SaveIcon from '@mui/icons-material/Save';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
+import FileOpenIcon from '@mui/icons-material/FileOpen';
 import { ChangeEvent, useContext, useState } from "react";
 import MyTextInput from "../inputs/MyTextInput";
 import MyNumbericInput from "../inputs/MyNumericInput";
@@ -40,9 +42,15 @@ export default function MySettingsDialog({ dispatch, state }: {
     return (
         <Box>
             <Stack direction={"row"} justifyContent={"center"} width={"100%"} alignItems={"center"}>
-                <Button startIcon={(<SettingsIcon />)} onClick={() => setOpenSettings(true)}>Settings</Button>
-                <Button startIcon={(<SaveIcon />)} onClick={() => save(toJson(state), 'example.magract')}>Save</Button>
-                <TextField type='file'variant="outlined" onChange={handleFileChange}></TextField>
+                <Tooltip title={"Settings"}>
+                    <Button onClick={() => setOpenSettings(true)}><SettingsIcon /></Button>
+                </Tooltip>
+                <Tooltip title={"Upload From File"}>
+                    <Button component="label"><FileOpenIcon /><input type="file"  hidden onChange={handleFileChange} /></Button>
+                </Tooltip>
+                <Tooltip title={"Download"}>
+                    <Button onClick={() => save(toJson(state), 'example.magract')}><SaveIcon /></Button>
+                </Tooltip>
             </Stack>
             {openSettings &&
                 <Dialog open={openSettings} onClose={() => setOpenSettings(false)}>
