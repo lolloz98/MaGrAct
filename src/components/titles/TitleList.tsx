@@ -44,6 +44,12 @@ export default function TitleList({ tree, currentlySelected, dispatch, dimension
       dispatch({ type: 'select_from_list', id: `${node.id}`});
   }
 
+  const handlecopy = (data: undefined | BaseState) => {
+    if (data !== undefined) {
+      dispatch({ type: "copy", state: data });
+    }
+  }
+
   return (
     <div style={{maxHeight: convertDimen(dimensions?.height) * 0.8, overflow: "auto" }} className="">
     <DndProvider backend={MultiBackend} options={getBackendOptions()}>
@@ -59,6 +65,7 @@ export default function TitleList({ tree, currentlySelected, dispatch, dimension
             onDelete={handleDelete}
             onTextChange={handleTextChange}
             onSelect={handleSelect}
+            onCopy={handlecopy}
             isSelected={currentlySelected === node.id}
           />
         )}

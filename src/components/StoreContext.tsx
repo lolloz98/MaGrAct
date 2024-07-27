@@ -30,7 +30,8 @@ export type StoreAction = {
 } | { type: 'reorder', id: string, destinationId: string, index: number } |
 { type: 'select_from_list', id: string} | { type: 'set_max_ticks', maxTicks: number } |
 { type: 'set_tick', tick: number } |
-{ type: 'load_from_file', newStore: MyStore };
+{ type: 'load_from_file', newStore: MyStore } |
+{ type: 'copy', state: BaseState };
 
 export type DispactherAction = React.Dispatch<StoreAction>;
 

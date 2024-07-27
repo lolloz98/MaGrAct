@@ -21,6 +21,9 @@ import AddButton from './components/add/AddButton';
 import MyGroupState from './components/states/MyGroupState';
 import MoveButton from './components/move/MoveButton';
 import MySettingsDialog from './components/settings/MySettingsDialog';
+import { replacer } from './components/saveAndLoad/save';
+import { reviver } from './components/saveAndLoad/load';
+import uuid from 'react-uuid';
 
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
@@ -101,6 +104,19 @@ export function isMyGroup(cur: BaseState) {
 }
 function isMyStore(cur: MyStore | BaseState) {
   return (cur as MyStore).components !== undefined;
+}
+
+function changeIdsAndAddParentMapping(state: BaseState, parent: string, parents: Map<string, string>, draft: MyStore) {
+  state.id = uuid();
+  if (parent !== "0") {
+    parents.set(state.id, parent);
+  }
+  checkAndUpdateTitle(state, draft);
+  if (isMyGroup(state)) {
+    for (const ch of (state as MyGroupState).children) {
+      changeIdsAndAddParentMapping(ch, state.id, parents, draft);
+    }
+  }
 }
 
 function removeFromParent(id: string, cur: MyStore | MyGroupState): BaseState {
@@ -196,6 +212,11 @@ function reducer(
       return draft;
     case 'load_from_file':
       return rawReturn(action.newStore);
+    case 'copy':
+      const newStateWrongIds = JSON.parse(JSON.stringify(action.state, replacer), reviver);
+      changeIdsAndAddParentMapping(newStateWrongIds, "0", draft.parent, draft);
+      draft.selected_from_list = newStateWrongIds.id;
+      return void draft.components.push(newStateWrongIds);
   }
 }
 

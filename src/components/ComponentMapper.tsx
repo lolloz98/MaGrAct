@@ -112,7 +112,8 @@ export function getComponent(state: BaseState, dispacth: DispactherAction, store
                 state,
                 curTime);
             break;
-        case ComponentEnum.GROUP, ComponentEnum.GROUP_TRANSFORM:
+        case ComponentEnum.GROUP:
+        case ComponentEnum.GROUP_TRANSFORM:
             const children = [];
             for (const c of (state as MyGroupState).children) {
                 const cc = getComponent(c, dispacth, store, curTime);

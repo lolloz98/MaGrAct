@@ -10,6 +10,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import { Stack } from "@mui/material";
+import BaseState from "../states/BaseState";
 
 
 type Props = {
@@ -21,6 +22,7 @@ type Props = {
     onDelete: (id: MyTreeElement["id"]) => void;
     onTextChange: (id: MyTreeElement["id"], value: string) => void;
     onSelect: (node: MyTreeElement) => void;
+    onCopy: (noe: BaseState | undefined) => void;
 };
 
 export const CustomNode: React.FC<Props> = (props) => {
@@ -66,18 +68,17 @@ export const CustomNode: React.FC<Props> = (props) => {
             {props.node.droppable && (<div onClick={handleToggle}> <ArrowRight /> </div>)}
             <div className={styles.labelGridItem} onDoubleClick={handleShowInputForRenaming}> <Typography variant="body2">{props.node.text}</Typography></div>
             {hover && (
-                <>
-                    <div className={styles.actionButton}>
-                        <IconButton size="small" onClick={() => handleShowInputForRenaming()}>
-                            <EditIcon fontSize="small" />
-                        </IconButton>
-                    </div>
-                    <div className={styles.actionButton}>
-                        <IconButton size="small" onClick={() => props.onDelete(id)}>
-                            <Delete fontSize="small" />
-                        </IconButton>
-                    </div>
-                </>
+                <Stack direction={"row"} alignContent={"center"}>
+                    <IconButton size="small" onClick={() => handleShowInputForRenaming()}>
+                        <EditIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton size="small" onClick={() => props.onDelete(id)}>
+                        <Delete fontSize="small" />
+                    </IconButton>
+                    <IconButton size="small" onClick={() => props.onCopy(data)}>
+                        <FileCopy fontSize="small" />
+                    </IconButton>
+                </Stack>
             )}
         </div>
     );

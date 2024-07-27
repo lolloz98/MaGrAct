@@ -1,8 +1,7 @@
-import saveAs from "file-saver";
 import { MyStore } from "../StoreContext";
 
 
-function replacer(key: string, value: any) {
+export function replacer(key: string, value: any) {
     if(value instanceof Map) {
         return {
             dataType: 'Map',
