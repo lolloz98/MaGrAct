@@ -21,8 +21,3 @@ function replacer(key: string, value: any) {
 export function toJson(myStoreStr: MyStore): string {
     return JSON.stringify(myStoreStr, replacer);
 }
-
-export function mySaveAs(myStore: MyStore, fileName: string) {
-    const blob = new Blob([toJson(myStore)], {type: "text/plain;charset=utf-8"});
-    saveAs(blob, fileName);
-}

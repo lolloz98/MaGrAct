@@ -51,6 +51,7 @@ export default function MySettingsDialog({ dispatch, state }: {
                 <Tooltip title={"Download"}>
                     <Button onClick={() => save(toJson(state), 'example.magract')}><SaveIcon /></Button>
                 </Tooltip>
+
             </Stack>
             {openSettings &&
                 <Dialog open={openSettings} onClose={() => setOpenSettings(false)}>
