@@ -27,7 +27,7 @@ import { title } from "process";
 import { myRange } from "../Utils";
 import { dfs, eligibleParentsForState, findListContainingIdRecursive, MoveDialogType, stringifyMoveDialog, useListingItems } from "./moveAndAddUtils";
 
-export default function AddOrMoveDialog({ state, onClose, dispatch }:
+export default function MoveDialog({ state, onClose, dispatch }:
     { state: MyStore, onClose: () => void, dispatch: DispactherAction }) {
     
     const {selected, 

@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { DispactherAction, MyStore } from "../StoreContext";
 import { useState } from "react";
-import AddOrMoveDialog from "./MoveDialog";
+import MoveDialog from "./MoveDialog";
 import ReorderIcon from '@mui/icons-material/Reorder';
 
 export default function MoveButton({ dispatch, store }: {
@@ -11,7 +11,7 @@ export default function MoveButton({ dispatch, store }: {
     const [isDialogVisible, setIsDialogVisible] = useState<boolean>(false);
     return (
         <div>
-            { isDialogVisible? (<AddOrMoveDialog onClose={() => setIsDialogVisible(false)} state={store} dispatch={dispatch}/>) : undefined}
+            { isDialogVisible? (<MoveDialog onClose={() => setIsDialogVisible(false)} state={store} dispatch={dispatch}/>) : undefined}
             <Button onClick={() => setIsDialogVisible(true)} startIcon={<ReorderIcon />}>Move</Button>
         </div>
     );
