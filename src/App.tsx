@@ -92,7 +92,6 @@ function deleteInfoForChildrenAndCur(state: BaseState, draft: MyStore) {
 }
 function getParentComponent(id: string, draft: MyStore, isIdOfParent: boolean): MyStore | MyGroupState {
   const parents = getParentHierarchy(id, draft, isIdOfParent);
-  console.log('parents', parents);
   return getParent(parents, parents.length - 1, draft);
 }
 export function isMyGroup(cur: BaseState) {
