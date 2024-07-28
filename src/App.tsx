@@ -288,9 +288,7 @@ function useMyMutative() {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const code = event.key;
-      if ((event.ctrlKey || event.metaKey) && code === 's') {
-        alert('CTRL+S Pressed');
-      } else if ((event.ctrlKey || event.metaKey) && !event.shiftKey && code === 'z') {
+      if ((event.ctrlKey || event.metaKey) && !event.shiftKey && code === 'z') {
         if (patchesIndex > 0) {
           event.preventDefault();
           const p = patchesInfoQ[patchesIndex - 1];
