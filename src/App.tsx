@@ -20,7 +20,6 @@ import MySettingsDialog from './components/settings/MySettingsDialog';
 import { replacer } from './components/saveAndLoad/save';
 import { reviver } from './components/saveAndLoad/load';
 import uuid from 'react-uuid';
-import { applyPatch } from 'fast-json-patch';
 
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
@@ -84,6 +83,7 @@ function getParent(parents: string[], index: number, cur: MyStore | MyGroupState
 }
 function deleteInfoForChildrenAndCur(state: BaseState, draft: MyStore) {
   draft.titles.delete(state.title);
+  draft.ids.delete(state.id);
   draft.parent.delete(state.id);
   if (isMyGroup(state)) {
     for (const n of (state as MyGroupState).children) {
@@ -108,6 +108,7 @@ function changeIdsAndAddParentMapping(state: BaseState, parent: string, parents:
     parents.set(state.id, parent);
   }
   checkAndUpdateTitle(state, draft);
+  draft.ids.add(state.id);
   if (isMyGroup(state)) {
     for (const ch of (state as MyGroupState).children) {
       changeIdsAndAddParentMapping(ch, state.id, parents, draft);
@@ -131,91 +132,120 @@ function getList(cur: MyStore | MyGroupState) {
   return isMyStore(cur) ? (cur as MyStore).components : (cur as MyGroupState).children;
 }
 
-function reducer(handleIsPatch: (type: string) => void) {
-  return (
-    draft: Draft<MyStore>,
-    action: StoreAction
-  ) => {
-    console.debug(action);
-    handleIsPatch(action.type);
-    switch (action.type) {
-      case 'reset':
-        return rawReturn(initState);
-      case 'delete':
-        const cur = getParentComponent(action.id, draft, false);
-        const l = (isMyStore(cur)) ? (cur as MyStore).components : (cur as MyGroupState).children;
-        deleteInfoForChildrenAndCur(l.find(s => s.id === action.id) as BaseState, draft);
-        removeFromParent(action.id, cur);
-        // todo: better strategy for modifying selected
-        draft.selected = [];
-        draft.selected_from_list = undefined;
-        return draft;
-      case 'add':
-        checkAndUpdateTitle(action.state, draft);
-        const newParent = getParentComponent(action.parent, draft, true);
-        const siblings = isMyStore(newParent) ? (newParent as MyStore).components : (newParent as MyGroupState).children;
-        siblings.splice(action.index, 0, action.state);
-        draft.selected_from_list = action.state.id;
-        setParentChildMapping(action.parent, action.state, draft);
-        return draft;
-      case 'modify':
-        const lis = getList(getParentComponent(action.id, draft, false));
-        const ind = lis.findIndex(a => a.id === action.id);
-        const state = lis[ind];
-        const prevTitle = state.title;
-        for (const m of action.modifiers) {
-          m(state);
-        }
-        if (prevTitle !== state.title) {
-          draft.titles.delete(prevTitle);
-          checkAndUpdateTitle(state, draft);
-        }
-        return draft;
-      case 'changeSelection':
-        if (action.ids.length > 0) {
-          draft.selected_from_list = action.ids[action.ids.length - 1];
-        }
-        return draft;
-      case 'reorder':
-        const indexTo = action.index;
-        const parent = getParentComponent(action.id, draft, false);
-        console.log("found parent", parent);
-        const nextParent = getParentComponent(action.destinationId, draft, true);
-        console.log("found next parent", nextParent);
-        const stateToKeep = removeFromParent(action.id, parent);
+function isActionPatchable(action: StoreAction) {
+  switch (action.type) {
+    case 'delete': return true;
+    case 'add': return true;
+    case 'modify': return true;
+    case 'reset': return true;
+    case 'changeSelection': return false;
+    case 'reorder': return true;
+    case 'select_from_list': return false;
+    case 'set_max_ticks': return true;
+    case 'set_tick': return false;
+    case 'load_from_file': return true;
+    case 'copy': return true;
+    case 'patch': return false;
+  }
+}
 
-        setParentChildMapping(action.destinationId, stateToKeep, draft);
+function reducer(draft: Draft<MyStore>,
+  action: StoreAction) {
+  console.debug(action);
+  switch (action.type) {
+    case 'reset':
+      draft.lastOpPatchable = isActionPatchable(action);
+      return rawReturn(initState);
+    case 'delete':
+      draft.lastOpPatchable = isActionPatchable(action);
+      const cur = getParentComponent(action.id, draft, false);
+      const l = (isMyStore(cur)) ? (cur as MyStore).components : (cur as MyGroupState).children;
+      deleteInfoForChildrenAndCur(l.find(s => s.id === action.id) as BaseState, draft);
+      removeFromParent(action.id, cur);
+      // todo: better strategy for modifying selected
+      draft.selected = [];
+      draft.selected_from_list = undefined;
+      return draft;
+    case 'add':
+      draft.lastOpPatchable = isActionPatchable(action);
+      checkAndUpdateTitle(action.state, draft);
+      draft.ids.add(action.state.id);
+      const newParent = getParentComponent(action.parent, draft, true);
+      const siblings = isMyStore(newParent) ? (newParent as MyStore).components : (newParent as MyGroupState).children;
+      siblings.splice(action.index, 0, action.state);
+      draft.selected_from_list = action.state.id;
+      setParentChildMapping(action.parent, action.state, draft);
+      return draft;
+    case 'modify':
+      if (!draft.ids.has(action.id)) {
+        console.log('Skipping modify action because id not present in id list');
+        return draft;
+      }
+      draft.lastOpPatchable = isActionPatchable(action);
+      const lis = getList(getParentComponent(action.id, draft, false));
+      const ind = lis.findIndex(a => a.id === action.id);
+      const state = lis[ind];
+      const prevTitle = state.title;
+      for (const m of action.modifiers) {
+        m(state);
+      }
+      if (prevTitle !== state.title) {
+        draft.titles.delete(prevTitle);
+        checkAndUpdateTitle(state, draft);
+      }
+      return draft;
+    case 'changeSelection':
+      draft.lastOpPatchable = isActionPatchable(action);
+      if (action.ids.length > 0) {
+        draft.selected_from_list = action.ids[action.ids.length - 1];
+      }
+      return draft;
+    case 'reorder':
+      draft.lastOpPatchable = isActionPatchable(action);
+      const indexTo = action.index;
+      const parent = getParentComponent(action.id, draft, false);
+      console.log("found parent", parent);
+      const nextParent = getParentComponent(action.destinationId, draft, true);
+      console.log("found next parent", nextParent);
+      const stateToKeep = removeFromParent(action.id, parent);
 
-        console.log("isNextParent MyStore: ", isMyStore(nextParent));
-        const li = isMyStore(nextParent) ? (nextParent as MyStore).components : (nextParent as MyGroupState).children;
+      setParentChildMapping(action.destinationId, stateToKeep, draft);
 
-        li.splice(indexTo, 0, stateToKeep);
-        console.log('keeping: ', stateToKeep);
-        console.log('after keeping', li);
-        // todo: better strategy for modifying selected
-        draft.selected_from_list = undefined;
-        return draft;
-      case 'select_from_list':
-        draft.selected_from_list = action.id;
-        return draft;
-      case 'set_max_ticks':
-        draft.maxTicks = action.maxTicks;
-        if (draft.tick > action.maxTicks) draft.tick = action.maxTicks;
-        return draft;
-      case 'set_tick':
-        draft.tick = action.tick;
-        return draft;
-      case 'load_from_file':
-        return rawReturn(action.newStore);
-      case 'copy':
-        const newStateWrongIds = JSON.parse(JSON.stringify(action.state, replacer), reviver);
-        changeIdsAndAddParentMapping(newStateWrongIds, "0", draft.parent, draft);
-        draft.selected_from_list = newStateWrongIds.id;
-        return void draft.components.push(newStateWrongIds);
-      case 'patch':
-        draft = apply(draft, action.patches);
-        return draft;
-    }
+      console.log("isNextParent MyStore: ", isMyStore(nextParent));
+      const li = isMyStore(nextParent) ? (nextParent as MyStore).components : (nextParent as MyGroupState).children;
+
+      li.splice(indexTo, 0, stateToKeep);
+      console.log('keeping: ', stateToKeep);
+      console.log('after keeping', li);
+      // todo: better strategy for modifying selected
+      draft.selected_from_list = undefined;
+      return draft;
+    case 'select_from_list':
+      draft.lastOpPatchable = isActionPatchable(action);
+      draft.selected_from_list = action.id;
+      return draft;
+    case 'set_max_ticks':
+      draft.lastOpPatchable = isActionPatchable(action);
+      draft.maxTicks = action.maxTicks;
+      if (draft.tick > action.maxTicks) draft.tick = action.maxTicks;
+      return draft;
+    case 'set_tick':
+      draft.lastOpPatchable = isActionPatchable(action);
+      draft.tick = action.tick;
+      return draft;
+    case 'load_from_file':
+      draft.lastOpPatchable = isActionPatchable(action);
+      return rawReturn(action.newStore);
+    case 'copy':
+      draft.lastOpPatchable = isActionPatchable(action);
+      const newStateWrongIds = JSON.parse(JSON.stringify(action.state, replacer), reviver);
+      changeIdsAndAddParentMapping(newStateWrongIds, "0", draft.parent, draft);
+      draft.selected_from_list = newStateWrongIds.id;
+      return void draft.components.push(newStateWrongIds);
+    case 'patch':
+      draft = apply(draft, action.patches);
+      draft.lastOpPatchable = isActionPatchable(action);
+      return draft;
   }
 }
 
@@ -230,23 +260,8 @@ function setParentChildMapping(newParent: string, state: BaseState, draft: MySto
 }
 
 function useMyMutative() {
-  const [isPatch, setIsPatch] = useState<boolean>(false);
-  const handleIsPatch = (type: string) => {
-    if (type === 'patch') {
-      setIsPatch(true);
-    } else {
-      setIsPatch(false);
-    }
-  }
-  const consumeIsPatch = () => {
-    const cur = isPatch;
-    if (isPatch) {
-      setIsPatch(false);
-    }
-    return cur;
-  }
   let [state, dispacth, patches, inversePatches] = useMutativeReducer(
-    reducer(handleIsPatch),
+    reducer,
     initState,
     undefined,
     { enablePatches: true }
@@ -255,52 +270,47 @@ function useMyMutative() {
     //   arrayLengthAssignment: true
     // }
   );
-  let [patchesInfoQ, setPatchesInfoQ] = useState<{ patches: Patches, inversePatches: Patches, opWasPatch: boolean }[]>([]);
+  let [patchesInfoQ, setPatchesInfoQ] = useState<{ patches: Patches, inversePatches: Patches }[]>([]);
   let [patchesIndex, setPatchesIndex] = useState<number>(0);
-  const getPatches = () => patchesInfoQ;
   useEffect(() => {
-    if (patches.length === 0 || isPatch) {
-      console.log("discarding");
-      consumeIsPatch();
+    if (patches.length === 0 || !state.lastOpPatchable) {
       return;
     }
     const newPatchesInfoQ = patchesInfoQ.filter((v, i) => i < patchesIndex);
     const np = [...newPatchesInfoQ, {
       patches: patches,
-      inversePatches: inversePatches,
-      opWasPatch: consumeIsPatch()
+      inversePatches: inversePatches
     }];
     setPatchesInfoQ(np);
     setPatchesIndex(np.length);
-    console.log("p", np);
   }, [state]);
-  
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      event.preventDefault();
       const code = event.key;
       if ((event.ctrlKey || event.metaKey) && code === 's') {
         alert('CTRL+S Pressed');
       } else if ((event.ctrlKey || event.metaKey) && !event.shiftKey && code === 'z') {
-        event.stopPropagation();
         if (patchesIndex > 0) {
+          event.preventDefault();
           const p = patchesInfoQ[patchesIndex - 1];
           setPatchesIndex(patchesIndex - 1);
-          console.log("in ctrlz", patchesInfoQ, patchesIndex);
+          console.debug("in ctrlz", patchesInfoQ, patchesIndex);
           dispacth({ type: 'patch', patches: p.inversePatches });
+          return false;
         } else {
-          console.log("CTRL+z clicked, but no patch found to be applied");
+          console.debug("CTRL+z clicked, but no patch found to be applied");
         }
       } else if ((event.ctrlKey || event.metaKey) && event.shiftKey && code === 'Z') {
-        event.stopPropagation();
-        console.log(patchesIndex, patchesInfoQ.length);
         if (patchesIndex < patchesInfoQ.length) {
+          event.preventDefault();
           const p = patchesInfoQ[patchesIndex];
           setPatchesIndex(patchesIndex + 1);
-          console.log("in ctrl+shif+z applying", p.patches);
+          console.debug("in ctrl+shif+z applying", p.patches);
           dispacth({ type: 'patch', patches: p.patches });
+          return false;
         } else {
-          console.log("CTRL+shift+Z clicked, but no patch found to be applied");
+          console.debug("CTRL+shift+Z clicked, but no patch found to be applied");
         }
       }
     };

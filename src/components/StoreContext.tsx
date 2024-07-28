@@ -10,7 +10,10 @@ export interface MyStore {
     selected_from_list?: string,
     step: number,
     maxTicks: number,
-    tick: number
+    tick: number,
+    lastOpPatchable: boolean, // indicates if the op to get to the current state is patchable or not. 
+                            // If it is it means we can go back from it with ctrl+z
+    ids: Set<string>
 }
 
 export type StoreAction = {
@@ -44,7 +47,9 @@ export const initState: MyStore = {
     titles: new Set<string>(),
     step: 10, // in millis
     maxTicks: 1000,
-    tick: 0
+    tick: 0,
+    lastOpPatchable: false,
+    ids: new Set<string>()
 };
 
 export const MyStoreContext = createContext<MyStore>(initState);
