@@ -1,5 +1,6 @@
 import { createContext } from 'react';
 import BaseState from './states/BaseState';
+import { Patches } from 'mutative';
 
 export interface MyStore {
     parent: Map<string, string> // each object has a parent, by navigating this object we can navigate to it
@@ -32,7 +33,7 @@ export type StoreAction = {
 { type: 'select_from_list', id: string} | { type: 'set_max_ticks', maxTicks: number } |
 { type: 'set_tick', tick: number } |
 { type: 'load_from_file', newStore: MyStore } |
-{ type: 'copy', state: BaseState };
+{ type: 'copy', state: BaseState } | { type: 'patch', patches: Patches};
 
 export type DispactherAction = React.Dispatch<StoreAction>;
 
