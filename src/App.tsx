@@ -334,6 +334,7 @@ function App() {
 
   const children = [];
   let currentlySelected: ReactElement | undefined = undefined;
+  let currentlySelectedState: BaseState | undefined = undefined;
   const selected = [];
   let tree: MyTreeElement[] = [];
 
@@ -342,6 +343,7 @@ function App() {
     const cur = getComponent(comp, dispacth, state, getTime(state.tick));
     if (cur.selectedEl !== undefined) {
       currentlySelected = getModifier(cur.selectedEl, dispacth);
+      currentlySelectedState = cur.selectedEl;
     }
     if (cur.jsx !== undefined) children.push(cur.jsx);
     tree = tree.concat(cur.treeEl);
@@ -364,7 +366,7 @@ function App() {
                   <ReflexElement propagateDimensionsRate={200}
                     propagateDimensions={true}
                     flex={5}>
-                    <StageWithReactiveDimen dispatch={dispacth} >
+                    <StageWithReactiveDimen dispatch={dispacth} selectedItem={currentlySelectedState} >
                       <Layer>
                         {children}
                       </Layer>

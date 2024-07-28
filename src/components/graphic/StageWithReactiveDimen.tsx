@@ -1,21 +1,56 @@
 import Konva from "konva";
-import React, { ReactElement, useEffect, useRef, useState } from "react"
+import React, { EventHandler, ReactElement, useEffect, useRef, useState } from "react"
 
 import { Stage } from "react-konva"
 import { DispactherAction } from "../StoreContext";
 import { convertDimen } from "../Utils";
+import BaseState from "../states/BaseState";
 
-export function StageWithReactiveDimen({ children, dispatch, dimensions }: { 
+export function StageWithReactiveDimen({ children, dispatch, dimensions, selectedItem }: { 
   children?: ReactElement, 
   dispatch: DispactherAction,
   style?: React.CSSProperties,
+  selectedItem?: BaseState,
   dimensions?: {
     width: number,
     height: number
   }
 }) {
   const originalW = 1066;
-  const stageRef = useRef<Konva.Stage>(null)
+  const stageRef = useRef<Konva.Stage>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const code = event.key;
+      if (event.target !== null) {
+        const target = (event.target as HTMLElement);
+        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT') {
+          return; // Do nothing if the event is handled by these elements
+        }
+      }
+      if (selectedItem !== undefined) {
+        event.preventDefault();
+        if ((code === 'w' || code === 's')) {
+          dispatch({ type: 'modify', id: selectedItem.id, modifiers: [(s) => {
+            s.position.y += ((code === 'w')? -1: 1) * 10;
+          }]})
+        }
+        if ((code === 'a' || code === 'd')) {
+          dispatch({ type: 'modify', id: selectedItem.id, modifiers: [(s) => {
+            s.position.x += ((code === 'a')? -1: 1) * 10;
+          }]})
+        }
+        console.log(selectedItem.parent)
+        if (code === 'g' && selectedItem.parent !== undefined && selectedItem.parent !== '0') {
+          dispatch({ type: 'select_from_list', id: selectedItem.parent })
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedItem]);
 
   const [dimensionsState, setDimensions] = useState({
     width: convertDimen(dimensions?.width),
