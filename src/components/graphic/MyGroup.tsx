@@ -11,8 +11,9 @@ export default function MyGroup({ state, dispatch, children }: {
     children: ReactNode 
 }) {
     const t = useContext(TimeContext);
+    const commonProps = getCommonProps(state, t);
     const props = {
-        ...getCommonProps(state, t),
+        ...commonProps,
         ...getPositionAndScaleProps(state),
         ...getDraggableProps(state, dispatch)
     }
@@ -21,6 +22,7 @@ export default function MyGroup({ state, dispatch, children }: {
         <Group {...props}>
             {children}
             <Circle
+                {...commonProps}
                 visible={state.isGizmosVisible}
                 scaleX={1 / state.scale.x}
                 scaleY={1 / state.scale.y}
