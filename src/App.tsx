@@ -20,6 +20,7 @@ import MySettingsDialog from './components/settings/MySettingsDialog';
 import { replacer } from './components/saveAndLoad/save';
 import { reviver } from './components/saveAndLoad/load';
 import uuid from 'react-uuid';
+import isElectron from 'is-electron';
 
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
@@ -332,6 +333,10 @@ function App() {
   const getTime = (tick: number) => {
     return state.step * tick / 1000;
   }
+
+  useEffect(() => {
+    console.log('Is electron?', isElectron());
+  }, []);
 
   const children = [];
   let currentlySelected: ReactElement | undefined = undefined;
