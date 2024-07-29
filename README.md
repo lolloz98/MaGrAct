@@ -2,6 +2,8 @@
 
 https://github.com/user-attachments/assets/0de7f4a6-e3a2-412e-b224-f76be4c40706
 
+Try it **[HERE](https://lolloz98.github.io/MaGrAct/)**
+
 Welcome, MaGrAct wants to be a tool to create beautiful maths related animations. 
 
 The inspiration for this tool derives from [Manim](https://github.com/3b1b/manim). Even though, MaGrAct is still in very early stages and still not ready for a production environment, I think it's already a cool tool and might be useful for some prototyping.
