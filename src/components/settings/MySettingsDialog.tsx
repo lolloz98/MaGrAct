@@ -13,6 +13,7 @@ import { toJson } from "../saveAndLoad/save";
 import { fromJson } from "../saveAndLoad/load";
 import { saveAs } from "file-saver";
 import KeyboardIcon from '@mui/icons-material/Keyboard';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import keyBindingsDescr from "./KeyBindingsDescr";
 import React from "react";
 
@@ -78,6 +79,9 @@ export default function MySettingsDialog({ dispatch, state }: {
                 </Tooltip>}
                 <Tooltip title={"Some Key Bindings"}>
                     <Button onClick={() => setOpenKeyBindings(true)}><KeyboardIcon /></Button>
+                </Tooltip>
+                <Tooltip title={"GitHub Repository"}>
+                    <Button onClick={() => window.open('https://github.com/lolloz98/MaGrAct', '_blank')}><GitHubIcon /></Button>
                 </Tooltip>
 
             </Stack>
