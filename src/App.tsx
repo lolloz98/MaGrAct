@@ -235,7 +235,7 @@ function reducer(draft: Draft<MyStore>,
       draft.tick = action.tick;
       return draft;
     case 'load_from_file':
-      draft.lastOpPatchable = isActionPatchable(action);
+      action.newStore.lastOpPatchable = isActionPatchable(action);
       return rawReturn(action.newStore);
     case 'copy':
       draft.lastOpPatchable = isActionPatchable(action);
