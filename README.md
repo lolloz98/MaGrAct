@@ -27,6 +27,7 @@ I will probably open issues for this, but it would be great to:
 - have an export that export the animation to video (for this I already created a branch with minimal Electron setup => we need proper access to the file system. It should be fairly straight forward to implement by saving each frame as an image, konva already has this functionality, and then using [ffmpge.wasm](https://github.com/ffmpegwasm/ffmpeg.wasm) to render the video)
 - recording audio
 - setting up a proper test suite (!!!)
+- Improve user experience. As of now, it feels kind of slow to work with this tool. I added keybindings to make it more pleasurable, but I don't think it's good enough yet. If anyone has opinions or ideas, they are well accepted.
 
 ## License
 License it's MIT. If you like this project, it would be amazing to get a star on the repo `:)`.
