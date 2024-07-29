@@ -8,6 +8,7 @@ import BaseState from "../states/BaseState";
 import { Dialog, DialogTitle, List, ListItemButton, ListItemText, PaperProps } from "@mui/material";
 import { isMyGroup } from "../../App";
 import MyGroupState from "../states/MyGroupState";
+import { e, max, min } from "mathjs";
 
 export function StageWithReactiveDimen({ children, dispatch, dimensions, selectedItem }: { 
   children?: ReactElement, 
@@ -33,22 +34,37 @@ export function StageWithReactiveDimen({ children, dispatch, dimensions, selecte
         }
       }
       if (selectedItem !== undefined) {
-        event.preventDefault();
         if ((code === 'w' || code === 's')) {
+          event.preventDefault();
           dispatch({ type: 'modify', id: selectedItem.id, modifiers: [(s) => {
             s.position.y += ((code === 'w')? -1: 1) * 10;
           }]})
         }
         if ((code === 'a' || code === 'd')) {
+          event.preventDefault();
           dispatch({ type: 'modify', id: selectedItem.id, modifiers: [(s) => {
             s.position.x += ((code === 'a')? -1: 1) * 10;
           }]})
         }
         if (code === 'g' && selectedItem.parent !== undefined && selectedItem.parent !== '0') {
+          event.preventDefault();
           dispatch({ type: 'select_from_list', id: selectedItem.parent })
         }
         if (code === 'c' && isMyGroup(selectedItem)) {
+          event.preventDefault();
           setIsViewingChildren(true);
+        }
+        if ((code === 'y' || code === 'Y') && (event.ctrlKey || event.shiftKey)) {
+          event.preventDefault();
+          dispatch({ type: 'modify', id: selectedItem.id, modifiers: [(s) => {
+            s.scale.y = max(s.scale.y + ((event.ctrlKey)? -0.05: 0.05), 0);
+          }]})        
+        }
+        if ((code === 'x' || code === 'X') && (event.ctrlKey || event.shiftKey)) {
+          event.preventDefault();
+          dispatch({ type: 'modify', id: selectedItem.id, modifiers: [(s) => {
+            s.scale.x = max(s.scale.x + ((event.ctrlKey)? -0.05: 0.05), 0);
+          }]})        
         }
       }
     };
