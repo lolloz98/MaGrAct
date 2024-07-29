@@ -5,6 +5,9 @@ import { Stage } from "react-konva"
 import { DispactherAction } from "../StoreContext";
 import { convertDimen } from "../Utils";
 import BaseState from "../states/BaseState";
+import { Dialog, DialogTitle, List, ListItemButton, ListItemText, PaperProps } from "@mui/material";
+import { isMyGroup } from "../../App";
+import MyGroupState from "../states/MyGroupState";
 
 export function StageWithReactiveDimen({ children, dispatch, dimensions, selectedItem }: { 
   children?: ReactElement, 
@@ -18,6 +21,7 @@ export function StageWithReactiveDimen({ children, dispatch, dimensions, selecte
 }) {
   const originalW = 1066;
   const stageRef = useRef<Konva.Stage>(null);
+  const [isViewingChildren, setIsViewingChildren] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -40,9 +44,11 @@ export function StageWithReactiveDimen({ children, dispatch, dimensions, selecte
             s.position.x += ((code === 'a')? -1: 1) * 10;
           }]})
         }
-        console.log(selectedItem.parent)
         if (code === 'g' && selectedItem.parent !== undefined && selectedItem.parent !== '0') {
           dispatch({ type: 'select_from_list', id: selectedItem.parent })
+        }
+        if (code === 'c' && isMyGroup(selectedItem)) {
+          setIsViewingChildren(true);
         }
       }
     };
@@ -103,6 +109,22 @@ export function StageWithReactiveDimen({ children, dispatch, dimensions, selecte
         }}>
         {children}
       </Stage>
+      {isViewingChildren &&
+          <Dialog open={isViewingChildren} onClose={() => setIsViewingChildren(false)}>
+            <List style={{ maxHeight: 400, overflow: 'auto' }}>
+              {(selectedItem as MyGroupState).children.length == 0 && <DialogTitle style={{ cursor: 'move' }}>No Children in Selected Group</DialogTitle>}
+                {(selectedItem as MyGroupState).children.map((c, i) => {
+                    return (<ListItemButton key={c.id} onClick={(e) => {
+                          dispatch({ type: 'select_from_list', id: c.id });
+                          setIsViewingChildren(false);
+                        }}>
+                            <ListItemText key={c.id}
+                                primary={`${i} ${c.title}`}
+                            />
+                        </ListItemButton>)
+                })}
+            </List>
+          </Dialog>}
     </div>
   )
 }
