@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, List, ListItem, Stack, Tooltip, Typography } from "@mui/material";
 import { DispactherAction, MyStore } from "../StoreContext";
 import styles from './MySettingsDialog.module.css';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -13,12 +13,17 @@ import { toJson } from "../saveAndLoad/save";
 import save from "save-file";
 import { fromJson } from "../saveAndLoad/load";
 import { saveAs } from "file-saver";
+import KeyboardIcon from '@mui/icons-material/Keyboard';
+import Markdown from 'react-markdown';
+import keyBindingsDescr from "./KeyBindingsDescr";
+import React from "react";
 
 export default function MySettingsDialog({ dispatch, state }: {
     dispatch: DispactherAction,
     state: MyStore
 }) {
     const [openSettings, setOpenSettings] = useState(false);
+    const [openKeyBindings, setOpenKeyBindings] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const t = useContext(MaxTimeContext);
 
@@ -73,6 +78,9 @@ export default function MySettingsDialog({ dispatch, state }: {
                 {isSaving ? <CircularProgress color="primary" /> : <Tooltip title={"Download"}>
                     <Button onClick={onSave}><SaveIcon /></Button>
                 </Tooltip>}
+                <Tooltip title={"Some Key Bindings"}>
+                    <Button onClick={() => setOpenKeyBindings(true)}><KeyboardIcon /></Button>
+                </Tooltip>
 
             </Stack>
             {openSettings &&
@@ -91,6 +99,37 @@ export default function MySettingsDialog({ dispatch, state }: {
                     </Box>
                     <DialogActions>
                         <Button onClick={() => setOpenSettings(false)}>Close</Button>
+                    </DialogActions>
+                </Dialog>}
+            {openKeyBindings &&
+                <Dialog open={openKeyBindings} onClose={() => setOpenKeyBindings(false)}>
+                    <DialogTitle>Key Bindings</DialogTitle>
+                    <Grid container margin={2} maxWidth={500}>
+                        {keyBindingsDescr.map((v) => {
+                            return (
+                                <React.Fragment>
+                                    <Grid container direction={'row'} alignItems={'center'}>
+                                        <Grid item xs={3}>
+                                            <Typography>{v.k.join(" + ")}</Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography>{v.d}</Typography>
+                                        </Grid>
+                                    </Grid>
+                                </React.Fragment>
+                            );
+                        }).reduce((prev, curr) => {
+                            return (
+                                <div>
+                                    {prev}
+                                    <Divider/>
+                                    {curr}
+                                </div>
+                            )
+                        })}
+                    </Grid>
+                    <DialogActions>
+                        <Button onClick={() => setOpenKeyBindings(false)}>Close</Button>
                     </DialogActions>
                 </Dialog>}
         </Box>
