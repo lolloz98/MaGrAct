@@ -276,11 +276,12 @@ function useMyMutative() {
     if (patches.length === 0 || !state.lastOpPatchable) {
       return;
     }
-    const newPatchesInfoQ = patchesInfoQ.filter((v, i) => i < patchesIndex);
+    let newPatchesInfoQ = patchesInfoQ.filter((v, i) => i < patchesIndex);
     const np = [...newPatchesInfoQ, {
       patches: patches,
       inversePatches: inversePatches
     }];
+    if (np.length > 200) np.shift();
     setPatchesInfoQ(np);
     setPatchesIndex(np.length);
   }, [state]);
