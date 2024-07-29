@@ -1,46 +1,32 @@
-# Getting Started with Create React App
+# MaGrAct - Mathematical Graphic Action
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+Welcome, MaGrAct wants to be a tool to create beautiful maths related animations. 
 
-In the project directory, you can run:
+The inspiration for this tool derives from [Manim](https://github.com/3b1b/manim). Even though, MaGrAct is still in very early stages and still not ready for a production environment, I think it's already a cool tool and might be useful for some prototyping.
 
-### `npm start`
+The idea is that it would be amazing to have a GUI with similar functionalities as Manim, with an easier learning curve and no (or minimal) setup.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Performance
+As of now, performance has not been in my mind. The tool was developed in under a month and will be submitted to [SoMe](https://some.3b1b.co/). 
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+I had to make some cut on what to do. 
 
-### `npm test`
+For example, there are some very easy performance gains to get from using `useMemo` functions in the `graphic` section, but they are yet to be implemented.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Contributing
+Since I have been doing this in spare time, I am not sure of how much I will be able to maintain and progress the tool. If you want to contribute, you are more than welcome to open PRs in github.
 
-### `npm run build`
+Let's try not to make the code too hacked... PRs that are clear anti-patterns (in a bad way), or break some of the core functionalities will not be accepted.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## TODOs
+I will probably open issues for this, but it would be great to:
+- have an export that export the animation to video (for this I already created a branch with minimal Electron setup => we need proper access to the file system. It should be fairly straight forward to implement by saving each frame as an image, konva already has this functionality, and then using [ffmpge.wasm](https://github.com/ffmpegwasm/ffmpeg.wasm) to render the video)
+- recording audio
+- setting up a proper test suite (!!!)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## License
+License it's MIT. If you like this project, it would be amazing to get a star on the repo `:)`.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Issues
+If you find any issues please raise it on this repo. You are more than welcome to work on a PR to fix it
