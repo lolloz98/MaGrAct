@@ -10,11 +10,9 @@ import { getDefaultBaseState } from "../states/BaseState";
 import ComponentEnum from "../ComponentEnum";
 import { MaxTimeContext } from "../TimeContext";
 import { toJson } from "../saveAndLoad/save";
-import save from "save-file";
 import { fromJson } from "../saveAndLoad/load";
 import { saveAs } from "file-saver";
 import KeyboardIcon from '@mui/icons-material/Keyboard';
-import Markdown from 'react-markdown';
 import keyBindingsDescr from "./KeyBindingsDescr";
 import React from "react";
 
