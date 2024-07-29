@@ -1,5 +1,6 @@
 # MaGrAct - Mathematical Graphic Action
 
+https://github.com/user-attachments/assets/0de7f4a6-e3a2-412e-b224-f76be4c40706
 
 Welcome, MaGrAct wants to be a tool to create beautiful maths related animations. 
 
