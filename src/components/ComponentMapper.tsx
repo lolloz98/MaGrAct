@@ -1,5 +1,4 @@
 import ComponentEnum from "./ComponentEnum";
-import FunctionAnimated from "./graphic/FunctionAnimated";
 import uuid from "react-uuid";
 import BaseControl from "./controls/BaseControl";
 import FunctionControl from "./controls/FunctionControl";
@@ -31,8 +30,6 @@ export function createDefaultState(type: ComponentEnum, title: string | undefine
     switch (type) {
         case ComponentEnum.FUNCTION:
             return getDefaultFunctionState(obj);
-        case ComponentEnum.FUNCTION_ANIM:
-            return obj;
         case ComponentEnum.LATEX:
             obj.scale.x = 1;
             obj.scale.y = 1;
@@ -100,12 +97,6 @@ export function getComponent(state: BaseState, dispacth: DispactherAction, store
                 curTime
             );
             break;
-        case ComponentEnum.FUNCTION_ANIM:
-            jsx = getJsxOrUndefined(
-                (<FunctionAnimated state={state} dispatch={dispacth} key={state.id}></FunctionAnimated>),
-                state,
-                curTime);
-            break;
         case ComponentEnum.LATEX:
             jsx = getJsxOrUndefined(
                 (<MyKatex state={state as KatexState} dispatch={dispacth} key={state.id} />),
@@ -154,8 +145,6 @@ export function getModifier(state: BaseState, dispacth: DispactherAction) {
     switch (state.type) {
         case ComponentEnum.FUNCTION:
             return (<FunctionControl state={state as FunctionState} dispatch={dispacth} key={state.id} />);
-        case ComponentEnum.FUNCTION_ANIM:
-            return (<BaseControl state={state} dispatch={dispacth} key={state.id}></BaseControl>);
         case ComponentEnum.LATEX:
             return (<KatexControl state={state as KatexState} dispatch={dispacth} key={state.id} />);
         case ComponentEnum.GROUP:
