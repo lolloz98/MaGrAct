@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { TimeContext } from "../TimeContext";
 import { evalFnAndGetPoints, extractFunctionInfo, getCommonProps, getDraggableProps, getLineColorProps, getListOfPoints, getPositionAndScaleProps } from "../Utils";
-import FunctionState from "../states/FunctionState";
 import { DispactherAction } from "../StoreContext";
 import XOfTAndYOfXState from "../states/XOfTAndYOfXState";
 import { Group, Line } from "react-konva";

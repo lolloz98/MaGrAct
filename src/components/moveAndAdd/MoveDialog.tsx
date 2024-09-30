@@ -80,7 +80,7 @@ export default function MoveDialog({ state, onClose, dispatch }:
                         <Divider />
                         <List style={{ maxHeight: 400, overflow: 'auto' }}>
                             {newParentSiblingsList.map((c, i) => {
-                                return (<ListItemButton key={c.id} onClick={(e) => {
+                                return (<ListItemButton key={c.id} onClick={(_e) => {
                                     onChange({ id: c.id, title: c.title }, newParent);
                                     }}>
                                         <ListItemText key={c.id}

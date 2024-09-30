@@ -25,7 +25,7 @@ type Props = {
 };
 
 export const CustomNode: React.FC<Props> = (props) => {
-    const { id, droppable, data, text } = props.node;
+    const { id, data, text } = props.node;
 
     const [hover, setHover] = useState<boolean>(false);
 

@@ -9,7 +9,7 @@ import BaseState from "../states/BaseState";
 import { convertDimen } from "../Utils";
 
 
-export default function TitleList({ tree, currentlySelected, dispatch, dimensions, store }: {
+export default function TitleList({ tree, currentlySelected, dispatch, dimensions }: {
   tree: MyTreeElement[],
   currentlySelected?: string,
   dispatch: DispactherAction,
@@ -23,7 +23,7 @@ export default function TitleList({ tree, currentlySelected, dispatch, dimension
     if (id === 0) return;
     dispatch({ type: 'delete', id: `${id}` });
   };
-  const handleDrop = (newTree: MyTreeElement[], options: DropOptions) => {
+  const handleDrop = (_newTree: MyTreeElement[], options: DropOptions) => {
     console.debug(`Options while dnd: ${options}`);
     if (options.dragSourceId !== undefined && options.destinationIndex !== undefined) {
       dispatch({ type: 'reorder', id: `${options.dragSourceId}`, destinationId: `${options.dropTargetId ?? 0}`, index: options.destinationIndex });
@@ -69,7 +69,7 @@ export default function TitleList({ tree, currentlySelected, dispatch, dimension
             isSelected={currentlySelected === node.id}
           />
         )}
-        onDragEnd={(e) => {
+        onDragEnd={() => {
           console.debug("drag ended");
         }}
         dragPreviewRender={(monitorProps) => {
@@ -83,7 +83,7 @@ export default function TitleList({ tree, currentlySelected, dispatch, dimension
         }}
         sort={false}
         insertDroppableFirst={false}
-        canDrop={(tree, { dragSource, dropTargetId, dropTarget }) => {
+        canDrop={(_tree, { dragSource, dropTargetId, dropTarget }) => {
           // parent should never be dropped on itself
           if (dragSource?.id === dropTargetId) {
             return false;
