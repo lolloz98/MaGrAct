@@ -1,14 +1,14 @@
 import Konva from "konva";
-import React, { EventHandler, ReactElement, useEffect, useRef, useState } from "react"
+import React, { ReactElement, useEffect, useRef, useState } from "react"
 
 import { Stage } from "react-konva"
 import { DispactherAction } from "../StoreContext";
 import { convertDimen } from "../Utils";
 import BaseState from "../states/BaseState";
-import { Dialog, DialogTitle, List, ListItemButton, ListItemText, PaperProps } from "@mui/material";
+import { Dialog, DialogTitle, List, ListItemButton, ListItemText } from "@mui/material";
 import { isMyGroup } from "../../App";
 import MyGroupState from "../states/MyGroupState";
-import { e, max, min } from "mathjs";
+import { max } from "mathjs";
 
 export function StageWithReactiveDimen({ children, dispatch, dimensions, selectedItem }: { 
   children?: ReactElement, 
@@ -106,7 +106,7 @@ export function StageWithReactiveDimen({ children, dispatch, dimensions, selecte
       scale={dimensionsState.scale} 
       style={{background: "black", width: dimensionsState.width, height: dimensionsState.height}}
       ref={stageRef}
-      onClick={(e) => {
+      onClick={(_e) => {
         const shapes = stageRef.current?.getAllIntersections(stageRef.current.pointerPos);
         console.debug("Shape that we did hit", shapes);
         if (shapes) {
@@ -130,7 +130,7 @@ export function StageWithReactiveDimen({ children, dispatch, dimensions, selecte
             <List style={{ maxHeight: 400, overflow: 'auto' }}>
               {(selectedItem as MyGroupState).children.length == 0 && <DialogTitle style={{ cursor: 'move' }}>No Children in Selected Group</DialogTitle>}
                 {(selectedItem as MyGroupState).children.map((c, i) => {
-                    return (<ListItemButton key={c.id} onClick={(e) => {
+                    return (<ListItemButton key={c.id} onClick={(_e) => {
                           dispatch({ type: 'select_from_list', id: c.id });
                           setIsViewingChildren(false);
                         }}>

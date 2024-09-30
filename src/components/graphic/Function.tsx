@@ -1,10 +1,9 @@
-import { Group, Line, Rect } from "react-konva";
+import { Group, Line } from "react-konva";
 import { useContext } from 'react';
 import { TimeContext } from '../TimeContext';
 import { DispactherAction } from "../StoreContext";
-import { evalFnAndGetPoints, extractFunctionInfo, getCommonProps, getDraggableProps, getLineColorProps, getListOfPoints, getPositionAndScaleProps, getPositionProps, getScaleProps, scaleAndFlipXandY } from "../Utils";
-import FunctionState, { Axis } from "../states/FunctionState";
-import { compile, evaluate, isNaN } from "mathjs";
+import { evalFnAndGetPoints, extractFunctionInfo, getCommonProps, getDraggableProps, getLineColorProps, getListOfPoints, getPositionAndScaleProps } from "../Utils";
+import FunctionState from "../states/FunctionState";
 import { AxisGraphic } from "./AxisGraphic";
 
 

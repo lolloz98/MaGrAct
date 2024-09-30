@@ -277,7 +277,7 @@ function useMyMutative() {
     if (patches.length === 0 || !state.lastOpPatchable) {
       return;
     }
-    let newPatchesInfoQ = patchesInfoQ.filter((v, i) => i < patchesIndex);
+    let newPatchesInfoQ = patchesInfoQ.filter((_v, i) => i < patchesIndex);
     const np = [...newPatchesInfoQ, {
       patches: patches,
       inversePatches: inversePatches

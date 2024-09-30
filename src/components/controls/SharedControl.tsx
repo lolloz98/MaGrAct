@@ -3,7 +3,6 @@ import MyCustomInput from "../inputs/MyCustomInput";
 import BaseState from "../states/BaseState";
 import { DispactherAction } from "../StoreContext";
 import { useState } from "react";
-import { isNumeric } from "../Utils";
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';

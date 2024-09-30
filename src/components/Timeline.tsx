@@ -13,7 +13,7 @@ export default function MyTimeline({ tick, setTick, step, maxTicks }: {
     const [play, setPlay] = React.useState<boolean>(false);
     const time = useContext(TimeContext);
     const numberOfMarks = 10;
-    const marks = Array.from({ length: numberOfMarks + 1 }, (value, key) => { return { value: Math.round(maxTicks * key / numberOfMarks) }; })
+    const marks = Array.from({ length: numberOfMarks + 1 }, (_value, key) => { return { value: Math.round(maxTicks * key / numberOfMarks) }; })
 
     const getFormattedTime = () => {
         return time.toFixed(2);
@@ -26,7 +26,7 @@ export default function MyTimeline({ tick, setTick, step, maxTicks }: {
         return () => clearInterval(interval);
     }, [tick, play, step]);
 
-    const handleSliderChange = (event: Event, newValue: number | number[]) => {
+    const handleSliderChange = (_event: Event, newValue: number | number[]) => {
         setPlay(false);
         setTick(newValue as number);
     };

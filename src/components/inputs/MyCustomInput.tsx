@@ -1,5 +1,5 @@
 import { TextField, TextFieldProps, TextFieldVariants } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function MyCustomInput<Variant extends TextFieldVariants>(
     props: {

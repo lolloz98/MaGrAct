@@ -1,6 +1,6 @@
 import { MyStore } from "../StoreContext";
 
-export function reviver(key: string, value: any) {
+export function reviver(_key: string, value: any) {
     if(typeof value === 'object' && value !== null) {
       if (value.dataType === 'Map') {
         return new Map(value.value);

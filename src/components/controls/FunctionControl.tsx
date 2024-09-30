@@ -3,7 +3,6 @@ import { DispactherAction } from "../StoreContext";
 import FunctionState from "../states/FunctionState";
 import { SharedAxisControl, SharedBaseControl, SharedFunctionControl, SharedTitleControl } from "./SharedControl";
 import styles from './Controls.module.css';
-import MyTextInput from "../inputs/MyTextInput";
 
 export default function FunctionControl({ state, dispatch }: { state: FunctionState, dispatch: DispactherAction }) {
     return (

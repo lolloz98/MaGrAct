@@ -1,4 +1,4 @@
-import { Button, Collapse, FormControlLabel, FormGroup, Stack } from "@mui/material";
+import { Button, Collapse, Stack } from "@mui/material";
 import { DispactherAction } from "../StoreContext";
 import BaseState from "../states/BaseState";
 import { SharedBaseControl, SharedMyGroupControl, SharedTitleControl } from "./SharedControl";
@@ -29,7 +29,7 @@ export default function GroupTransformControl({ state, dispatch }: { state: Grou
 function AnimControl({ state, get, dispatch, title }: 
     { state: GroupTransformState, get: (s: GroupTransformState) => MyAnim, dispatch: DispactherAction, title: string }) {
     const [open, setOpen] = useState(false);
-    const anim = get(state);
+    // const anim = get(state);
 
     return (
         <Stack>

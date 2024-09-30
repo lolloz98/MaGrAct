@@ -3,7 +3,7 @@ import { Axis } from "../states/FunctionState";
 import { TimeContext } from "../TimeContext";
 import BaseState from "../states/BaseState";
 import { computeColorDissolvenceAnimation, getCommonProps } from "../Utils";
-import { Circle, Group, Line, Rect } from "react-konva";
+import { Group, Line, Rect } from "react-konva";
 
 function computeMarksPos(min: number, max: number, each: number, visible: boolean) {
     if (!visible) return [];

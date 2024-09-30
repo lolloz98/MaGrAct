@@ -1,10 +1,8 @@
-import Konva from "konva";
 import BaseState from "./states/BaseState";
 import { DispactherAction } from "./StoreContext";
 import { KonvaEventObject } from "konva/lib/Node";
 import FunctionState, { Axis, Bounds } from "./states/FunctionState";
-import { compile, evaluate } from "mathjs";
-import { isNaN as mathjsIsNan } from 'mathjs';
+import { compile } from "mathjs";
 
 export function isNumeric(str: string) {
     return !isNaN(+str) &&

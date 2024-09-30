@@ -1,7 +1,7 @@
 import { MyStore } from "../StoreContext";
 
 
-export function replacer(key: string, value: any) {
+export function replacer(_key: string, value: any) {
     if(value instanceof Map) {
         return {
             dataType: 'Map',

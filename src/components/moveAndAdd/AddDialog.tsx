@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import {
   Button,
   Select,
@@ -10,16 +10,14 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  SelectChangeEvent,
   Typography,
   Stack,
   Divider,
   List,
-  ListItemButton,
   ListItemText,
 } from "@mui/material";
 import styles from "./AddDialog.module.css";
-import { createDefaultState, MyTreeElement } from "../ComponentMapper";
+import { createDefaultState } from "../ComponentMapper";
 import ComponentEnum from "../ComponentEnum";
 import { DispactherAction, MyStore } from "../StoreContext";
 import { MoveDialogType, stringifyMoveDialog, useListingItems } from "./moveAndAddUtils";
@@ -37,7 +35,6 @@ export default function AddDialog({ state, onClose, dispatch }:
 
   const { selected,
     newParent,
-    completeList,
     newParentSiblingsList,
     eligibleParents,
     posConstraints,

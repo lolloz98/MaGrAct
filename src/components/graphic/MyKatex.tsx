@@ -1,9 +1,8 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import katex from "katex";
 import "katex/dist/katex.min.css";
+import katex from 'katex';
 import { Html } from 'react-konva-utils';
-import { Circle, Group, Rect } from "react-konva";
-import BaseState from "../states/BaseState";
+import { Group, Rect } from "react-konva";
 import { computeColorDissolvenceAnimation, getCommonProps, getDraggableProps, getPositionAndScaleProps, isVisible } from "../Utils";
 import { TimeContext } from "../TimeContext";
 import { DispactherAction } from "../StoreContext";

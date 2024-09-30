@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useContext } from "react";
+import { ReactNode, useContext } from "react";
 import MyGroupState from "../states/MyGroupState";
 import { DispactherAction } from "../StoreContext";
 import { Circle, Group } from "react-konva";
