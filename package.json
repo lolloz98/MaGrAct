@@ -1,6 +1,7 @@
 {
   "name": "magract-vite",
   "private": true,
+  "homepage": "https://lolloz98.github.io/MaGrAct",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -9,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
