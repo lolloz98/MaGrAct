@@ -29,8 +29,8 @@
     "react-konva": "^19.0.2",
     "react-konva-utils": "^1.0.7",
     "react-reflex": "^4.2.7",
-    "react-uuid": "^2.0.0",
-    "use-mutative": "^1.2.0"
+    "use-mutative": "^1.2.0",
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",

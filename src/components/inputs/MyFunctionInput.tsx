@@ -2,6 +2,7 @@ import { TextFieldProps, TextFieldVariants } from "@mui/material";
 import MyCustomInput from "./MyCustomInput";
 import BaseState from "../states/BaseState";
 import { DispactherAction } from "../StoreContext";
+import { JSX } from "react";
 
 export default function MyFunctionInput<Variant extends TextFieldVariants>(
     props: {

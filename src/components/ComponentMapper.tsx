@@ -1,5 +1,5 @@
 import ComponentEnum from "./ComponentEnum";
-import uuid from "react-uuid";
+import { v4 as uuid } from 'uuid';
 import FunctionControl from "./controls/FunctionControl";
 import { DispactherAction, MyStore } from "./StoreContext";
 import BaseState, { getDefaultBaseState } from "./states/BaseState";

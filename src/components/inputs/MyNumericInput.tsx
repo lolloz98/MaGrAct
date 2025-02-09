@@ -3,6 +3,7 @@ import MyCustomInput from "./MyCustomInput";
 import BaseState from "../states/BaseState";
 import { isNumeric } from "../Utils";
 import { DispactherAction } from "../StoreContext";
+import { JSX } from "react";
 
 export default function MyNumbericInput<Variant extends TextFieldVariants>(
     props: {

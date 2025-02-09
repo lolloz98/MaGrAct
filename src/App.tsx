@@ -19,7 +19,7 @@ import MoveButton from './components/moveAndAdd/MoveButton';
 import MySettingsDialog from './components/settings/MySettingsDialog';
 import { replacer } from './components/saveAndLoad/save';
 import { reviver } from './components/saveAndLoad/load';
-import uuid from 'react-uuid';
+import { v4 as uuid } from 'uuid';
 import isElectron from 'is-electron';
 
 const getDesignTokens = (mode: PaletteMode) => ({
